@@ -5,7 +5,10 @@
  * @author Rodrigo
  *
  */
-public class FrontEndUpdate {
+import java.io.Serializable;
+
+public class FrontEndUpdate implements Serializable {
+	
 	public static enum UpdateType {
 		Notification,
 		Markup
@@ -111,4 +114,5 @@ public class FrontEndUpdate {
 	public UpdateType getUpdateType() {
 		return updateType;
 	}
+	
 }
