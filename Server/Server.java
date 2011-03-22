@@ -4,11 +4,14 @@
 
 import java.io.IOException;
 import java.net.*;
+import java.util.*;
 
 public class Server {
 	private final int port;
 	private ServerSocket ssocket;
 	private boolean done;
+	Vector<InputProcessor> inprocs;
+	Vector<OutputProcessor> outprocs;
 	
 	//Constructor
 	public Server(int _port) {
