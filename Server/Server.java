@@ -1,5 +1,5 @@
 /**The server processes and forwards FrontEndUpdates to clients
-*@author John
+*@author John Lima
 */
 
 import java.io.IOException;
@@ -10,8 +10,8 @@ public class Server {
 	private final int port;
 	private ServerSocket ssocket;
 	private boolean done;
-	Vector<InputProcessor> inprocs;
-	Vector<OutputProcessor> outprocs;
+	Vector<InputProcessor> inputProcs;
+	Vector<OutputProcessor> outputProcs;
 	
 	//Constructor
 	public Server(int _port) {
@@ -33,14 +33,23 @@ public class Server {
 				Socket client = ssocket.accept();
 				
 				//spawn an input processor for this client
-				new Thread(new InputProcessor(client)).start();
+				InputProcessor thisInputProc = new InputProcessor(client);
+				inputProcs.add(thisInputProc);
+				new Thread(thisInputProc).start();
 				
-				//spawn an output processor for this client?
+				//spawn an output processor for this client
+				OutputProcessor thisOutputProc = new OutputProcessor(client);
+				outputProcs.add(thisOutputProc);
+				new Thread(thisOutputProc).start();
+				
+				//TODO Detect disconnect and kill the appropriate procs
+				
 			}
 			catch (IOException ioe) {
 				System.err.println("serve(): Error accepting client connection: " + ioe.toString());
 			}
 		}
+		
 	}
 	
 	public static void main(String[] args) {

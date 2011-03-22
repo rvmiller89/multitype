@@ -10,12 +10,24 @@ import java.io.*;
 public class InputProcessor implements Runnable {
 	Socket sclient;
 	
+	//flag to terminate thread
+	boolean done;
+	
+	ObjectInputStream in;
+	
 	/**
 	 * Constructor
 	 * @param s The socket that this will be communicating with
 	 */
 	public InputProcessor(Socket s) {
 		sclient = s;
+		done = false;
+		
+		try {
+			in = new ObjectInputStream(sclient.getInputStream());
+		} catch (IOException e) {
+			System.err.println("InputProcessor(): " + e.toString());
+		}
 	}
 	
 	/**
@@ -26,15 +38,9 @@ public class InputProcessor implements Runnable {
 	public FrontEndUpdate buildFEU() {
 
 		try {
-			InputStream input = sclient.getInputStream();
-            //OutputStream output = sclient.getOutputStream();
-			
-			ObjectInputStream in = new ObjectInputStream(input);
 			
 			FrontEndUpdate ret = (FrontEndUpdate) in.readObject();
-			
-			in.close();
-			
+						
 			return ret;
 		}
 		catch (IOException ioe) {
@@ -48,17 +54,34 @@ public class InputProcessor implements Runnable {
 	
 	public void run() {
 		//Do input processing here
-		FrontEndUpdate in_feu = buildFEU();
-		switch(in_feu.getUpdateType()) {
-		case Markup:
-			//call MarkupProcessor
-			break;
-		case Notification:
-			//call NotificationProcessor
-			break;
-		default:
-			System.err.println("InputProcessor: Unknown FEU type");
+		while(!done) {
+			FrontEndUpdate in_feu = buildFEU();
+			if(in_feu == null) {
+				continue;
+			}
+			switch(in_feu.getUpdateType()) {
+			case Markup:
+				//call MarkupProcessor
+				break;
+			case Notification:
+				//call NotificationProcessor
+				break;
+			default:
+				System.err.println("InputProcessor: Unknown FEU type");
+			}
 		}
 		
+		try {
+			in.close();
+		} catch (IOException e) {
+			System.err.println("InputProcessor - close: " + e.toString());
+		}
+	}
+	
+	/**
+	 * Call this to terminate thread
+	 */
+	public void setDone() {
+		done = true;
 	}
 }
