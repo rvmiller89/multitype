@@ -3,8 +3,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * The BackendClient is used as means of communication with the 
@@ -28,8 +28,8 @@ public class BackendClient {
 	 * @param port port to be used to connect to
 	 */
 	public BackendClient(String url, int port) {
-		fromServerQueue = new LinkedBlockingQueue<FrontEndUpdate>();
-		fromFrontEndQueue = new LinkedBlockingQueue<FrontEndUpdate>();
+		fromServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
+		fromFrontEndQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		try {
 			serverSocket = new Socket(url, port);
             out = new ObjectOutputStream(serverSocket.getOutputStream());
