@@ -35,6 +35,7 @@ public class FrontEndUpdate implements Serializable {
 	}
 	private int startLocation, endLocation;
 	private int fileId, userId;
+	private int revision;
 	private String username, url, errorMessage, insert;
 	private UpdateType updateType;
 	private MarkupType markupType;
@@ -113,6 +114,14 @@ public class FrontEndUpdate implements Serializable {
 	// Purposely not having a setUpdateType
 	public UpdateType getUpdateType() {
 		return updateType;
+	}
+
+	public void setRevision(int revision) {
+		this.revision = revision;
+	}
+
+	public int getRevision() {
+		return revision;
 	}
 	
 }
