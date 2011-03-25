@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.*;
@@ -285,6 +287,19 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				ISelectionProvider selectionProvider = editor.getSelectionProvider();
 			    ITextSelection selection = (ITextSelection) selectionProvider.getSelection();
 			    String text = selection.getText();
+			    
+			    String pasteText = "Hello";
+			    IDocumentProvider dp = editor.getDocumentProvider();
+			    IDocument doc = dp.getDocument(editor.getEditorInput());
+			    int offset = 0;
+			    
+			    //offset = doc.getLineOffset(doc.getNumberOfLines()-4);
+			    try {
+					doc.replace(offset, 0, pasteText+"\n");
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				showMessage(text);
 
