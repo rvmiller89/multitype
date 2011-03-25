@@ -55,11 +55,11 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 
-public class Editor implements IWorkbenchWindowActionDelegate{
+public class DeprecatedEditor implements IWorkbenchWindowActionDelegate{
 	
 	private IWorkbenchWindow window;
 
-	public Editor() {
+	public DeprecatedEditor() {
 		// TODO Auto-generated constructor stub
 		//initWorkbench();
 	}
@@ -152,7 +152,7 @@ public class Editor implements IWorkbenchWindowActionDelegate{
 		// TODO Auto-generated method stub
 		System.out.println("Hello world");
 		
-		Editor e = new Editor();
+		DeprecatedEditor e = new DeprecatedEditor();
 		//e.getOffset();
 		
 		//e.getEditor();

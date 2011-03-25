@@ -18,8 +18,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
 
-import multitype.ActiveEditor;
-import multitype.Editor;
+import multitype.editors.ActiveEditor;
 
 
 /**
@@ -295,6 +294,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 			    
 			    //offset = doc.getLineOffset(doc.getNumberOfLines()-4);
 			    try {
+			    	
 					doc.replace(offset, 0, pasteText+"\n");
 				} catch (BadLocationException e) {
 					// TODO Auto-generated catch block

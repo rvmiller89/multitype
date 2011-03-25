@@ -1,4 +1,6 @@
-package multitype;
+package multitype.editors;
+
+import multitype.Activator;
 
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
