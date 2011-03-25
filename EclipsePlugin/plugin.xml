@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="MultiType"
+            id="MultiType">
+      </category>
+      <view
+            name="File List"
+            icon="icons/sample.gif"
+            category="MultiType"
+            class="multitype.views.FileList"
+            id="multitype.views.FileList">
+      </view>
+      <view
+            name="User List"
+            icon="icons/sample.gif"
+            category="MultiType"
+            class="multitype.views.UserList"
+            id="multitype.views.UserList">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.TaskList"
+               relationship="right"
+               id="multitype.views.FileList">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="MultiType Action Set"
+            visible="true"
+            id="MultiType.actionSet">
+         <menu
+               label="MultiType"
+               id="multitypeMenu">
+            <separator
+                  name="multitypeGroup">
+            </separator>
+         </menu>
+         <action
+               label="Login"
+               icon="icons/sample.gif"
+               class="multitype.actions.LoginWindowAction"
+               tooltip="Hello, Eclipse world"
+               menubarPath="multitypeMenu/multitypeGroup"
+               toolbarPath="multitypeGroup"
+               id="multitype.actions.LoginWindowAction">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>
