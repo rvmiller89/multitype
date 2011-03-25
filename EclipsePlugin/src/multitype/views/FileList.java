@@ -2,16 +2,36 @@ package multitype.views;
 
 import java.util.ArrayList;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
+import multitype.FrontEndUpdate;
+
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
 
 
 /**
@@ -44,6 +64,8 @@ public class FileList extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	private FrontEndUpdate fu;
+	
 
 	/*
 	 * The content provider class is responsible for
@@ -146,6 +168,7 @@ public class FileList extends ViewPart {
 			/*TreeObject to4 = new TreeObject("Leaf 4");
 			TreeParent p2 = new TreeParent("Parent 2");
 			p2.addChild(to4);*/
+			//FrontEndUpdate fu;
 			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(file1);
