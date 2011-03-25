@@ -8,13 +8,14 @@ import java.util.concurrent.BlockingQueue;
  * @author Rodrigo
  *
  */
-public class MarkupProcessor {
+public class MarkupProcessor implements Runnable{
 
 	// Vector for the current FEUs
 	private BlockingQueue<FrontEndUpdate> markupQueue;
 	// Vector for history
 	private Vector<FrontEndUpdate> markupHistory;
 	private int currentRevision = 0; // TODO this assumes one file
+	private boolean done = false;
 	
 	/**
 	 * Constructor for MarkupProcessor
@@ -52,7 +53,7 @@ public class MarkupProcessor {
 	/**
 	 * Gets the next item in the markupQueue
 	 */
-	public FrontEndUpdate getTopItem() { //change back to private TODO
+	private FrontEndUpdate getTopItem() { //change back to private TODO
 		FrontEndUpdate feu = null;
 		try {
 			feu = markupQueue.take();
@@ -119,6 +120,13 @@ public class MarkupProcessor {
 			// or highlight)
 			return;
 		}
+	}
+
+	@Override
+	public void run() {
+		while(!done) {
+			
+		}		
 	}
 
 }
