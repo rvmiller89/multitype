@@ -16,15 +16,35 @@ public class MarkupProcessor implements Runnable{
 	private Vector<FrontEndUpdate> markupHistory;
 	private int currentRevision = 0; // TODO this assumes one file
 	private boolean done = false;
+	private FileUserManager fileUserManager;
 	
 	/**
 	 * Constructor for MarkupProcessor
 	 * Should spin off a new thread to control this class
 	 * @param outs A list of the outputprocessor to output data to
 	 */
-	public MarkupProcessor(Vector<OutputProcessor> outs) {
+	public MarkupProcessor(FileUserManager fileUserManager) {
+		this.fileUserManager = fileUserManager;
 		markupQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		markupHistory = new Vector<FrontEndUpdate>();
+	}
+	
+	/**
+	 * Runs the MarkupProcessor
+	 */
+	@Override
+	public void run() {
+		while(!done) {
+			FrontEndUpdate feu = getTopItem();
+			fileUserManager.sendFEU(feu);
+		}		
+	}
+	
+	/**
+	 * Used to kill the MarkupProcessor, see run()
+	 */
+	public void setDone() {
+		done = true;
 	}
 	
 	/**
@@ -121,12 +141,4 @@ public class MarkupProcessor implements Runnable{
 			return;
 		}
 	}
-
-	@Override
-	public void run() {
-		while(!done) {
-			
-		}		
-	}
-
 }
