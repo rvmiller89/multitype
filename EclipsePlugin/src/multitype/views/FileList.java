@@ -2,36 +2,22 @@ package multitype.views;
 
 import java.util.ArrayList;
 
-import multitype.FrontEndUpdate;
-
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.*;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.DrillDownAdapter;
-import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.SWT;
+import org.eclipse.core.runtime.IAdaptable;
+
+import multitype.ActiveEditor;
+import multitype.Editor;
 
 
 /**
@@ -52,7 +38,7 @@ import org.eclipse.ui.part.ViewPart;
  * <p>
  */
 
-public class FileList extends ViewPart {
+public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate {
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -64,7 +50,8 @@ public class FileList extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	private FrontEndUpdate fu;
+	
+	private IWorkbenchWindow window;
 	
 
 	/*
@@ -261,7 +248,17 @@ public class FileList extends ViewPart {
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				
+				// Get a handle to the active editor (if any).
+				if (window == null)
+					showMessage("Window is null...");
+				 IWorkbenchPage page = getSite().getPage();
+				 
+				
+				String title = page.getActivePart().getTitle();
+				
+				
+				showMessage(title);
 			}
 		};
 		action1.setText("Action 1");
@@ -271,7 +268,26 @@ public class FileList extends ViewPart {
 		
 		action2 = new Action() {
 			public void run() {
-				showMessage("Action 2 executed");
+				
+				/*********************************************
+				 * 
+				 * 
+				 * Example of how to access active editor window
+				 * 
+				 * Displays message with selected text form active editor window.
+				 * 
+				 * 
+				 */
+				
+				ITextEditor editor = ActiveEditor.getEditor();
+				
+				IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+				ISelectionProvider selectionProvider = editor.getSelectionProvider();
+			    ITextSelection selection = (ITextSelection) selectionProvider.getSelection();
+			    String text = selection.getText();
+
+				showMessage(text);
+
 			}
 		};
 		action2.setText("Action 2");
@@ -307,4 +323,32 @@ public class FileList extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+
+	@Override
+	public void run(IAction action) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init(IWorkbenchWindow window) {
+		// TODO Auto-generated method stub
+		this.window = window;
+		
+	}
+	
+	 
+		private ITextEditor testEditorPart(IEditorPart editorPart) {
+			if (editorPart instanceof ITextEditor) {
+				return (ITextEditor) editorPart;
+			} else {
+				return null;
+			}
+		}
 }
