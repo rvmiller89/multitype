@@ -1,9 +1,16 @@
 package multitype.editors;
 
+import multitype.FrontEndUpdate;
+
 public class EditorManager {
 
 	public EditorManager() {
-		// TODO Auto-generated constructor stub
+		
+	}
+	
+	public void receive(FrontEndUpdate feu)
+	{
+		
 	}
 
 }
