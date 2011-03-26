@@ -75,10 +75,11 @@ public class FrontEndUpdate implements Serializable {
 		return feu;
 	}
 	
-	public static FrontEndUpdate createNotificationFEU(NotificationType nt, 
-			int fileId, int userId, String content) {
+	public static FrontEndUpdate createNotificationFEU(
+			NotificationType notificationType, int fileId, int userId, 
+			String content) {
 		FrontEndUpdate feu = new FrontEndUpdate(UpdateType.Notification);
-		feu.setNotificationType(nt);
+		feu.setNotificationType(notificationType);
 		feu.setFileId(fileId);
 		feu.setUserId(userId);
 		feu.setContent(content);
