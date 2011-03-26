@@ -129,7 +129,7 @@ public class EditorManager
 			{
 				//key pressed....need to generate FEU
 				
-				System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
+//				System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
 				//Activator.getDefault().userInfo.getUserid();
 				
 				FrontEndUpdate feu;
