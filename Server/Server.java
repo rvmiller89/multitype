@@ -13,12 +13,17 @@ public class Server {
 	Vector<InputProcessor> inputProcs;
 	Vector<OutputProcessor> outputProcs;
 	FileUserManager fum;
+	NotificationProcessor np;
 	
 	//Constructor
 	public Server(int _port) {
 		done = false;
 		port = _port;
 		fum = new FileUserManager();
+		//np = new NotificationProcessor(fum);
+		
+		//new Thread(np).start();
+		
 		try {
 			ssocket = new ServerSocket(port);
 		}
