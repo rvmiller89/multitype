@@ -2,11 +2,14 @@ package multitype.actions;
 
 import multitype.Activator;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -31,15 +34,45 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		MessageDialog.openInformation(
-			window.getShell(),
-			"MultiType",
-			"Logging in...");
+		String username = "";
+		String ip = "";
+		int port = 0;
+		
+		InputDialog dialog = new InputDialog(null,"Lets try!",
+      			"Please enter your name","",null); // new input dialog
+		dialog.open();
+		username = dialog.getValue();
+		
+		dialog = new InputDialog(null,"Lets try!",
+	    			"Please enter the IP","",null); // new input dialog
+		dialog.open();
+		ip = dialog.getValue();
+			
+		dialog = new InputDialog(null,"Lets try!",
+	    			"Please enter the port #","",null); // new input dialog
+		dialog.open();
+		port = Integer.parseInt(dialog.getValue());
+		
+		System.out.println(username + ip+port);
+		
+      /*if( dialog1.open()== IStatus.OK){ // open dialog and wait for return status code.
+      					// If user clicks ok display message box
+          String value = dialog1.getValue(); // fetch the value entered by the user.
+          MessageBox box = new MessageBox(null,SWT.ICON_INFORMATION);
+          box.setMessage("Hey there! You entered : " + value);
+          box.open();
+      }else{
+          MessageBox box = new MessageBox(null,SWT.ICON_INFORMATION);
+          box.setMessage("Bye!");
+          box.open();
+      }*/
+     
+		
 		
 		// Instantiate a FEUListener, which will also set up a BackendConnection
 		String url = "127.0.0.1";
-		int port = 3333;
-		Activator.getDefault().connect(url, port);
+		port = 3333;
+		//Activator.getDefault().connect(url, port);
 		
 	}
 
