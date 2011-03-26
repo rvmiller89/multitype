@@ -61,7 +61,7 @@ public class MarkupProcessor implements Runnable{
 	 * we need to update it until it does
 	 * @param f
 	 */
-	private void updateReceivedFEU(FrontEndUpdate f) {
+	private synchronized void updateReceivedFEU(FrontEndUpdate f) {
 		for(FrontEndUpdate old : markupHistory) {
 			if(f.getRevision() < old.getRevision()) {
 				updateFEUgivenFEU(f, old);
@@ -82,6 +82,11 @@ public class MarkupProcessor implements Runnable{
 		updateMarkupQueue(feu);
 		currentRevision++;
 		feu.setRevision(currentRevision);
+		addToMarkupHistory(feu);
+		return feu;
+	}
+	
+	private synchronized void addToMarkupHistory(FrontEndUpdate feu) {
 		if(markupHistory.size() == 100) {
 			markupHistory.remove(markupHistory.lastElement());
 			markupHistory.add(feu);
@@ -89,7 +94,6 @@ public class MarkupProcessor implements Runnable{
 		else {
 			markupHistory.add(feu);
 		}
-		return feu;
 	}
 	
 	/**
