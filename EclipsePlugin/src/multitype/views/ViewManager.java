@@ -23,7 +23,10 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().showDialogAsync("Connection Error", "Unable to connect.");
 				break;
 			case Connection_Succeed:
-				// first save userid
+
+				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected.");
+				
+				// Save userid and respond with User_Connected
 				Activator.getDefault().userInfo.setUserid(feu.getUserId());
 				
 				BackendClient bc = Activator.getDefault().client;
@@ -32,7 +35,6 @@ public class ViewManager extends ViewPart{
 							-1, feu.getUserId(), null);
 				bc.sendUpdate(connectedFEU);
 				
-				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected.");
 				break;
 			case New_Shared_File:
 				break;
