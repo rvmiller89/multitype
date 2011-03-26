@@ -60,7 +60,8 @@ public class BackendClient {
 					try {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
-						revisionNumber = feu.getRevision();
+						if(feu.getUpdateType() == FrontEndUpdate.UpdateType.Markup)
+							revisionNumber = feu.getRevision();
 						fromServerQueue.add(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -82,10 +83,7 @@ public class BackendClient {
 					try {
 						FrontEndUpdate feu = fromFrontEndQueue.take();
 						feu.setRevision(revisionNumber);
-						if(feu.getUpdateType() == 
-							FrontEndUpdate.UpdateType.Markup) {
-							markupHistory.add(feu);
-						}
+						addToLocalHistory(feu);
 						out.writeObject(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -125,17 +123,24 @@ public class BackendClient {
 		return null;
 	}
 	
+	private synchronized void addToLocalHistory(FrontEndUpdate feu) {
+		if(feu.getUpdateType() == 
+			FrontEndUpdate.UpdateType.Markup) {
+			markupHistory.add(feu);
+		}
+	}
+	
 	/**
 	 * Used 
 	 * @param update
 	 */
-	private void checkLocalHistory(FrontEndUpdate update) {
+	private synchronized void checkLocalHistory(FrontEndUpdate update) {
 		for(FrontEndUpdate top : markupHistory) {
 			if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
 				if(update.getMarkupType() == top.getMarkupType()) {
 					if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 						if(update.getStartLocation() == top.getStartLocation() &&
-								update.getContent().equals(top.getContent()))
+								update.getInsertString().equals(top.getInsertString()))
 							markupHistory.remove(top);
 						else {
 							updateFEUgivenFEU(top, update);
