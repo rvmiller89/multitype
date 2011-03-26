@@ -303,28 +303,24 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				
 				BackendClient bc = Activator.getDefault().client;
 				FrontEndUpdate fu;
-				FEUManager feum = new FEUManager();
-				
+
 				char c = obj.toString().charAt(0);
 				switch (c)
 				{
 					case '0':
 						//showMessage("0");
 						fu = FrontEndUpdate.createInsertFEU(0, 0, 0, "hello");
-						feum.dispatchFEU(fu);
-//						bc.sendUpdate(fu);
+						bc.sendUpdate(fu);
 						break;
 					case '1':
 						//showMessage("1");
 						fu = FrontEndUpdate.createInsertFEU(0, 0, 5, "goodbye");
-						feum.dispatchFEU(fu);
-//						bc.sendUpdate(fu);
+						bc.sendUpdate(fu);
 						break;
 					case '2':
 						//showMessage("2");
 						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 5);
-						feum.dispatchFEU(fu);
-//						bc.sendUpdate(fu);
+						bc.sendUpdate(fu);
 						break;
 					default:
 						showMessage("Not implemented...");
