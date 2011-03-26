@@ -16,7 +16,7 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
-	private BackendClient client = null;
+	public BackendClient client = null;	// also used by ViewDriver....
 	private FEUListener feuListener;
 	
 	/**

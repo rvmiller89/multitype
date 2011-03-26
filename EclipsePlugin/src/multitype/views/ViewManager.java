@@ -1,6 +1,5 @@
 package multitype.views;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
@@ -20,12 +19,10 @@ public class ViewManager extends ViewPart{
 			case New_Connection:
 				break;
 			case Connection_Error:
-				//MessageDialog.openError(null, "Connection Error", "Unable to connect.");
-				//System.out.println("CONNECTION ERROR");
 				Activator.getDefault().showDialogAsync("Connection Error", "Unable to connect.");
 				break;
 			case Connection_Succeed:
-				MessageDialog.openError(null, "Connection Success", "Successfully connected.");
+				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected.");
 				break;
 			case New_Shared_File:
 				break;
@@ -42,10 +39,10 @@ public class ViewManager extends ViewPart{
 			case New_Host:
 				break;
 			case Host_Disconnect:
-				MessageDialog.openError(null, "Connection Error", "Host disconnected.");
+				Activator.getDefault().showDialogAsync("Connection Error", "Host disconnected.");
 				break;
 			case Server_Disconnect:
-				MessageDialog.openError(null, "Connection Error", "Server disconnected.");
+				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
 				break;
 			
 		}

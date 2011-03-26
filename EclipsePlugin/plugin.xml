@@ -22,6 +22,13 @@
             class="multitype.views.UserList"
             id="multitype.views.UserList">
       </view>
+      <view
+            name="View Driver (debug)"
+            icon="icons/sample.gif"
+            category="MultiType"
+            class="multitype.views.ViewDriver"
+            id="multitype.views.ViewDriver">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
