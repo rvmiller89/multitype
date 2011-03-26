@@ -169,9 +169,9 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject test1 = new TreeObject("0: Insert 'hello' fromPosition=0");
-			TreeObject test2 = new TreeObject("1: Insert 'goodbye' fromPosition=5");
-			TreeObject test3 = new TreeObject("2: Delete 'hello' fromPosition=0 to toPosition=5");
+			TreeObject test1 = new TreeObject("0: Insert 'a' fromPosition=0");
+			TreeObject test2 = new TreeObject("1: Insert 'b' fromPosition=1");
+			TreeObject test3 = new TreeObject("2: Delete 'a' fromPosition=0 to null");
 			
 			/*TreeObject to4 = new TreeObject("Leaf 4");
 			TreeParent p2 = new TreeParent("Parent 2");
@@ -303,23 +303,23 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				
 				BackendClient bc = Activator.getDefault().client;
 				FrontEndUpdate fu;
-
+				
 				char c = obj.toString().charAt(0);
 				switch (c)
 				{
 					case '0':
 						//showMessage("0");
-						fu = FrontEndUpdate.createInsertFEU(0, 0, 0, "hello");
+						fu = FrontEndUpdate.createInsertFEU(0, 0, 0, "a");
 						bc.sendUpdate(fu);
 						break;
 					case '1':
 						//showMessage("1");
-						fu = FrontEndUpdate.createInsertFEU(0, 0, 5, "goodbye");
+						fu = FrontEndUpdate.createInsertFEU(0, 0, 1, "b");
 						bc.sendUpdate(fu);
 						break;
 					case '2':
 						//showMessage("2");
-						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 5);
+						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 1);
 						bc.sendUpdate(fu);
 						break;
 					default:
