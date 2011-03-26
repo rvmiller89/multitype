@@ -1,11 +1,13 @@
 package multitype.editors;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -58,22 +60,37 @@ public class EditorManager
 		}
 	}
 	
-	private void delete(int fileId, int userId, int fromPos, int toPos)
+	private void delete(int fileId, int userId, final int fromPos, final int toPos)
 	{
-		try {
-			doc.replace(fromPos, toPos - fromPos, "");
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	//	doc.replace(fromPos, toPos - fromPos, "");  /* FOR BUILD 2... */
+		    	try {
+					doc.replace(fromPos, 1, "");
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+		    }
+		  });
+		System.out.println("Editor Deletion-- fromPos: " + fromPos);
 	}
 	
-	private void insert(int fileId, int userId, int fromPos, String string)
+	private void insert(int fileId, int userId, final int fromPos, final String string)
 	{
-	    try {
-			doc.replace(fromPos, 0, string);
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
+    	Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	//	doc.replace(fromPos, toPos - fromPos, "");  /* FOR BUILD 2... */
+		    	try {
+					doc.replace(fromPos, 0, string);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+		    }
+		  });
+    	
+		System.out.println("Editor Insertion-- fromPos: " + fromPos + " string: " + string);
 	}
 	
 	private void highlight(int fileId, int userId, int fromPos, int toPos)
@@ -95,8 +112,7 @@ public class EditorManager
 
 		@Override
 		public void documentAboutToBeChanged(DocumentEvent event) {
-			// TODO Auto-generated method stub
-			
+
 			
 		}
 
