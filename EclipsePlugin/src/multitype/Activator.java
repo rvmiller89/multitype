@@ -1,6 +1,8 @@
 package multitype;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -52,6 +54,17 @@ public class Activator extends AbstractUIPlugin {
 		client = new BackendClient(url, port);
 		feuListener = new FEUListener(client);
 		feuListener.start();
+	}
+	
+	public void showDialogAsync(final String title, final String message)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		      MessageDialog.openInformation(null, title, message);
+		    }
+		  });
+		
 	}
 
 	/**
