@@ -1,19 +1,16 @@
 package multitype.editors;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import multitype.Activator;
+import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.MarkupType;
+
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import multitype.Activator;
-import multitype.FrontEndUpdate;
-import multitype.FrontEndUpdate.MarkupType;
 
 /**
  * 
@@ -26,12 +23,15 @@ public class EditorManager
 	private ITextEditor editor;
 	private IDocumentProvider dp;
 	private IDocument doc;
+	private boolean processingFEU;
 	
 	public EditorManager()
 	{
 		editor = ActiveEditor.getEditor();
 	    dp = editor.getDocumentProvider();
 	    doc = dp.getDocument(editor.getEditorInput());
+	    
+	    processingFEU = false;
 	    
 	    // Add document listener
 	    DocListener listener = new DocListener();
@@ -40,6 +40,8 @@ public class EditorManager
 	
 	public void receive(FrontEndUpdate feu)
 	{
+		processingFEU = true;
+		
 		MarkupType markupType = feu.getMarkupType();
 		
 		switch(markupType)
@@ -59,6 +61,8 @@ public class EditorManager
 		default:
 			throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + markupType);
 		}
+		
+		processingFEU = false;
 	}
 	
 	private void delete(int fileId, int userId, final int fromPos, final int toPos)
@@ -90,6 +94,7 @@ public class EditorManager
 				}
 		    }
 		  });
+    	
 		System.out.println("Editor Insertion-- fromPos: " + fromPos + " string: " + string);
 	}
 	
@@ -118,8 +123,25 @@ public class EditorManager
 
 		@Override
 		public void documentChanged(DocumentEvent event) {
-			// TODO Auto-generated method stub
-			System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
+			// TODO Auto-generated method stub	
+			
+			if (!processingFEU)
+			{
+				//key pressed....need to generate FEU
+				
+				System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
+				//Activator.getDefault().userInfo.getUserid();
+				
+				if (event.fText.equals(""))
+				{
+					
+				}
+				
+				else
+				{
+					insert(0, Activator.getDefault().userInfo.getUserid(), event.fOffset, event.fText);
+				}
+			}
 
 			//event.
 		}
