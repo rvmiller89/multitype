@@ -12,9 +12,7 @@ import multitype.FrontEndUpdate;
  */
 public class MarkupProcessor implements Runnable{
 
-	// Vector for the current FEUs
 	private BlockingQueue<FrontEndUpdate> markupQueue;
-	// Vector for history
 	private Vector<FrontEndUpdate> markupHistory;
 	private int currentRevision = 0; // TODO this assumes one file
 	private boolean done = false;

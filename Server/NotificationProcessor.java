@@ -6,7 +6,6 @@ import multitype.FrontEndUpdate;
 
 public class NotificationProcessor implements Runnable {
 
-	// Vector for the current FEUs
 	private BlockingQueue<FrontEndUpdate> notificationQueue;
 	private boolean done = false;
 	private FileUserManager fileUserManager;
