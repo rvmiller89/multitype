@@ -97,7 +97,8 @@ public class EditorManager
 		@Override
 		public void documentChanged(DocumentEvent event) {
 			// TODO Auto-generated method stub
-			System.out.println("INSERTED TEXT: " + event.fText);	// TEST
+			System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
+
 			//event.
 		}
 		
