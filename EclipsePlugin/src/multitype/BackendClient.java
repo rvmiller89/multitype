@@ -36,14 +36,13 @@ public class BackendClient {
 			serverSocket = new Socket(url, port);
             out = new ObjectOutputStream(serverSocket.getOutputStream());
             in = new ObjectInputStream(serverSocket.getInputStream());
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 				FrontEndUpdate.NotificationType.Connection_Error, 0, 0, null);
 			f.setNotificationType(
 					FrontEndUpdate.NotificationType.Connection_Error);
+			fromServerQueue.add(f);			
 		} 
 		
 		receiveUpdateThread = new Thread(new Runnable() {
