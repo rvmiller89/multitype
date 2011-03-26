@@ -42,6 +42,14 @@ public class FrontEndUpdate implements Serializable {
 	private MarkupType markupType;
 	private NotificationType notificationType;
 	
+	/**
+	 * Creates an Insert FrontEndUpdate
+	 * @param fileId
+	 * @param userId
+	 * @param startLocation
+	 * @param insertString
+	 * @return an Insert FrontEndUpdate
+	 */
 	public static FrontEndUpdate createInsertFEU(int fileId, int userId, 
 			int startLocation, String insertString) {
 		FrontEndUpdate feu = new FrontEndUpdate(UpdateType.Markup);
@@ -53,6 +61,14 @@ public class FrontEndUpdate implements Serializable {
 		return feu;
 	}
 	
+	/**
+	 * Creates a Delete FrontEndUpdate
+	 * @param fileId
+	 * @param userId
+	 * @param startLocation
+	 * @param endLocation
+	 * @return a Delete FrontEndUpdate
+	 */
 	public static FrontEndUpdate createDeleteFEU(int fileId, int userId, 
 			int startLocation, int endLocation) {
 		FrontEndUpdate feu = new FrontEndUpdate(UpdateType.Markup);
@@ -64,6 +80,14 @@ public class FrontEndUpdate implements Serializable {
 		return feu;
 	}
 	
+	/**
+	 * Creates a Highlight FrontEndUpdate
+	 * @param fileId
+	 * @param userId
+	 * @param startLocation
+	 * @param endLocation
+	 * @return a Highlight FrontEndUpdate
+	 */
 	public static FrontEndUpdate createHighlightFEU(int fileId, int userId, 
 			int startLocation, int endLocation) {
 		FrontEndUpdate feu = new FrontEndUpdate(UpdateType.Markup);
@@ -74,7 +98,32 @@ public class FrontEndUpdate implements Serializable {
 		feu.setEndLocation(endLocation);
 		return feu;
 	}
+
+	/**
+	 * Creates a Cursor FrontEndUpdate
+	 * @param fileId
+	 * @param userId
+	 * @param startLocation
+	 * @return a Cursor FrontEndUpdate
+	 */
+	public static FrontEndUpdate createCursorPosFEU(int fileId, int userId, 
+			int startLocation) {
+		FrontEndUpdate feu = new FrontEndUpdate(UpdateType.Markup);
+		feu.setMarkupType(MarkupType.Cursor);
+		feu.setFileId(fileId);
+		feu.setUserId(userId);
+		feu.setStartLocation(startLocation);
+		return feu;
+	}
 	
+	/**
+	 * Creates a NotificationType FrontEndUpdate
+	 * @param notificationType
+	 * @param fileId use -1 if not used
+	 * @param userId use -1 if not used
+	 * @param content use null if not used
+	 * @return a NotificationType FrontEndUpdate
+	 */
 	public static FrontEndUpdate createNotificationFEU(
 			NotificationType notificationType, int fileId, int userId, 
 			String content) {
@@ -83,16 +132,6 @@ public class FrontEndUpdate implements Serializable {
 		feu.setFileId(fileId);
 		feu.setUserId(userId);
 		feu.setContent(content);
-		return feu;
-	}
-
-	public static FrontEndUpdate createCursorPosFEU(int fileId, int userId, 
-			int startLocation) {
-		FrontEndUpdate feu = new FrontEndUpdate(UpdateType.Markup);
-		feu.setMarkupType(MarkupType.Cursor);
-		feu.setFileId(fileId);
-		feu.setUserId(userId);
-		feu.setStartLocation(startLocation);
 		return feu;
 	}
 	
