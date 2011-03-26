@@ -12,6 +12,12 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.MarkupType;
 
+/**
+ * 
+ * @author Azfar Khandoker
+ *
+ */
+
 public class EditorManager
 {
 	private ITextEditor editor;
