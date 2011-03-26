@@ -39,17 +39,17 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 		int port = 0;
 		
 		InputDialog dialog = new InputDialog(null,"MultiType Login",
-      			"Username:","",null); // new input dialog
+      			"Username:","username",null); // new input dialog
 		dialog.open();
 		username = dialog.getValue();
 		
 		dialog = new InputDialog(null,"MultiType Login",
-	    			"URL or IP Address:","",null); // new input dialog
+	    			"URL or IP Address:","localhost",null); // new input dialog
 		dialog.open();
 		ip = dialog.getValue();
 			
 		dialog = new InputDialog(null,"MultiType Login",
-	    			"Port Number:","",null); // new input dialog
+	    			"Port Number:","1337",null); // new input dialog
 		dialog.open();
 		port = Integer.parseInt(dialog.getValue());
 		
