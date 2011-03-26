@@ -262,14 +262,14 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				showMessage(title);*/
 				
-				ViewManager vm = new ViewManager();
+				/*ViewManager vm = new ViewManager();
 				FrontEndUpdate fu = 
 					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.Connection_Error, 
 							0, 0, null);
 					
 				//	new FrontEndUpdate(FrontEndUpdate.UpdateType.Notification);
 				fu.setNotificationType(FrontEndUpdate.NotificationType.Connection_Error);
-				vm.receive(fu);
+				vm.receive(fu);*/
 			}
 		};
 		action1.setText("Action 1");

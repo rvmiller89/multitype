@@ -1,7 +1,9 @@
 package multitype.editors;
 
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -21,6 +23,10 @@ public class EditorManager
 		editor = ActiveEditor.getEditor();
 	    dp = editor.getDocumentProvider();
 	    doc = dp.getDocument(editor.getEditorInput());
+	    
+	    // Add document listener
+	    DocListener listener = new DocListener();
+	    doc.addDocumentListener(listener);
 	}
 	
 	public void receive(FrontEndUpdate feu)
@@ -76,5 +82,24 @@ public class EditorManager
 	private void cursorPos(int pos, int userId)
 	{
 		// TODO: build 2
+	}
+	
+	private class DocListener implements IDocumentListener
+	{
+
+		@Override
+		public void documentAboutToBeChanged(DocumentEvent event) {
+			// TODO Auto-generated method stub
+			
+			
+		}
+
+		@Override
+		public void documentChanged(DocumentEvent event) {
+			// TODO Auto-generated method stub
+			System.out.println("INSERTED TEXT: " + event.fText);	// TEST
+			//event.
+		}
+		
 	}
 }

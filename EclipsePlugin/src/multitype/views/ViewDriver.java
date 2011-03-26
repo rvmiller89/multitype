@@ -169,9 +169,12 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject test1 = new TreeObject("0: Insert 'a' fromPosition=0");
-			TreeObject test2 = new TreeObject("1: Insert 'b' fromPosition=1");
-			TreeObject test3 = new TreeObject("2: Delete 'a' fromPosition=0 to null");
+			TreeObject test1 = new TreeObject("0_SERVER: Insert 'a' fromPosition=0");
+			TreeObject test2 = new TreeObject("1_SERVER: Insert 'b' fromPosition=1");
+			TreeObject test3 = new TreeObject("2_SERVER: Delete 'a' fromPosition=0 to null");
+			TreeObject test4 = new TreeObject("3_LOCAL: Insert 'a' fromPosition=0");
+			TreeObject test5 = new TreeObject("4_LOCAL: Insert 'b' fromPosition=1");
+			TreeObject test6 = new TreeObject("5_LOCAL: Delete 'a' fromPosition=0 to null");
 			
 			/*TreeObject to4 = new TreeObject("Leaf 4");
 			TreeParent p2 = new TreeParent("Parent 2");
@@ -182,6 +185,9 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 			invisibleRoot.addChild(test1);
 			invisibleRoot.addChild(test2);
 			invisibleRoot.addChild(test3);
+			invisibleRoot.addChild(test4);
+			invisibleRoot.addChild(test5);
+			invisibleRoot.addChild(test6);
 		}
 	}
 	class ViewLabelProvider extends LabelProvider {
@@ -303,6 +309,8 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				
 				BackendClient bc = Activator.getDefault().client;
 				FrontEndUpdate fu;
+				FEUManager man = new FEUManager();		// DEBUG
+				
 				
 				char c = obj.toString().charAt(0);
 				switch (c)
@@ -321,6 +329,24 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 						//showMessage("2");
 						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 1);
 						bc.sendUpdate(fu);
+						break;
+					case '3':
+						//showMessage("0");
+						fu = FrontEndUpdate.createInsertFEU(0, 0, 0, "a");
+						man.dispatchFEU(fu);
+						//bc.sendUpdate(fu);
+						break;
+					case '4':
+						//showMessage("1");
+						fu = FrontEndUpdate.createInsertFEU(0, 0, 1, "b");
+						man.dispatchFEU(fu);
+						//bc.sendUpdate(fu);
+						break;
+					case '5':
+						//showMessage("2");
+						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 1);
+						man.dispatchFEU(fu);
+						//bc.sendUpdate(fu);
 						break;
 					default:
 						showMessage("Not implemented...");
