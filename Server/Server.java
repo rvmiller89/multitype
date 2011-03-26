@@ -55,6 +55,8 @@ public class Server {
 				
 				fum.addClient(client);
 				
+				System.out.println("Client Added");
+				
 				
 				//TODO Detect disconnect and kill the appropriate procs
 				

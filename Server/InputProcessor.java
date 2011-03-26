@@ -64,6 +64,9 @@ public class InputProcessor implements Runnable {
 			if(in_feu == null) {
 				continue;
 			}
+			
+			System.out.println("Received: " + in_feu.toString());
+			
 			switch(in_feu.getUpdateType()) {
 			case Markup:
 				//TODO
