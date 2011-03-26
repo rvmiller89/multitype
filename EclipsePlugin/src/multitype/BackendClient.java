@@ -42,7 +42,8 @@ public class BackendClient {
 				FrontEndUpdate.NotificationType.Connection_Error, 0, 0, null);
 			f.setNotificationType(
 					FrontEndUpdate.NotificationType.Connection_Error);
-			fromServerQueue.add(f);			
+			fromServerQueue.add(f);
+			return;
 		} 
 		
 		receiveUpdateThread = new Thread(new Runnable() {
