@@ -11,7 +11,7 @@ public class Server {
 	private ServerSocket ssocket;
 	private boolean done;
 	Vector<InputProcessor> inputProcs;
-	Vector<OutputProcessor> outputProcs;
+	//Vector<OutputProcessor> outputProcs;
 	FileUserManager fum;
 	NotificationProcessor np;
 	
@@ -21,6 +21,7 @@ public class Server {
 		port = _port;
 		fum = new FileUserManager();
 		np = new NotificationProcessor(fum);
+		inputProcs = new Vector<InputProcessor>();
 		
 		new Thread(np).start();
 		
