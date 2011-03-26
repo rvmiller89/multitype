@@ -7,10 +7,24 @@ public class FEUManager {
 	
 	private EditorManager editorManager;
 	private ViewManager viewManager;
+	
+	private static FEUManager instance;
 
-	public FEUManager() {
+	private FEUManager() {
 		editorManager = new EditorManager();
 		viewManager = new ViewManager();
+	}
+	
+	public static FEUManager getInstance()
+	{
+		if (instance != null)
+		{
+			return instance;
+		}
+		
+		instance = new FEUManager();
+		
+		return instance;
 	}
 	
 	public void dispatchFEU(FrontEndUpdate feu)

@@ -8,7 +8,7 @@ public class FEUListener {
 
 	public FEUListener(BackendClient bc) {
 		this.bc = bc;
-		manager = new FEUManager();
+		manager = FEUManager.getInstance();
 	}
 	
 	public void start()

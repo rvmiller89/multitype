@@ -71,6 +71,7 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	private FEUManager man;
 	
 	private IWorkbenchWindow window;
 	
@@ -209,6 +210,7 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 	 * The constructor.
 	 */
 	public ViewDriver() {
+		man = FEUManager.getInstance();
 	}
 
 	/**
@@ -309,8 +311,6 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				
 				BackendClient bc = Activator.getDefault().client;
 				FrontEndUpdate fu;
-				FEUManager man = new FEUManager();		// DEBUG
-				
 				
 				char c = obj.toString().charAt(0);
 				switch (c)
