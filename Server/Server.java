@@ -44,8 +44,9 @@ public class Server {
 				
 				//spawn an input processor for this client
 				InputProcessor thisInputProc = new InputProcessor(client, fum, np);
-				new Thread(thisInputProc).start();
 				inputProcs.add(thisInputProc);
+				new Thread(thisInputProc).start();
+				
 				
 				//spawn an output processor for this client
 				/*
