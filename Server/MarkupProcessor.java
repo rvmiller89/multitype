@@ -84,7 +84,7 @@ public class MarkupProcessor implements Runnable{
 		}
 		
 		currentRevision++;
-		//feu.setRevision(currentRevision);
+		feu.setRevision(currentRevision);
 		updateMarkupQueue(feu);	
 		addToMarkupHistory(feu);
 		return feu;
