@@ -51,6 +51,8 @@ public class InputProcessor implements Runnable {
 		catch (IOException ioe) {
 			System.err.println("buildFEU(): " + ioe.toString());
 			setDone(); //Kills this instance
+			Server.dprint("This InputProcessor no longer as the will to live." +
+					" Dropping client.");
 		}
 		catch (ClassNotFoundException cnfe) {
 			System.err.println("buildFEU(): " + cnfe.toString());
