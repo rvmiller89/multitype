@@ -53,10 +53,18 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void connect(String username, String url, int port)
 	{
+		// Initialize username in UserInfo
 		userInfo.setUsername(username);
+		
+		// Construct a BackendClient
 		client = new BackendClient(url, port);
+		
+		// Construct a FEUListener and start thread
 		feuListener = new FEUListener(client);
 		feuListener.start();
+		
+		// Start BackendClient
+		client.connect();
 	}
 	
 	public void showDialogAsync(final String title, final String message)

@@ -19,7 +19,8 @@ public class FEUListener {
 				while(!done) {
 					// Sends feu to FEUManager to dispatch 
 					// to EditorManager or ViewManager
-					manager.dispatchFEU(bc.getUpdate());
+					FrontEndUpdate fu = bc.getUpdate();
+					manager.dispatchFEU(fu);
 					
 				}
 			}			
