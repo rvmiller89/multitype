@@ -63,6 +63,9 @@ public class MarkupProcessor implements Runnable{
 	 */
 	private synchronized void updateReceivedFEU(FrontEndUpdate f) {
 		for(FrontEndUpdate old : markupHistory) {
+			/*TODO This will need to account for 
+				revision number wrapping for build 2 */
+			
 			if(f.getRevision() < old.getRevision()) {
 				updateFEUgivenFEU(f, old);
 			}
@@ -79,9 +82,10 @@ public class MarkupProcessor implements Runnable{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		updateMarkupQueue(feu);
+		
 		currentRevision++;
 		//feu.setRevision(currentRevision);
+		updateMarkupQueue(feu);	
 		addToMarkupHistory(feu);
 		return feu;
 	}
@@ -115,6 +119,10 @@ public class MarkupProcessor implements Runnable{
 			FrontEndUpdate given) {
 		if(toUpdate == given) //don't update itself
 			return;
+		
+		//set revision number to given's revision number
+		toUpdate.setRevision(given.getRevision());
+		
 		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 			int insertAt = given.getStartLocation();
 			int sizeOfInsert = given.getInsertString().length();
