@@ -2,6 +2,7 @@ package multitype;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -39,7 +40,11 @@ public class BackendClient {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+				FrontEndUpdate.NotificationType.Connection_Error, 0, 0, null);
+			f.setNotificationType(
+					FrontEndUpdate.NotificationType.Connection_Error);
+		} 
 		
 		receiveUpdateThread = new Thread(new Runnable() {
 			@Override
@@ -85,7 +90,7 @@ public class BackendClient {
 	 */
 	public void sendUpdate(FrontEndUpdate feu) {
 		fromFrontEndQueue.add(feu);
-		System.out.println(feu.getInsert());
+		System.out.println(feu.getInsertString());
 	}
 	
 	/**
