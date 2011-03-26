@@ -87,6 +87,9 @@ public class Server {
 				System.err.println("First argument must be the port number.");
 			}
 		}
+		else {
+			System.err.println("Needs a port number as the first and only argument.");
+		}
 
 		
 	}
