@@ -69,18 +69,20 @@ public class Server {
 	public static void main(String[] args) {
 		//parse input
 		
-		try {
-			int port;
-			Server serv;
-			port = Integer.parseInt(args[0]);
-			serv = new Server(port);
-			serv.serve();
-			
+		if(args.length == 1) {
+			try {
+				int port;
+				Server serv;
+				port = Integer.parseInt(args[0]);
+				serv = new Server(port);
+				System.out.println("Server Running.");
+				serv.serve();
+				
+			}
+			catch (NumberFormatException nfe) {
+				System.err.println("First argument must be the port number.");
+			}
 		}
-		catch (NumberFormatException nfe) {
-			System.err.println("First argument must be the port number.");
-		}
-		
 
 		
 	}
