@@ -59,7 +59,7 @@ public class OutputProcessor implements Runnable {
 					continue;
 				}
 				try {
-					out.writeObject(outQueue.take());
+					out.writeObject(toWrite);
 				}
 				catch (IOException ioe) {
 					System.err.println("OutputProcessor: writeObject failed: "

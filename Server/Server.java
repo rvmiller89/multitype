@@ -57,7 +57,7 @@ public class Server {
 				
 				fum.addClient(client);
 				
-				System.out.println("Client Added");
+				dprint("Client Added");
 				
 				
 				//TODO Detect disconnect and kill the appropriate procs
@@ -79,7 +79,7 @@ public class Server {
 				Server serv;
 				port = Integer.parseInt(args[0]);
 				serv = new Server(port);
-				System.out.println("Server Running.");
+				dprint("Server Running.");
 				serv.serve();
 				
 			}
@@ -91,8 +91,7 @@ public class Server {
 		
 	}
 	
-	//Host a socket connection
-	
-	//Run Input Manager (in a thread)
-
+	public static void dprint(String s) {
+		System.err.println(s);
+	}
 }
