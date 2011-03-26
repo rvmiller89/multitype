@@ -1,6 +1,7 @@
 package multitype.editors;
 
 import multitype.Activator;
+import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.MarkupType;
 
@@ -123,8 +124,7 @@ public class EditorManager
 
 		@Override
 		public void documentChanged(DocumentEvent event) {
-			// TODO Auto-generated method stub	
-			
+			// TODO Auto-generated method stub			
 			if (!processingFEU)
 			{
 				//key pressed....need to generate FEU
@@ -132,15 +132,27 @@ public class EditorManager
 				System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
 				//Activator.getDefault().userInfo.getUserid();
 				
+				FrontEndUpdate feu;
+				
 				if (event.fText.equals(""))
 				{
-					
+					feu = FrontEndUpdate.createDeleteFEU(
+							0, 
+							Activator.getDefault().userInfo.getUserid(), 
+							event.fOffset, 
+							event.fLength);
 				}
 				
 				else
 				{
-					insert(0, Activator.getDefault().userInfo.getUserid(), event.fOffset, event.fText);
+					feu = FrontEndUpdate.createInsertFEU(
+							0, 
+							Activator.getDefault().userInfo.getUserid(),
+							event.fOffset,
+							event.fText);
 				}
+				
+				FEUSender.send(feu);
 			}
 
 			//event.
