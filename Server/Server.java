@@ -53,7 +53,7 @@ public class Server {
 				outputProcs.add(thisOutputProc);
 				new Thread(thisOutputProc).start();*/
 				
-				//fum.addClient();
+				fum.addClient(client);
 				
 				
 				//TODO Detect disconnect and kill the appropriate procs
