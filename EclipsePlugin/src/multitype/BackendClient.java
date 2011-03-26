@@ -175,23 +175,40 @@ public class BackendClient {
 		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 			int insertAt = given.getStartLocation();
 			int sizeOfInsert = given.getInsertString().length();
-			if(toUpdate.getStartLocation() >= insertAt) {
-				toUpdate.setStartLocation(toUpdate.getStartLocation()
-						+sizeOfInsert);
-				toUpdate.setEndLocation(toUpdate.getEndLocation()
-						+sizeOfInsert);
-				toUpdate.setRevision(toUpdate.getRevision()+1);
+			
+			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
+			}
+			else if (toUpdate.getMarkupType() == 
+				FrontEndUpdate.MarkupType.Delete){
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+					toUpdate.setEndLocation(toUpdate.getEndLocation()
+							+sizeOfInsert);
+				}				
 			}
 		}
 		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
 			int insertAt = given.getStartLocation();
 			int sizeOfInsert = given.getEndLocation() - insertAt + 1;
-			if(toUpdate.getStartLocation() >= insertAt) {
-				toUpdate.setStartLocation(toUpdate.getStartLocation()
-						-sizeOfInsert);
-				toUpdate.setEndLocation(toUpdate.getEndLocation()
-						-sizeOfInsert);
-				toUpdate.setRevision(toUpdate.getRevision()+1);
+			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
+			}
+			else if (toUpdate.getMarkupType() == 
+				FrontEndUpdate.MarkupType.Delete){
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+					toUpdate.setEndLocation(toUpdate.getEndLocation()
+							-sizeOfInsert);
+				}				
 			}
 		}
 		else { 
