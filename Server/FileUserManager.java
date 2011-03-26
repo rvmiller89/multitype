@@ -50,6 +50,8 @@ public class FileUserManager {
 		//TODO
 		//associate username with userid
 		usermap.put(uid,username);
+		
+		//TODO Will need to send this as a notification to the other users
 	}
 	
 	/**
