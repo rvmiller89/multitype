@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
 import multitype.Activator;
+import multitype.BackendClient;
 import multitype.FrontEndUpdate;
 
 public class ViewManager extends ViewPart{
@@ -22,6 +23,18 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().showDialogAsync("Connection Error", "Unable to connect.");
 				break;
 			case Connection_Succeed:
+				// first save userid
+				Activator.getDefault().userInfo.setUserid(feu.getUserId());
+
+				// TODO: TEMPORARY DEBUG:  SETTING USERNAME TO "BOB"
+				Activator.getDefault().userInfo.setUsername("Bob");
+				
+				BackendClient bc = Activator.getDefault().client;
+				FrontEndUpdate connectedFEU = 
+					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.User_Connected, 
+							-1, feu.getUserId(), null);
+				bc.sendUpdate(connectedFEU);
+				
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected.");
 				break;
 			case New_Shared_File:
@@ -55,7 +68,6 @@ public class ViewManager extends ViewPart{
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
 		
 	}
 
