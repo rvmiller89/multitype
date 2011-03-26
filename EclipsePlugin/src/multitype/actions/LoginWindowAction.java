@@ -1,5 +1,7 @@
 package multitype.actions;
 
+import multitype.Activator;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -32,7 +34,13 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 		MessageDialog.openInformation(
 			window.getShell(),
 			"MultiType",
-			"Login Window");
+			"Logging in...");
+		
+		// Instantiate a FEUListener, which will also set up a BackendConnection
+		String url = "127.0.0.1";
+		int port = 3333;
+		Activator.getDefault().connect(url, port);
+		
 	}
 
 	/**

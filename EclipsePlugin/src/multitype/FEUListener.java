@@ -2,16 +2,35 @@ package multitype;
 
 public class FEUListener {
 
-	public FEUListener() {
-		// TODO Auto-generated constructor stub
+	private boolean done = false;
+	private BackendClient bc;
+	private FEUManager manager;
+
+	public FEUListener(BackendClient bc) {
+		this.bc = bc;
+		manager = new FEUManager();
 	}
-
+	
+	public void start()
+	{
+		Thread receiveUpdateThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(!done) {
+					bc.getUpdate();
+					
+				}
+			}			
+		});
+		receiveUpdateThread.start();
+	}
+	
 	/**
-	 * @param args
+	 * needs to be called in between sessions. We spun off thread, we need to 
+	 * kill them
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public void finish() {
+		done = true;
 	}
 
 }

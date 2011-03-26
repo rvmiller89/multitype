@@ -14,6 +14,8 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	private BackendClient client = null;
+	private FEUListener feuListener;
 	
 	/**
 	 * The constructor
@@ -28,6 +30,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		
 	}
 
 	/*
@@ -37,6 +40,18 @@ public class Activator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
+	}
+	
+	/**
+	 * Instantiates a FEUListener and BackendConnection
+	 * @param url
+	 * @param port
+	 */
+	public void connect(String url, int port)
+	{
+		client = new BackendClient(url, port);
+		feuListener = new FEUListener(client);
+		feuListener.start();
 	}
 
 	/**
