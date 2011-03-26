@@ -101,5 +101,14 @@ public class FileUserManager {
 		//generate next userid
 		nextUID++;
 	}
+	
+	public void addFEUToMarkup(FrontEndUpdate feu) {
+		//get the FEU's fileID
+		int fileid = feu.getFileId();
+		if(fileid != -1) {
+			//add this FEU to the file's markup processor
+			markupprocs.get(fileid).addFEU(feu); 
+		}
+	}
 
 }

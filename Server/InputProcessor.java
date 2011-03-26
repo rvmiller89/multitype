@@ -16,15 +16,17 @@ public class InputProcessor implements Runnable {
 	boolean done;
 	FileUserManager fum;
 	ObjectInputStream in;
+	NotificationProcessor np;
 	
 	/**
 	 * Constructor
 	 * @param s The socket that this will be communicating with
 	 */
-	public InputProcessor(Socket s, FileUserManager f) {
+	public InputProcessor(Socket s, FileUserManager f, NotificationProcessor n) {
 		sclient = s;
 		done = false;
 		fum = f;
+		np = n;
 		
 		try {
 			in = new ObjectInputStream(sclient.getInputStream());
@@ -66,10 +68,12 @@ public class InputProcessor implements Runnable {
 			case Markup:
 				//TODO
 				//call MarkupProcessor
+				fum.addFEUToMarkup(in_feu);
 				break;
 			case Notification:
 				//TODO
 				//call NotificationProcessor
+				np.addFEU(in_feu);
 				break;
 			default:
 				System.err.println("InputProcessor: Unknown FEU type");

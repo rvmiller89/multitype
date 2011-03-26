@@ -42,7 +42,7 @@ public class Server {
 				Socket client = ssocket.accept();
 				
 				//spawn an input processor for this client
-				InputProcessor thisInputProc = new InputProcessor(client, fum);
+				InputProcessor thisInputProc = new InputProcessor(client, fum, np);
 				inputProcs.add(thisInputProc);
 				new Thread(thisInputProc).start();
 				
