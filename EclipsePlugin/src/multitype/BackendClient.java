@@ -1,11 +1,11 @@
 package multitype;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * The BackendClient is used as means of communication with the 
@@ -21,7 +21,7 @@ public class BackendClient {
 	private Thread sendUpdateThread;
 	private BlockingQueue<FrontEndUpdate> fromServerQueue;
 	private BlockingQueue<FrontEndUpdate> fromFrontEndQueue;
-	private Vector<FrontEndUpdate> markupHistory;
+	private ConcurrentLinkedQueue<FrontEndUpdate> markupHistory;
 	private boolean done = false;
 	private int revisionNumber = 0;
 	private String url;
@@ -37,7 +37,7 @@ public class BackendClient {
 		this.port = port;
 		fromServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		fromFrontEndQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
-		markupHistory = new Vector<FrontEndUpdate>();		
+		markupHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();		
 	}
 	
 	public void connect() {
@@ -123,7 +123,7 @@ public class BackendClient {
 		return null;
 	}
 	
-	private synchronized void addToLocalHistory(FrontEndUpdate feu) {
+	private void addToLocalHistory(FrontEndUpdate feu) {
 		if(feu.getUpdateType() == 
 			FrontEndUpdate.UpdateType.Markup) {
 			markupHistory.add(feu);
@@ -134,7 +134,7 @@ public class BackendClient {
 	 * Used 
 	 * @param update
 	 */
-	private synchronized void checkLocalHistory(FrontEndUpdate update) {
+	private void checkLocalHistory(FrontEndUpdate update) {
 		for(FrontEndUpdate top : markupHistory) {
 			if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
 				if(update.getMarkupType() == top.getMarkupType()) {
