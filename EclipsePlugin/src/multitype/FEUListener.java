@@ -17,7 +17,9 @@ public class FEUListener {
 			@Override
 			public void run() {
 				while(!done) {
-					bc.getUpdate();
+					// Sends feu to FEUManager to dispatch 
+					// to EditorManager or ViewManager
+					manager.dispatchFEU(bc.getUpdate());
 					
 				}
 			}			

@@ -19,6 +19,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
 
 import multitype.editors.ActiveEditor;
+import multitype.FrontEndUpdate;
 
 
 /**
@@ -45,7 +46,6 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "multitype.views.FileList";
-
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action action1;
@@ -250,6 +250,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		action1 = new Action() {
 			public void run() {
 				
+				/*
 				// Get a handle to the active editor (if any).
 				if (window == null)
 					showMessage("Window is null...");
@@ -259,7 +260,16 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				String title = page.getActivePart().getTitle();
 				
 				
-				showMessage(title);
+				showMessage(title);*/
+				
+				ViewManager vm = new ViewManager();
+				FrontEndUpdate fu = 
+					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.Connection_Error, 
+							0, 0, null);
+					
+				//	new FrontEndUpdate(FrontEndUpdate.UpdateType.Notification);
+				fu.setNotificationType(FrontEndUpdate.NotificationType.Connection_Error);
+				vm.receive(fu);
 			}
 		};
 		action1.setText("Action 1");
