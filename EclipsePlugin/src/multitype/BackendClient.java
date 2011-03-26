@@ -60,12 +60,14 @@ public class BackendClient {
 					try {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
+						revisionNumber = feu.getRevision();
 						fromServerQueue.add(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
-							FrontEndUpdate.NotificationType.Server_Disconnect, -1, -1, null);
+							FrontEndUpdate.NotificationType.Server_Disconnect, 
+							-1, -1, null);
 						fromServerQueue.add(f);
 					}			
 				}
@@ -79,7 +81,7 @@ public class BackendClient {
 				while(!done) {
 					try {
 						FrontEndUpdate feu = fromFrontEndQueue.take();
-						feu.setRevision(revisionNumber++);
+						feu.setRevision(revisionNumber);
 						if(feu.getUpdateType() == 
 							FrontEndUpdate.UpdateType.Markup) {
 							markupHistory.add(feu);
@@ -89,7 +91,8 @@ public class BackendClient {
 						e.printStackTrace();
 						done = true;
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
-							FrontEndUpdate.NotificationType.Server_Disconnect, -1, -1, null);
+							FrontEndUpdate.NotificationType.Server_Disconnect, 
+							-1, -1, null);
 						fromServerQueue.add(f);
 					}
 				}
@@ -114,7 +117,7 @@ public class BackendClient {
 	public FrontEndUpdate getUpdate() {
 		try {
 			FrontEndUpdate update =  fromServerQueue.take();
-			//checkLocalHistory(update);
+			checkLocalHistory(update);
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -127,31 +130,35 @@ public class BackendClient {
 	 * @param update
 	 */
 	private void checkLocalHistory(FrontEndUpdate update) {
-		FrontEndUpdate top = markupHistory.elementAt(0);
-		if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
-			if(update.getMarkupType() == top.getMarkupType()) {
-				if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-					if(update.getStartLocation() == top.getStartLocation() &&
-							update.getContent().equals(top.getContent()))
-						markupHistory.remove(0);
-					else {
-						updateFEUgivenFEU(top, update);
-						top.setRevision(update.getRevision());
+		for(FrontEndUpdate top : markupHistory) {
+			if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
+				if(update.getMarkupType() == top.getMarkupType()) {
+					if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+						if(update.getStartLocation() == top.getStartLocation() &&
+								update.getContent().equals(top.getContent()))
+							markupHistory.remove(top);
+						else {
+							updateFEUgivenFEU(top, update);
+							updateFEUgivenFEU(update, top);
+							top.setRevision(update.getRevision());
+						}
+					}
+					else { // its a delete
+						if(update.getStartLocation() == top.getStartLocation() &&
+								update.getEndLocation() == top.getEndLocation())
+							markupHistory.remove(top);
+						else {
+							updateFEUgivenFEU(top, update);
+							updateFEUgivenFEU(update, top);
+							top.setRevision(update.getRevision());
+						}
 					}
 				}
-				else { // its a delete
-					if(update.getStartLocation() == top.getStartLocation() &&
-							update.getEndLocation() == top.getEndLocation())
-						markupHistory.remove(0);
-					else {
-						updateFEUgivenFEU(top, update);
-						top.setRevision(update.getRevision());
-					}
+				else {
+					updateFEUgivenFEU(top, update);
+					updateFEUgivenFEU(update, top);
+					top.setRevision(update.getRevision());
 				}
-			}
-			else {
-				updateFEUgivenFEU(top, update);
-				top.setRevision(update.getRevision());
 			}
 		}
 	}
