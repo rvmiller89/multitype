@@ -2,26 +2,44 @@ package multitype.views;
 
 import java.util.ArrayList;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.*;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
-import org.eclipse.core.runtime.IAdaptable;
-
-import multitype.editors.ActiveEditor;
 import multitype.Activator;
-import multitype.FrontEndUpdate;
 import multitype.BackendClient;
+import multitype.FEUManager;
+import multitype.FrontEndUpdate;
+
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 
 /**
@@ -285,6 +303,7 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				
 				BackendClient bc = Activator.getDefault().client;
 				FrontEndUpdate fu;
+				FEUManager feum = new FEUManager();
 				
 				char c = obj.toString().charAt(0);
 				switch (c)
@@ -292,17 +311,20 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 					case '0':
 						//showMessage("0");
 						fu = FrontEndUpdate.createInsertFEU(0, 0, 0, "hello");
-						bc.sendUpdate(fu);
+						feum.dispatchFEU(fu);
+//						bc.sendUpdate(fu);
 						break;
 					case '1':
 						//showMessage("1");
 						fu = FrontEndUpdate.createInsertFEU(0, 0, 5, "goodbye");
-						bc.sendUpdate(fu);
+						feum.dispatchFEU(fu);
+//						bc.sendUpdate(fu);
 						break;
 					case '2':
 						//showMessage("2");
 						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 5);
-						bc.sendUpdate(fu);
+						feum.dispatchFEU(fu);
+//						bc.sendUpdate(fu);
 						break;
 					default:
 						showMessage("Not implemented...");
