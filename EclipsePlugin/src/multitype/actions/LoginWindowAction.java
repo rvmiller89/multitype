@@ -70,9 +70,7 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 		
 		
 		// Instantiate a FEUListener, which will also set up a BackendConnection
-		String url = "127.0.0.1";
-		port = 3333;
-		//Activator.getDefault().connect(url, port);
+		Activator.getDefault().connect(username, ip, port);
 		
 	}
 

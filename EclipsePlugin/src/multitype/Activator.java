@@ -51,8 +51,9 @@ public class Activator extends AbstractUIPlugin {
 	 * @param url
 	 * @param port
 	 */
-	public void connect(String url, int port)
+	public void connect(String username, String url, int port)
 	{
+		userInfo.setUsername(username);
 		client = new BackendClient(url, port);
 		feuListener = new FEUListener(client);
 		feuListener.start();

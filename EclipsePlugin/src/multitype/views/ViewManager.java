@@ -25,9 +25,6 @@ public class ViewManager extends ViewPart{
 			case Connection_Succeed:
 				// first save userid
 				Activator.getDefault().userInfo.setUserid(feu.getUserId());
-
-				// TODO: TEMPORARY DEBUG:  SETTING USERNAME TO "BOB"
-				Activator.getDefault().userInfo.setUsername("Bob");
 				
 				BackendClient bc = Activator.getDefault().client;
 				FrontEndUpdate connectedFEU = 
