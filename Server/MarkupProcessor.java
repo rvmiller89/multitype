@@ -22,8 +22,7 @@ public class MarkupProcessor implements Runnable{
 	
 	/**
 	 * Constructor for MarkupProcessor
-	 * Should spin off a new thread to control this class
-	 * @param outs A list of the outputprocessor to output data to
+	 * @param fileUserManager
 	 */
 	public MarkupProcessor(FileUserManager fileUserManager) {
 		this.fileUserManager = fileUserManager;
@@ -75,7 +74,7 @@ public class MarkupProcessor implements Runnable{
 	/**
 	 * Gets the next item in the markupQueue
 	 */
-	private FrontEndUpdate getTopItem() { //change back to private TODO
+	private FrontEndUpdate getTopItem() {
 		FrontEndUpdate feu = null;
 		try {
 			feu = markupQueue.take();
