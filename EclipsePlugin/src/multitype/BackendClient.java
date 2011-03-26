@@ -39,7 +39,7 @@ public class BackendClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
-				FrontEndUpdate.NotificationType.Connection_Error, 0, 0, null);
+				FrontEndUpdate.NotificationType.Connection_Error, -1, -1, null);
 			f.setNotificationType(
 					FrontEndUpdate.NotificationType.Connection_Error);
 			fromServerQueue.add(f);
