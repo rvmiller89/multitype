@@ -8,6 +8,8 @@ import java.util.concurrent.*;
 import java.io.*;
 import java.net.*;
 
+import multitype.FrontEndUpdate;
+
 public class OutputProcessor implements Runnable {
 
 	//Queue to hold the updates waiting to be sent

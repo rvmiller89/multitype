@@ -1,6 +1,8 @@
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import multitype.FrontEndUpdate;
 /**
  * The MarkupProcessor has a list of FEUs received from the server and will
  * on it's own get the top item, update the rest of the vector with that item
@@ -115,7 +117,7 @@ public class MarkupProcessor implements Runnable{
 			return;
 		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 			int insertAt = given.getStartLocation();
-			int sizeOfInsert = given.getInsert().length();
+			int sizeOfInsert = given.getInsertString().length();
 			if(toUpdate.getStartLocation() >= insertAt) {
 				toUpdate.setStartLocation(toUpdate.getStartLocation()
 						+sizeOfInsert);

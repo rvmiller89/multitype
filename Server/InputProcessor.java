@@ -7,21 +7,24 @@
 import java.net.*;
 import java.io.*;
 
+import multitype.FrontEndUpdate;
+
 public class InputProcessor implements Runnable {
 	Socket sclient;
 	
 	//flag to terminate thread
 	boolean done;
-	
+	FileUserManager fum;
 	ObjectInputStream in;
 	
 	/**
 	 * Constructor
 	 * @param s The socket that this will be communicating with
 	 */
-	public InputProcessor(Socket s) {
+	public InputProcessor(Socket s, FileUserManager f) {
 		sclient = s;
 		done = false;
+		fum = f;
 		
 		try {
 			in = new ObjectInputStream(sclient.getInputStream());
@@ -61,9 +64,11 @@ public class InputProcessor implements Runnable {
 			}
 			switch(in_feu.getUpdateType()) {
 			case Markup:
+				//TODO
 				//call MarkupProcessor
 				break;
 			case Notification:
+				//TODO
 				//call NotificationProcessor
 				break;
 			default:

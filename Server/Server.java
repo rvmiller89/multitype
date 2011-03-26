@@ -12,11 +12,13 @@ public class Server {
 	private boolean done;
 	Vector<InputProcessor> inputProcs;
 	Vector<OutputProcessor> outputProcs;
+	FileUserManager fum;
 	
 	//Constructor
 	public Server(int _port) {
 		done = false;
 		port = _port;
+		fum = new FileUserManager();
 		try {
 			ssocket = new ServerSocket(port);
 		}
@@ -33,14 +35,19 @@ public class Server {
 				Socket client = ssocket.accept();
 				
 				//spawn an input processor for this client
-				InputProcessor thisInputProc = new InputProcessor(client);
+				InputProcessor thisInputProc = new InputProcessor(client, fum);
 				inputProcs.add(thisInputProc);
 				new Thread(thisInputProc).start();
 				
 				//spawn an output processor for this client
-				OutputProcessor thisOutputProc = new OutputProcessor(client);
+				/*
+				 * This has been moved to inside FileUserManager 
+			 	OutputProcessor thisOutputProc = new OutputProcessor(client);
 				outputProcs.add(thisOutputProc);
-				new Thread(thisOutputProc).start();
+				new Thread(thisOutputProc).start();*/
+				
+				//fum.addClient();
+				
 				
 				//TODO Detect disconnect and kill the appropriate procs
 				
