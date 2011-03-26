@@ -26,7 +26,7 @@ public class NotificationProcessor implements Runnable {
 	public void run() {
 		while(!done) {
 			FrontEndUpdate feu = getTopItem();
-			fileUserManager.sendFEU(feu);
+			processFEU(feu);
 		}		
 	}
 	
@@ -56,5 +56,33 @@ public class NotificationProcessor implements Runnable {
 			e.printStackTrace();
 		}
 		return feu;
+	}
+
+	private void processFEU(FrontEndUpdate feu) {
+		switch(feu.getNotificationType()) {
+		case New_Connection:
+			break;
+		case New_Shared_File:
+			break;
+		case Close_Shared_File:
+			break;
+		case Get_Shared_File:
+			break;
+		case User_Connected: 
+			int uid = feu.getUserId();
+			String username = feu.getContent();
+			fileUserManager.addUser(uid, username);
+			break;
+		case User_Disconnected:
+			break;
+		case Request_Host:
+			break;
+		case New_Host:
+			break;
+		case Host_Disconnect:
+			break;
+		case Server_Disconnect:
+			break;
+		}
 	}
 }

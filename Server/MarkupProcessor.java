@@ -79,7 +79,6 @@ public class MarkupProcessor implements Runnable{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println("mp here");
 		updateMarkupQueue(feu);
 		currentRevision++;
 		feu.setRevision(currentRevision);
