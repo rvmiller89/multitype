@@ -2,9 +2,8 @@ package multitype;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ConnectException;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -22,7 +21,11 @@ public class BackendClient {
 	private Thread sendUpdateThread;
 	private BlockingQueue<FrontEndUpdate> fromServerQueue;
 	private BlockingQueue<FrontEndUpdate> fromFrontEndQueue;
+	private Vector<FrontEndUpdate> markupHistory;
 	private boolean done = false;
+	private int revisionNumber = 0;
+	private String url;
+	private int port;
 	
 	/**
 	 * Constructor for BackendClient
@@ -30,8 +33,14 @@ public class BackendClient {
 	 * @param port port to be used to connect to
 	 */
 	public BackendClient(String url, int port) {
+		this.url = url;
+		this.port = port;
 		fromServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		fromFrontEndQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
+		markupHistory = new Vector<FrontEndUpdate>();		
+	}
+	
+	public void connect() {
 		try {
 			serverSocket = new Socket(url, port);
             out = new ObjectOutputStream(serverSocket.getOutputStream());
@@ -40,8 +49,6 @@ public class BackendClient {
 			e.printStackTrace();
 			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 				FrontEndUpdate.NotificationType.Connection_Error, -1, -1, null);
-			f.setNotificationType(
-					FrontEndUpdate.NotificationType.Connection_Error);
 			fromServerQueue.add(f);
 			return;
 		} 
@@ -54,12 +61,13 @@ public class BackendClient {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
 						fromServerQueue.add(feu);
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-					}
-					
+						done = true;
+						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+							FrontEndUpdate.NotificationType.Server_Disconnect, -1, -1, null);
+						fromServerQueue.add(f);
+					}			
 				}
 			}			
 		});
@@ -71,17 +79,23 @@ public class BackendClient {
 				while(!done) {
 					try {
 						FrontEndUpdate feu = fromFrontEndQueue.take();
+						feu.setRevision(revisionNumber++);
+						if(feu.getUpdateType() == 
+							FrontEndUpdate.UpdateType.Markup) {
+							markupHistory.add(feu);
+						}
 						out.writeObject(feu);
-					} catch (InterruptedException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
+						done = true;
+						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+							FrontEndUpdate.NotificationType.Server_Disconnect, -1, -1, null);
+						fromServerQueue.add(f);
 					}
 				}
 			}			
 		});
 		sendUpdateThread.start();
-		
 	}
 	
 	/**
@@ -99,13 +113,87 @@ public class BackendClient {
 	 */
 	public FrontEndUpdate getUpdate() {
 		try {
-			return fromServerQueue.take();
+			FrontEndUpdate update =  fromServerQueue.take();
+			//checkLocalHistory(update);
+			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
+	/**
+	 * Used 
+	 * @param update
+	 */
+	private void checkLocalHistory(FrontEndUpdate update) {
+		FrontEndUpdate top = markupHistory.elementAt(0);
+		if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
+			if(update.getMarkupType() == top.getMarkupType()) {
+				if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+					if(update.getStartLocation() == top.getStartLocation() &&
+							update.getContent().equals(top.getContent()))
+						markupHistory.remove(0);
+					else {
+						updateFEUgivenFEU(top, update);
+						top.setRevision(update.getRevision());
+					}
+				}
+				else { // its a delete
+					if(update.getStartLocation() == top.getStartLocation() &&
+							update.getEndLocation() == top.getEndLocation())
+						markupHistory.remove(0);
+					else {
+						updateFEUgivenFEU(top, update);
+						top.setRevision(update.getRevision());
+					}
+				}
+			}
+			else {
+				updateFEUgivenFEU(top, update);
+				top.setRevision(update.getRevision());
+			}
+		}
+	}
+	
+	/**
+	 * Updates an FEU given an FEU
+	 * @param toUpdate
+	 * @param given
+	 */
+	private void updateFEUgivenFEU (FrontEndUpdate toUpdate, 
+			FrontEndUpdate given) {
+		if(toUpdate == given) //don't update itself
+			return;
+		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+			int insertAt = given.getStartLocation();
+			int sizeOfInsert = given.getInsertString().length();
+			if(toUpdate.getStartLocation() >= insertAt) {
+				toUpdate.setStartLocation(toUpdate.getStartLocation()
+						+sizeOfInsert);
+				toUpdate.setEndLocation(toUpdate.getEndLocation()
+						+sizeOfInsert);
+				toUpdate.setRevision(toUpdate.getRevision()+1);
+			}
+		}
+		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
+			int insertAt = given.getStartLocation();
+			int sizeOfInsert = given.getEndLocation() - insertAt + 1;
+			if(toUpdate.getStartLocation() >= insertAt) {
+				toUpdate.setStartLocation(toUpdate.getStartLocation()
+						-sizeOfInsert);
+				toUpdate.setEndLocation(toUpdate.getEndLocation()
+						-sizeOfInsert);
+				toUpdate.setRevision(toUpdate.getRevision()+1);
+			}
+		}
+		else { 
+			// The markup doesn't affect other markups (cursor pos 
+			// or highlight)
+			return;
+		}
+	}
+
 	/**
 	 * needs to be called in between sessions. We spun off thread, we need to 
 	 * kill them
