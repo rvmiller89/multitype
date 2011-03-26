@@ -54,11 +54,13 @@ public class OutputProcessor implements Runnable {
 			while(!done) {
 				
 				FrontEndUpdate toWrite = outQueue.take();
-			
+				
 				if(toWrite == null) {
 					continue;
 				}
 				try {
+					Server.dprint("Sending: " + toWrite.toString());
+					
 					out.writeObject(toWrite);
 				}
 				catch (IOException ioe) {

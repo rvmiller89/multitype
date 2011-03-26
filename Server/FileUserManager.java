@@ -37,6 +37,8 @@ public class FileUserManager {
 		markupprocs.put(fileid, thisMarkupProc);
 		new Thread(thisMarkupProc).start();
 		
+		Server.dprint("Added a new file. FID: " + fileid);
+		
 	}
 	
 	/**
@@ -100,9 +102,11 @@ public class FileUserManager {
 		
 		//generate next userid
 		nextUID++;
+		
+		Server.dprint("Sent client UID: " + nextUID);
 	}
 	
-	public void addFEUToMarkup(FrontEndUpdate feu) {
+	public synchronized void addFEUToMarkup(FrontEndUpdate feu) {
 		//get the FEU's fileID
 		int fileid = feu.getFileId();
 		if(fileid != -1) {
