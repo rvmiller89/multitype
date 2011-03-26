@@ -20,7 +20,8 @@ public class FEUListener {
 					// Sends feu to FEUManager to dispatch 
 					// to EditorManager or ViewManager
 					FrontEndUpdate fu = bc.getUpdate();
-					manager.dispatchFEU(fu);
+					if (!(fu.getUserId() == Activator.getDefault().userInfo.getUserid()))
+						manager.dispatchFEU(fu);
 					
 				}
 			}			

@@ -317,34 +317,35 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				{
 					case '0':
 						//showMessage("0");
-						fu = FrontEndUpdate.createInsertFEU(0, 0, 0, "a");
+						// userid = 500 just so we can test all of these no matter what user we are
+						fu = FrontEndUpdate.createInsertFEU(0, 500, 0, "a");
 						bc.sendUpdate(fu);
 						break;
 					case '1':
 						//showMessage("1");
-						fu = FrontEndUpdate.createInsertFEU(0, 0, 1, "b");
+						fu = FrontEndUpdate.createInsertFEU(0, 500, 1, "b");
 						bc.sendUpdate(fu);
 						break;
 					case '2':
 						//showMessage("2");
-						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 1);
+						fu = FrontEndUpdate.createDeleteFEU(0, 500, 0, 1);
 						bc.sendUpdate(fu);
 						break;
 					case '3':
 						//showMessage("0");
-						fu = FrontEndUpdate.createInsertFEU(0, 0, 0, "a");
+						fu = FrontEndUpdate.createInsertFEU(0, 500, 0, "a");
 						man.dispatchFEU(fu);
 						//bc.sendUpdate(fu);
 						break;
 					case '4':
 						//showMessage("1");
-						fu = FrontEndUpdate.createInsertFEU(0, 0, 1, "b");
+						fu = FrontEndUpdate.createInsertFEU(0, 500, 1, "b");
 						man.dispatchFEU(fu);
 						//bc.sendUpdate(fu);
 						break;
 					case '5':
 						//showMessage("2");
-						fu = FrontEndUpdate.createDeleteFEU(0, 0, 0, 1);
+						fu = FrontEndUpdate.createDeleteFEU(0, 500, 0, 1);
 						man.dispatchFEU(fu);
 						//bc.sendUpdate(fu);
 						break;

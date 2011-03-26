@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import multitype.Activator;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.MarkupType;
 
@@ -89,7 +90,6 @@ public class EditorManager
 				}
 		    }
 		  });
-    	
 		System.out.println("Editor Insertion-- fromPos: " + fromPos + " string: " + string);
 	}
 	
