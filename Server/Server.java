@@ -20,9 +20,11 @@ public class Server {
 		done = false;
 		port = _port;
 		fum = new FileUserManager();
-		//np = new NotificationProcessor(fum);
+		np = new NotificationProcessor(fum);
 		
-		//new Thread(np).start();
+		new Thread(np).start();
+		
+		fum.addFile(0, "test.java");
 		
 		try {
 			ssocket = new ServerSocket(port);

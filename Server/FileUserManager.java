@@ -21,7 +21,7 @@ public class FileUserManager {
 		filemap = new HashMap<Integer,String>();
 		usermap = new HashMap<Integer,String>();
 		
-		nextUID = 1;
+		nextUID = 0;
 		
 	}
 	
@@ -63,6 +63,22 @@ public class FileUserManager {
 			op.addFEU(feu);
 		}
 	}
+
+	/**
+	 * Sends a FEU to a specific client 
+	 * @param clientID userid of target client
+	 * @param feu FEU to send
+	 */
+	public void sendFEUToClient(int clientID, FrontEndUpdate feu) {
+		//TODO
+		//examine the fileid and only send to the output procs associated with that userid
+		
+		//For Build 1, just send to all clients
+		//for(OutputProcessor op : outprocs.values()) {
+		//	op.addFEU(feu);
+		//}
+	}
+	
 	
 	/**
 	 * Adds a new client to the system
