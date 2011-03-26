@@ -9,9 +9,18 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ActiveEditor {
 
-	public static ITextEditor getEditor()
+	// Prevent creation of instances of ActiveEditor
+	private ActiveEditor(){}
+	
+	private static IEditorPart editor = null;
+
+	public static final ITextEditor getEditor()
 	{
-		IEditorPart editor = null;
+		if (editor != null)
+		{
+			return (ITextEditor) editor;
+		}
+		
 		IWorkbenchWindow window = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (window != null) {
 		    IWorkbenchPage page = window.getActivePage();
