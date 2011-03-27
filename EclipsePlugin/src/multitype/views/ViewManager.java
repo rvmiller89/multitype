@@ -35,6 +35,8 @@ public class ViewManager extends ViewPart{
 							-1, feu.getUserId(), null);
 				bc.sendUpdate(connectedFEU);
 				
+				Activator.getDefault().showDialogAsync("User Information", 
+						"You are user: " + Activator.getDefault().userInfo.getUserid());
 				break;
 			case New_Shared_File:
 				break;
