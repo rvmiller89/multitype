@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import multitype.Activator;
 import multitype.BackendClient;
 import multitype.FEUManager;
+import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -71,7 +72,6 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	private FEUManager man;
 	
 	private IWorkbenchWindow window;
 	
@@ -186,9 +186,6 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 			invisibleRoot.addChild(test1);
 			invisibleRoot.addChild(test2);
 			invisibleRoot.addChild(test3);
-			invisibleRoot.addChild(test4);
-			invisibleRoot.addChild(test5);
-			invisibleRoot.addChild(test6);
 		}
 	}
 	class ViewLabelProvider extends LabelProvider {
@@ -218,7 +215,6 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		man = FEUManager.getInstance();
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new ViewContentProvider());
@@ -309,8 +305,7 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				 * Handle double click on test items
 				 * 
 				 */
-				
-				BackendClient bc = Activator.getDefault().client;
+
 				FrontEndUpdate fu;
 				
 				char c = obj.toString().charAt(0);
@@ -320,35 +315,17 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 						//showMessage("0");
 						// userid = 500 just so we can test all of these no matter what user we are
 						fu = FrontEndUpdate.createInsertFEU(0, 500, 0, "a");
-						bc.sendUpdate(fu);
+						FEUSender.send(fu);
 						break;
 					case '1':
 						//showMessage("1");
 						fu = FrontEndUpdate.createInsertFEU(0, 500, 1, "b");
-						bc.sendUpdate(fu);
+						FEUSender.send(fu);
 						break;
 					case '2':
 						//showMessage("2");
 						fu = FrontEndUpdate.createDeleteFEU(0, 500, 0, 1);
-						bc.sendUpdate(fu);
-						break;
-					case '3':
-						//showMessage("0");
-						fu = FrontEndUpdate.createInsertFEU(0, 500, 0, "a");
-						man.dispatchFEU(fu);
-						//bc.sendUpdate(fu);
-						break;
-					case '4':
-						//showMessage("1");
-						fu = FrontEndUpdate.createInsertFEU(0, 500, 1, "b");
-						man.dispatchFEU(fu);
-						//bc.sendUpdate(fu);
-						break;
-					case '5':
-						//showMessage("2");
-						fu = FrontEndUpdate.createDeleteFEU(0, 500, 0, 1);
-						man.dispatchFEU(fu);
-						//bc.sendUpdate(fu);
+						FEUSender.send(fu);
 						break;
 					default:
 						showMessage("Not implemented...");
