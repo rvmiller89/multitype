@@ -5,6 +5,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import multitype.Activator;
 import multitype.BackendClient;
+import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 
 public class ViewManager extends ViewPart{
@@ -28,13 +29,12 @@ public class ViewManager extends ViewPart{
 				
 				// Save userid and respond with User_Connected
 				Activator.getDefault().userInfo.setUserid(feu.getUserId());
-				
-				BackendClient bc = Activator.getDefault().client;
+
 				FrontEndUpdate connectedFEU = 
 					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.User_Connected, 
 							-1, feu.getUserId(), null);
-				bc.sendUpdate(connectedFEU);
-				
+				FEUSender.send(connectedFEU);
+
 				Activator.getDefault().showDialogAsync("User Information", 
 						"You are user: " + Activator.getDefault().userInfo.getUserid());
 				break;

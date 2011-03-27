@@ -210,7 +210,7 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 	 * The constructor.
 	 */
 	public ViewDriver() {
-		man = FEUManager.getInstance();
+		
 	}
 
 	/**
@@ -218,6 +218,7 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
+		man = FEUManager.getInstance();
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new ViewContentProvider());
