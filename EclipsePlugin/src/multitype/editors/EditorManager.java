@@ -18,7 +18,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @author Azfar Khandoker
  *
  */
-
+ 
 public class EditorManager
 {
 	private ITextEditor editor;
