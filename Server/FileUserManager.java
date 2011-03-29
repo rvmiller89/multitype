@@ -102,10 +102,10 @@ public class FileUserManager {
 				FrontEndUpdate.NotificationType.Connection_Succeed, -1, nextUID, null);
 		thisOutputProc.addFEU(feu);
 		
+		Server.dprint("Sent client UID: " + nextUID);
+		
 		//generate next userid
 		nextUID++;
-		
-		Server.dprint("Sent client UID: " + nextUID);
 	}
 	
 	public synchronized void addFEUToMarkup(FrontEndUpdate feu) {
