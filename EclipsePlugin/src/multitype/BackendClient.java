@@ -279,6 +279,15 @@ public class BackendClient {
 		case Notification:
 			output = output + "Notification FEU:\n";
 			output = output+ "type: "+feu.getNotificationType()+"\n";
+			switch(feu.getNotificationType()) {
+			case Connection_Succeed:
+				output = output + "assign id: "+feu.getUserId()+"\n";
+				break;
+			case User_Connected:
+				output = output + "user id: "+feu.getUserId()+"\n";
+				output = output + "username: "+feu.getContent()+"\n";
+				break;
+			}
 			break;
 		}
 		output = output+"---------------------";
