@@ -24,7 +24,7 @@ public class EditorManager
 	private ITextEditor editor;
 	private IDocumentProvider dp;
 	private IDocument doc;
-	private volatile boolean processingFEU;
+	private DocListener listener;
 	
 	public EditorManager()
 	{
@@ -32,16 +32,13 @@ public class EditorManager
 	    dp = editor.getDocumentProvider();
 	    doc = dp.getDocument(editor.getEditorInput());
 	    
-	    processingFEU = false;
-	    
 	    // Add document listener
-	    DocListener listener = new DocListener();
+	    listener = new DocListener();
 	    doc.addDocumentListener(listener);
 	}
 	
 	public void receive(FrontEndUpdate feu)
 	{
-		processingFEU = true;
 		//Activator.getDefault().showDialogAsync("Debug", feu.getUserId() + " ");		// DEBUG
 		MarkupType markupType = feu.getMarkupType();
 		
@@ -63,7 +60,6 @@ public class EditorManager
 			throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + markupType);
 		}
 		
-		processingFEU = false;
 	}
 	
 	private void delete(int fileId, int userId, final int fromPos, final int toPos)
@@ -73,7 +69,9 @@ public class EditorManager
 		    public void run() {
 		    	//	doc.replace(fromPos, toPos - fromPos, "");  /* FOR BUILD 2... */
 		    	try {
+		    		doc.removeDocumentListener(listener);
 					doc.replace(fromPos, 1, "");
+					doc.addDocumentListener(listener);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
@@ -89,7 +87,9 @@ public class EditorManager
 		    public void run() {
 		    	//	doc.replace(fromPos, toPos - fromPos, "");  /* FOR BUILD 2... */
 		    	try {
+		    		doc.removeDocumentListener(listener);
 					doc.replace(fromPos, 0, string);
+					doc.addDocumentListener(listener);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
@@ -123,37 +123,34 @@ public class EditorManager
 		}
 
 		@Override
-		public void documentChanged(DocumentEvent event) {
-			// TODO Auto-generated method stub			
-			if (!processingFEU && Activator.getDefault().isConnected)
-			{
-				//key pressed....need to generate FEU
-				
+		public void documentChanged(DocumentEvent event) {	
+
+			//key pressed....need to generate FEU
+			
 //				System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
-				//Activator.getDefault().userInfo.getUserid();
-				
-				FrontEndUpdate feu;
-				
-				if (event.fText.equals(""))
-				{
-					feu = FrontEndUpdate.createDeleteFEU(
-							0, 
-							Activator.getDefault().userInfo.getUserid(), 
-							event.fOffset, 
-							event.fLength);
-				}
-				
-				else
-				{
-					feu = FrontEndUpdate.createInsertFEU(
-							0, 
-							Activator.getDefault().userInfo.getUserid(),
-							event.fOffset,
-							event.fText);
-				}
-				
-				FEUSender.send(feu);
+			//Activator.getDefault().userInfo.getUserid();
+			
+			FrontEndUpdate feu;
+			
+			if (event.fText.equals(""))
+			{
+				feu = FrontEndUpdate.createDeleteFEU(
+						0, 
+						Activator.getDefault().userInfo.getUserid(), 
+						event.fOffset, 
+						event.fLength);
 			}
+			
+			else
+			{
+				feu = FrontEndUpdate.createInsertFEU(
+						0, 
+						Activator.getDefault().userInfo.getUserid(),
+						event.fOffset,
+						event.fText);
+			}
+			
+			FEUSender.send(feu);
 
 			//event.
 		}
