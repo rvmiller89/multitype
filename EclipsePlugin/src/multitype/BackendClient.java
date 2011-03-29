@@ -84,7 +84,8 @@ public class BackendClient {
 						FrontEndUpdate feu = fromFrontEndQueue.take();
 						feu.setRevision(revisionNumber);
 						addToLocalHistory(feu);
-						printFEU(0, feu); //TODO DEBUG
+						System.out.print("Sent "); //TODO DEBUG
+						out.toString();
 						out.writeObject(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -116,7 +117,8 @@ public class BackendClient {
 		try {
 			FrontEndUpdate update =  fromServerQueue.take();
 			checkLocalHistory(update);
-			printFEU(1, update); //TODO DEBUG
+			System.out.print("Received "); //TODO DEBUG
+			update.toString();
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -231,66 +233,5 @@ public class BackendClient {
 	public void finish() {
 		done = true;
 	}
-	
-	/**
-	 * Used for testing purposes
-	 * @param i 
-	 * @param feu FrontEndUpdate to print
-	 */
-	@SuppressWarnings("unused")
-	private void printFEU(int i, FrontEndUpdate feu) {
-		String output = "--------------------\n";
-		switch(i) {
-		case 0:
-			output = output + "Sent ";
-			break;
-		case 1:
-			output = output + "Received ";
-			break;
-		}
-		switch(feu.getUpdateType()) {
-		case Markup:
-			output = output + "Markup FEU:\n";
-			output = output + "file id: " + feu.getFileId() + "\n";
-			output = output + "user id: " + feu.getUserId() + "\n";
-			output = output + "rev: " + feu.getRevision() + "\n";
-			switch(feu.getMarkupType()) {
-			case Insert:
-				output = output + "type: Insert\n";
-				output = output + "start loc: " + feu.getStartLocation() + "\n";
-				output = output + "insert : " + feu.getInsertString() + "\n";
-				break;
-			case Delete:
-				output = output + "type: Delete\n";
-				output = output + "start loc: " + feu.getStartLocation() + "\n";
-				output = output + "end loc: " + feu.getEndLocation() + "\n";
-				break;
-			case Cursor:
-				output = output + "type: Cursor\n";
-				output = output + "start loc: " + feu.getStartLocation() + "\n";
-				break;
-			case Highlight:
-				output = output + "type: Highlight\n";
-				output = output + "start loc: " + feu.getStartLocation() + "\n";
-				output = output + "end loc: " + feu.getEndLocation() + "\n";
-				break;
-			}
-			break;
-		case Notification:
-			output = output + "Notification FEU:\n";
-			output = output+ "type: "+feu.getNotificationType()+"\n";
-			switch(feu.getNotificationType()) {
-			case Connection_Succeed:
-				output = output + "assign id: "+feu.getUserId()+"\n";
-				break;
-			case User_Connected:
-				output = output + "user id: "+feu.getUserId()+"\n";
-				output = output + "username: "+feu.getContent()+"\n";
-				break;
-			}
-			break;
-		}
-		output = output+"---------------------";
-		System.out.println(output);
-	}
+
 }

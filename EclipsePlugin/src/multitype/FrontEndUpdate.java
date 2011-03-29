@@ -205,4 +205,55 @@ public class FrontEndUpdate implements Serializable {
 		this.insertString = insertString;
 	}
 	
+	/**
+	 * Used for testing purposes
+	 */
+	public String toString() {
+		String output = "--------------------\n";
+		switch(this.getUpdateType()) {
+		case Markup:
+			output = output + "Markup FEU:\n";
+			output = output + "file id: " + this.getFileId() + "\n";
+			output = output + "user id: " + this.getUserId() + "\n";
+			output = output + "rev: " + this.getRevision() + "\n";
+			switch(this.getMarkupType()) {
+			case Insert:
+				output = output + "type: Insert\n";
+				output = output + "start loc: " + this.getStartLocation() + "\n";
+				output = output + "insert : " + this.getInsertString() + "\n";
+				break;
+			case Delete:
+				output = output + "type: Delete\n";
+				output = output + "start loc: " + this.getStartLocation() + "\n";
+				output = output + "end loc: " + this.getEndLocation() + "\n";
+				break;
+			case Cursor:
+				output = output + "type: Cursor\n";
+				output = output + "start loc: " + this.getStartLocation() + "\n";
+				break;
+			case Highlight:
+				output = output + "type: Highlight\n";
+				output = output + "start loc: " + this.getStartLocation() + "\n";
+				output = output + "end loc: " + this.getEndLocation() + "\n";
+				break;
+			}
+			break;
+		case Notification:
+			output = output + "Notification FEU:\n";
+			output = output+ "type: "+this.getNotificationType()+"\n";
+			switch(this.getNotificationType()) {
+			case Connection_Succeed:
+				output = output + "assign id: "+this.getUserId()+"\n";
+				break;
+			case User_Connected:
+				output = output + "user id: "+this.getUserId()+"\n";
+				output = output + "username: "+this.getContent()+"\n";
+				break;
+			}
+			break;
+		}
+		output = output+"---------------------";
+		//System.out.println(output);
+		return output;
+	}
 }
