@@ -25,8 +25,6 @@ public class ViewManager extends ViewPart{
 				break;
 			case Connection_Succeed:
 
-				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected.");
-				
 				// Save userid and respond with User_Connected
 				Activator.getDefault().userInfo.setUserid(feu.getUserId());
 
@@ -35,8 +33,8 @@ public class ViewManager extends ViewPart{
 							-1, feu.getUserId(), null);
 				FEUSender.send(connectedFEU);
 
-				Activator.getDefault().showDialogAsync("User Information", 
-						"You are user: " + Activator.getDefault().userInfo.getUserid());
+				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
+
 				break;
 			case New_Shared_File:
 				break;
@@ -58,7 +56,9 @@ public class ViewManager extends ViewPart{
 			case Server_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
 				break;
-			
+			default:
+				Activator.getDefault().showDialogAsync("FrontEndUpdate Error", "Unknown FrontEndUpdate receieved.");
+				break;
 		}
 	}
 

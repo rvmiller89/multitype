@@ -35,6 +35,9 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		userInfo = new UserInfo();
 		
+		// Start an unconnected client with userid = -1
+		userInfo.setUserid(-1);
+		
 	}
 
 	/*
