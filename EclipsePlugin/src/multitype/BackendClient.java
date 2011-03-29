@@ -84,8 +84,8 @@ public class BackendClient {
 						FrontEndUpdate feu = fromFrontEndQueue.take();
 						feu.setRevision(revisionNumber);
 						addToLocalHistory(feu);
-						System.out.print("Sent "); //TODO DEBUG
-						System.out.println(out.toString());
+						System.out.print("Sent FEU\n"); //TODO DEBUG
+						System.out.println(feu.toString());
 						out.writeObject(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -117,7 +117,7 @@ public class BackendClient {
 		try {
 			FrontEndUpdate update =  fromServerQueue.take();
 			checkLocalHistory(update);
-			System.out.print("Received "); //TODO DEBUG
+			System.out.print("Received FEU\n"); //TODO DEBUG
 			System.out.println(update.toString());
 			return update;
 		} catch (InterruptedException e) {
