@@ -173,9 +173,6 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 			TreeObject test1 = new TreeObject("0_SERVER: Insert 'a' fromPosition=0");
 			TreeObject test2 = new TreeObject("1_SERVER: Insert 'b' fromPosition=1");
 			TreeObject test3 = new TreeObject("2_SERVER: Delete 'a' fromPosition=0 to null");
-			TreeObject test4 = new TreeObject("3_LOCAL: Insert 'a' fromPosition=0");
-			TreeObject test5 = new TreeObject("4_LOCAL: Insert 'b' fromPosition=1");
-			TreeObject test6 = new TreeObject("5_LOCAL: Delete 'a' fromPosition=0 to null");
 			
 			/*TreeObject to4 = new TreeObject("Leaf 4");
 			TreeParent p2 = new TreeParent("Parent 2");
@@ -314,17 +311,17 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 					case '0':
 						//showMessage("0");
 						// userid = 500 just so we can test all of these no matter what user we are
-						fu = FrontEndUpdate.createInsertFEU(0, 500, 0, "a");
+						fu = FrontEndUpdate.createInsertFEU(0, 50, 0, "a");
 						FEUSender.send(fu);
 						break;
 					case '1':
 						//showMessage("1");
-						fu = FrontEndUpdate.createInsertFEU(0, 500, 1, "b");
+						fu = FrontEndUpdate.createInsertFEU(0, 50, 1, "b");
 						FEUSender.send(fu);
 						break;
 					case '2':
 						//showMessage("2");
-						fu = FrontEndUpdate.createDeleteFEU(0, 500, 0, 1);
+						fu = FrontEndUpdate.createDeleteFEU(0, 50, 0, 1);
 						FEUSender.send(fu);
 						break;
 					default:

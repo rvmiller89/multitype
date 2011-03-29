@@ -24,7 +24,7 @@ public class EditorManager
 	private ITextEditor editor;
 	private IDocumentProvider dp;
 	private IDocument doc;
-	private boolean processingFEU;
+	private volatile boolean processingFEU;
 	
 	public EditorManager()
 	{
@@ -42,7 +42,7 @@ public class EditorManager
 	public void receive(FrontEndUpdate feu)
 	{
 		processingFEU = true;
-		
+		//Activator.getDefault().showDialogAsync("Debug", feu.getUserId() + " ");		// DEBUG
 		MarkupType markupType = feu.getMarkupType();
 		
 		switch(markupType)
@@ -125,7 +125,7 @@ public class EditorManager
 		@Override
 		public void documentChanged(DocumentEvent event) {
 			// TODO Auto-generated method stub			
-			if (!processingFEU)
+			if (!processingFEU && Activator.getDefault().isConnected)
 			{
 				//key pressed....need to generate FEU
 				

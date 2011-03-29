@@ -19,6 +19,7 @@ public class Activator extends AbstractUIPlugin {
 	public BackendClient client = null;	// also used by ViewDriver....
 	private FEUListener feuListener;
 	public UserInfo userInfo;
+	public boolean isConnected;
 	
 	/**
 	 * The constructor
@@ -37,6 +38,8 @@ public class Activator extends AbstractUIPlugin {
 		
 		// Start an unconnected client with userid = -1
 		userInfo.setUserid(-1);
+		
+		isConnected = false;
 		
 	}
 

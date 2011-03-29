@@ -32,7 +32,8 @@ public class ViewManager extends ViewPart{
 					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.User_Connected, 
 							-1, feu.getUserId(), null);
 				FEUSender.send(connectedFEU);
-
+				
+				Activator.getDefault().isConnected = true;
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
 
 				break;
