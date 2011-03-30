@@ -58,20 +58,20 @@ public class LoginView extends TitleAreaDialog {
 		lblHost.setText("Host:");
 		
 		textfield_username = new Text(container, SWT.BORDER);
-		textfield_username.setBounds(75, 10, 290, 19);
+		textfield_username.setBounds(103, 10, 290, 19);
 		
 		textfield_host = new Text(container, SWT.BORDER);
-		textfield_host.setBounds(75, 66, 290, 19);
+		textfield_host.setBounds(103, 66, 290, 19);
 		
 		Label lblNewLabel = new Label(container, SWT.NONE);
 		lblNewLabel.setBounds(10, 94, 59, 14);
 		lblNewLabel.setText("Port:");
 		
 		textfield_port = new Text(container, SWT.BORDER);
-		textfield_port.setBounds(75, 91, 145, 19);
+		textfield_port.setBounds(103, 91, 145, 19);
 		
 		textfield_password = new Text(container, SWT.BORDER | SWT.PASSWORD);
-		textfield_password.setBounds(75, 35, 290, 19);
+		textfield_password.setBounds(103, 35, 290, 19);
 		
 		Label lblPassword = new Label(container, SWT.NONE);
 		lblPassword.setText("Password:");
