@@ -66,7 +66,7 @@ public class MarkupProcessor implements Runnable{
 			/*TODO This will need to account for 
 				revision number wrapping for build 2 */
 			
-			if(f.getRevision() <= old.getRevision() && 
+			if(f.getRevision() < old.getRevision() && 
 					f.getUserId() != old.getUserId()) {
 				updateFEUgivenFEU(f, old);
 			}
