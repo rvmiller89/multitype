@@ -67,10 +67,10 @@ public class EditorManager
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		    	//	doc.replace(fromPos, toPos - fromPos, "");  /* FOR BUILD 2... */
 		    	try {
 		    		doc.removeDocumentListener(listener);
-					doc.replace(fromPos, 1, "");
+//					doc.replace(fromPos, 1, "");
+		    		doc.replace(fromPos, toPos - fromPos, "");
 					doc.addDocumentListener(listener);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
@@ -129,7 +129,6 @@ public class EditorManager
 			
 //				System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
 			//Activator.getDefault().userInfo.getUserid();
-			
 			FrontEndUpdate feu;
 			
 			if (event.fText.equals(""))
