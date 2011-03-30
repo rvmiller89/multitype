@@ -47,7 +47,7 @@ public class BackendClient {
             in = new ObjectInputStream(serverSocket.getInputStream());
 		} catch (Exception e) {
 			e.printStackTrace();
-			String error = "";
+			String error = e.toString()+"\n";
 			for(StackTraceElement se : e.getStackTrace())
 				error = error+se.toString()+"\n";
 			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
@@ -70,7 +70,7 @@ public class BackendClient {
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
-						String error = "";
+						String error = e.toString()+"\n";
 						for(StackTraceElement se : e.getStackTrace())
 							error = error+se.toString()+"\n";
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
@@ -97,7 +97,7 @@ public class BackendClient {
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
-						String error = "";
+						String error = e.toString()+"\n";
 						for(StackTraceElement se : e.getStackTrace())
 							error = error+se.toString()+"\n";
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
