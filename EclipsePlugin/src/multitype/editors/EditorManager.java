@@ -5,11 +5,13 @@ import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.MarkupType;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -69,9 +71,8 @@ public class EditorManager
 		    public void run() {
 		    	try {
 		    		doc.removeDocumentListener(listener);
-//					doc.replace(fromPos, 1, "");
 		    		doc.replace(fromPos, toPos - fromPos, "");
-					doc.addDocumentListener(listener);
+					doc.addDocumentListener(listener); 
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
@@ -85,7 +86,6 @@ public class EditorManager
     	Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		    	//	doc.replace(fromPos, toPos - fromPos, "");  /* FOR BUILD 2... */
 		    	try {
 		    		doc.removeDocumentListener(listener);
 					doc.replace(fromPos, 0, string);

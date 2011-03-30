@@ -5,6 +5,7 @@ import multitype.Activator;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -21,10 +22,11 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class LoginView extends TitleAreaDialog {
 	private static final int BUTTON_LOGIN = IDialogConstants.CLIENT_ID + 1;
-	public Text textfield_username;
-	public Text textfield_host;
-	public Text textfield_port;
-	public Text textfield_password;
+	private Text textfield_username;
+	private Text textfield_host;
+	private Text textfield_port;
+	private Text textfield_password;
+	private PreferenceManager prefManager;
 
 	/**
 	 * Create the dialog.
@@ -32,6 +34,9 @@ public class LoginView extends TitleAreaDialog {
 	 */
 	public LoginView(Shell parentShell) {
 		super(parentShell);
+		
+		prefManager = new PreferenceManager();
+		
 		setBlockOnOpen(true);
 		open();
 		// Don't dispose display (which would kill the instance of Eclipse)
@@ -59,9 +64,11 @@ public class LoginView extends TitleAreaDialog {
 		
 		textfield_username = new Text(container, SWT.BORDER);
 		textfield_username.setBounds(103, 10, 290, 23);
+		textfield_username.setText(prefManager.getPrevUsername());
 		
 		textfield_host = new Text(container, SWT.BORDER);
 		textfield_host.setBounds(103, 77, 290, 23);
+		textfield_host.setText(prefManager.getPrevHost());
 		
 		Label lblNewLabel = new Label(container, SWT.NONE);
 		lblNewLabel.setBounds(10, 109, 87, 14);
@@ -69,6 +76,7 @@ public class LoginView extends TitleAreaDialog {
 		
 		textfield_port = new Text(container, SWT.BORDER);
 		textfield_port.setBounds(103, 106, 145, 23);
+		textfield_port.setText(prefManager.getPrevPort() + "");
 		
 		textfield_password = new Text(container, SWT.BORDER | SWT.PASSWORD);
 		textfield_password.setBounds(103, 39, 290, 23);
@@ -106,6 +114,8 @@ public class LoginView extends TitleAreaDialog {
 						textfield_password.getText(),
 						textfield_host.getText(),
 						Integer.parseInt(textfield_port.getText()));
+				
+				prefManager.setPrevLoginSettings(textfield_username.getText(), textfield_host.getText(), Integer.parseInt(textfield_port.getText()));
 						
 				// Close the login dialog
 				close();
