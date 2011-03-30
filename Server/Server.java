@@ -41,12 +41,10 @@ public class Server {
 		while(!done) {
 			try {
 				Socket client = ssocket.accept();
-				
+				dprint("Accepted Client");
 				//spawn an input processor for this client
 				InputProcessor thisInputProc = new InputProcessor(client, fum, np);
 				inputProcs.add(thisInputProc);
-				new Thread(thisInputProc).start();
-				
 				
 				//spawn an output processor for this client
 				/*
@@ -57,10 +55,13 @@ public class Server {
 				
 				thisInputProc.setUID(fum.addClient(client));
 				
+				new Thread(thisInputProc).start();
+				
 				dprint("Client Added");
 				
 				
 				//TODO Detect disconnect and kill the appropriate procs
+				
 				
 			}
 			catch (IOException ioe) {
