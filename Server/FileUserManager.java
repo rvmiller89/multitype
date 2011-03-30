@@ -108,6 +108,20 @@ public class FileUserManager {
 		nextUID++;
 	}
 	
+	/**
+	 * Called when a client has disconnected or been dropped.
+	 * @param uid
+	 */
+	public void clientGone(int uid) {
+		//remove the OutputProcessor
+		usermap.remove(uid);
+		
+		//remove user from map
+		outprocs.remove(uid);
+		
+		Server.dprint("Dropped client " + uid);
+	}
+	
 	public synchronized void addFEUToMarkup(FrontEndUpdate feu) {
 		//get the FEU's fileID
 		int fileid = feu.getFileId();

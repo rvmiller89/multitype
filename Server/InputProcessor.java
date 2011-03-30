@@ -17,7 +17,7 @@ public class InputProcessor implements Runnable {
 	FileUserManager fum;
 	ObjectInputStream in;
 	NotificationProcessor np;
-	
+	int uid;
 	/**
 	 * Constructor
 	 * @param s The socket that this will be communicating with
@@ -27,10 +27,12 @@ public class InputProcessor implements Runnable {
 		done = false;
 		fum = f;
 		np = n;
+		uid = -1;
 		
 		try {
 			in = new ObjectInputStream(sclient.getInputStream());
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			System.err.println("InputProcessor(): " + e.toString());
 		}
 	}
@@ -48,11 +50,17 @@ public class InputProcessor implements Runnable {
 						
 			return ret;
 		}
-		catch (IOException ioe) {
-			System.err.println("buildFEU(): " + ioe.toString());
+		catch (EOFException eofe) {
+			System.err.println("buildFEU(): " + eofe.toString());
 			setDone(); //Kills this instance
 			Server.dprint("This InputProcessor no longer as the will to live." +
-					" Dropping client.");
+					" Dropping client " + uid);
+			if( uid >= 0 ) {
+				fum.clientGone(uid);
+			}
+		}
+		catch (IOException ioe) {
+			System.err.println("builfFEU(): " + ioe.toString());
 		}
 		catch (ClassNotFoundException cnfe) {
 			System.err.println("buildFEU(): " + cnfe.toString());
@@ -98,5 +106,13 @@ public class InputProcessor implements Runnable {
 	 */
 	public void setDone() {
 		done = true;
+	}
+	
+	/**
+	 * Sets this input processor's userid
+	 * @param id
+	 */
+	public void setUID(int id) {
+		uid = id;
 	}
 }
