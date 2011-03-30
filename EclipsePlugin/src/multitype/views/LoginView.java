@@ -55,10 +55,11 @@ public class LoginView extends TitleAreaDialog {
 		
 		Label lblHost = new Label(container, SWT.NONE);
 		lblHost.setBounds(10, 69, 59, 14);
-		lblHost.setText("Host:");
+		lblHost.setText("Server:");
 		
 		textfield_username = new Text(container, SWT.BORDER);
 		textfield_username.setBounds(103, 10, 290, 19);
+		textfield_username.pack();
 		
 		textfield_host = new Text(container, SWT.BORDER);
 		textfield_host.setBounds(103, 66, 290, 19);
@@ -78,7 +79,7 @@ public class LoginView extends TitleAreaDialog {
 		lblPassword.setBounds(10, 38, 59, 14);
 		
 		Label label = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
-		label.setBounds(10, 60, 355, 2);
+		label.setBounds(10, 60, 383, 3);
 
 		return area;
 	}
