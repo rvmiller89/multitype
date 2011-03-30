@@ -180,6 +180,9 @@ public class BackendClient {
 			FrontEndUpdate given) {
 		if(toUpdate == given) //don't update itself
 			return;
+		// don't update if the user is the same
+		if(toUpdate.getUserId() == given.getUserId()) 
+			return;
 		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 			int insertAt = given.getStartLocation();
 			int sizeOfInsert = given.getInsertString().length();
