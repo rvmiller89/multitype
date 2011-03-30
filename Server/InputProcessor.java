@@ -59,6 +59,15 @@ public class InputProcessor implements Runnable {
 				fum.clientGone(uid);
 			}
 		}
+		catch (SocketException se) {
+			//System.err.println("buildFEU(): " + eofe.toString());
+			setDone(); //Kills this instance
+			Server.dprint("This InputProcessor no longer as the will to live." +
+					" Dropping client " + uid);
+			if( uid >= 0 ) {
+				fum.clientGone(uid);
+			}
+		}
 		catch (IOException ioe) {
 			System.err.println("builfFEU(): " + ioe.toString());
 		}
