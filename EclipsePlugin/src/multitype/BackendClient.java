@@ -47,9 +47,12 @@ public class BackendClient {
             in = new ObjectInputStream(serverSocket.getInputStream());
 		} catch (Exception e) {
 			e.printStackTrace();
+			String error = "";
+			for(StackTraceElement se : e.getStackTrace())
+				error = error+se.toString()+"\n";
 			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 				FrontEndUpdate.NotificationType.Connection_Error, -1, -1, 
-				e.toString());
+				error);
 			fromServerQueue.add(f);
 			return;
 		} 
@@ -67,9 +70,12 @@ public class BackendClient {
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
+						String error = "";
+						for(StackTraceElement se : e.getStackTrace())
+							error = error+se.toString()+"\n";
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 							FrontEndUpdate.NotificationType.Server_Disconnect, 
-							-1, -1, null);
+							-1, -1, error);
 						fromServerQueue.add(f);
 					}			
 				}
@@ -91,9 +97,12 @@ public class BackendClient {
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
+						String error = "";
+						for(StackTraceElement se : e.getStackTrace())
+							error = error+se.toString()+"\n";
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 							FrontEndUpdate.NotificationType.Server_Disconnect, 
-							-1, -1, e.toString());
+							-1, -1, error);
 						fromServerQueue.add(f);
 					}
 				}
