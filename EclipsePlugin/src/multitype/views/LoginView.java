@@ -79,6 +79,7 @@ public class LoginView extends TitleAreaDialog {
 		
 		Label label = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label.setBounds(10, 60, 383, 3);
+		container.setTabList(new Control[]{textfield_username, textfield_password, textfield_host, textfield_port});
 
 		return area;
 	}
