@@ -65,7 +65,7 @@
                label="Login"
                icon="icons/sample.gif"
                class="multitype.actions.LoginWindowAction"
-               tooltip="Hello, Eclipse world"
+               tooltip="MultiType Login"
                menubarPath="multitypeMenu/multitypeGroup"
                toolbarPath="multitypeGroup"
                id="multitype.actions.LoginWindowAction">

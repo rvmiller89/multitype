@@ -3,15 +3,12 @@ package multitype.views;
 import multitype.Activator;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.swt.widgets.Label;
@@ -135,12 +132,12 @@ public class LoginView extends TitleAreaDialog {
 		return new Point(450, 300);
 	}
 	
-	public static void main (String[] args)
+	/*public static void main (String[] args)
 	{
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		LoginView login = new LoginView(shell);
 		MessageDialog.openInformation(null, "Test", "Result: " + login.getReturnCode());
 		
-	}
+	}*/
 }
