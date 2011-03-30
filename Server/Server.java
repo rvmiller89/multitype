@@ -55,7 +55,7 @@ public class Server {
 				outputProcs.add(thisOutputProc);
 				new Thread(thisOutputProc).start();*/
 				
-				fum.addClient(client);
+				thisInputProc.setUID(fum.addClient(client));
 				
 				dprint("Client Added");
 				

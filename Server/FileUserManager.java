@@ -89,7 +89,7 @@ public class FileUserManager {
 	 * Spawns a new output processor and responds to the client with its UserID
 	 * @param s Socket to communicate with the client on
 	 */
-	public void addClient(Socket s) {
+	public int addClient(Socket s) {
 		//TODO
 		//spawn an OutputProcessor and associate it with userid
 	 	OutputProcessor thisOutputProc = new OutputProcessor(s);
@@ -105,7 +105,8 @@ public class FileUserManager {
 		Server.dprint("Sent client UID: " + nextUID);
 		
 		//generate next userid
-		nextUID++;
+		return nextUID++;
+		
 	}
 	
 	/**

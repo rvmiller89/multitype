@@ -51,7 +51,7 @@ public class InputProcessor implements Runnable {
 			return ret;
 		}
 		catch (EOFException eofe) {
-			System.err.println("buildFEU(): " + eofe.toString());
+			//System.err.println("buildFEU(): " + eofe.toString());
 			setDone(); //Kills this instance
 			Server.dprint("This InputProcessor no longer as the will to live." +
 					" Dropping client " + uid);
