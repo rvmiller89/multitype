@@ -3,8 +3,12 @@ package multitype;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import multitype.views.Dialog;
+import multitype.views.LoginView;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -36,8 +40,8 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		userInfo = new UserInfo();
 		
-		// Start an unconnected client with userid = -1
-		userInfo.setUserid(-1);
+		// Start an unconnected client with userid = -2 (not -1 because Rodrigo's a douche)
+		userInfo.setUserid(-2);
 		
 		isConnected = false;
 		
@@ -85,7 +89,11 @@ public class Activator extends AbstractUIPlugin {
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		      MessageDialog.openInformation(null, title, message);
+		      //MessageDialog.openInformation(null, title, message);
+		    	
+		    	Display display = Display.getCurrent();
+				Shell shell = new Shell(display);
+				Dialog dialog = new Dialog(shell, title, message);
 		    }
 		  });
 		

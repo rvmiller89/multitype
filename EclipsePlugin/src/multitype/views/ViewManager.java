@@ -21,7 +21,7 @@ public class ViewManager extends ViewPart{
 			case New_Connection:
 				break;
 			case Connection_Error:
-				Activator.getDefault().showDialogAsync("Connection Error", "Unable to connect.");
+				Activator.getDefault().showDialogAsync("Connection Error", "Unable to connect.\n\n" + feu.getContent());
 				break;
 			case Connection_Succeed:
 

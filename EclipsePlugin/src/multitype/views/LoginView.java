@@ -43,8 +43,8 @@ public class LoginView extends TitleAreaDialog {
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		setTitleImage(ResourceManager.getPluginImage("MultiType", "res/multitype.png"));
-		setTitle("");
+		setTitleImage(ResourceManager.getPluginImage("MultiType", "res/multitype-med.png"));
+		setTitle("Login to Server");
 		Composite area = (Composite) super.createDialogArea(parent);
 		Composite container = new Composite(area, SWT.NONE);
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -54,31 +54,31 @@ public class LoginView extends TitleAreaDialog {
 		lblUsername.setText("Username:");
 		
 		Label lblHost = new Label(container, SWT.NONE);
-		lblHost.setBounds(10, 69, 87, 14);
+		lblHost.setBounds(10, 80, 87, 14);
 		lblHost.setText("Server:");
 		
 		textfield_username = new Text(container, SWT.BORDER);
-		textfield_username.setBounds(103, 10, 290, 19);
+		textfield_username.setBounds(103, 10, 290, 23);
 		
 		textfield_host = new Text(container, SWT.BORDER);
-		textfield_host.setBounds(103, 66, 290, 19);
+		textfield_host.setBounds(103, 77, 290, 23);
 		
 		Label lblNewLabel = new Label(container, SWT.NONE);
-		lblNewLabel.setBounds(10, 94, 87, 14);
+		lblNewLabel.setBounds(10, 109, 87, 14);
 		lblNewLabel.setText("Port:");
 		
 		textfield_port = new Text(container, SWT.BORDER);
-		textfield_port.setBounds(103, 91, 145, 19);
+		textfield_port.setBounds(103, 106, 145, 23);
 		
 		textfield_password = new Text(container, SWT.BORDER | SWT.PASSWORD);
-		textfield_password.setBounds(103, 35, 290, 19);
+		textfield_password.setBounds(103, 39, 290, 23);
 		
 		Label lblPassword = new Label(container, SWT.NONE);
 		lblPassword.setText("Password:");
-		lblPassword.setBounds(10, 38, 87, 14);
+		lblPassword.setBounds(10, 42, 87, 14);
 		
 		Label label = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
-		label.setBounds(10, 60, 383, 3);
+		label.setBounds(10, 68, 383, 3);
 		container.setTabList(new Control[]{textfield_username, textfield_password, textfield_host, textfield_port});
 
 		return area;
