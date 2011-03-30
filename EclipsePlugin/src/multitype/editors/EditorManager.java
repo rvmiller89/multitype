@@ -137,7 +137,7 @@ public class EditorManager
 						0, 
 						Activator.getDefault().userInfo.getUserid(), 
 						event.fOffset, 
-						event.fLength);
+						event.fLength + event.fOffset);
 			}
 			
 			else
