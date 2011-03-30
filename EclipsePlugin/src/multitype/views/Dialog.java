@@ -65,7 +65,7 @@ public class Dialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(450, 242);
+		return new Point(450, 270);
 	}
 
 }
