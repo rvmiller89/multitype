@@ -3,6 +3,8 @@ package multitype.views;
 import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
@@ -12,6 +14,7 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.equinox.internal.app.Activator;
 
 
 /**
@@ -238,7 +241,16 @@ public class UserList extends ViewPart {
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				
+				/*  DEBUG:  testing a dialog...
+				 * 
+				 */
+
+				Display display = Display.getCurrent();
+				Shell shell = new Shell(display);
+				LoginView login = new LoginView(shell);
+
+				
 			}
 		};
 		action1.setText("Action 1");

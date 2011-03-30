@@ -52,18 +52,25 @@ public class Activator extends AbstractUIPlugin {
 		super.stop(context);
 	}
 	
+	public void setupUser(String username, String password, String host, int port)
+	{
+		userInfo.setUsername(username);
+		userInfo.setPassword(password);
+		userInfo.setHost(host);
+		userInfo.setPort(port);
+	}
+	
 	/**
 	 * Instantiates a FEUListener and BackendConnection
+	 * 
+	 * PRECONDITION:  USER INFO WAS ENTERED BY LOGIN WINDOW (Activator.setupUser())
 	 * @param url
 	 * @param port
 	 */
-	public void connect(String username, String url, int port)
+	public void connect()
 	{
-		// Initialize username in UserInfo
-		userInfo.setUsername(username);
-		
 		// Construct a BackendClient
-		client = new BackendClient(url, port);
+		client = new BackendClient(userInfo.getHost(), userInfo.getPort());
 		
 		// Construct a FEUListener and start thread
 		feuListener = new FEUListener(client);

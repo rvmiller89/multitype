@@ -1,13 +1,16 @@
 package multitype.actions;
 
 import multitype.Activator;
+import multitype.views.LoginView;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
@@ -21,6 +24,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
+
 	/**
 	 * The constructor.
 	 */
@@ -34,44 +38,20 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		String username = "";
-		String ip = "";
-		int port = 0;
+
+		Display display = Display.getCurrent();
+		Shell shell = new Shell(display);
+		LoginView login = new LoginView(shell);
 		
-		InputDialog dialog = new InputDialog(null,"MultiType Login",
-      			"Username:","username",null); // new input dialog
-		dialog.open();
-		username = dialog.getValue();
-		
-		dialog = new InputDialog(null,"MultiType Login",
-	    			"URL or IP Address:","localhost",null); // new input dialog
-		dialog.open();
-		ip = dialog.getValue();
-			
-		dialog = new InputDialog(null,"MultiType Login",
-	    			"Port Number:","1337",null); // new input dialog
-		dialog.open();
-		port = Integer.parseInt(dialog.getValue());
-		
-		System.out.println(username + ip+port);
-		
-      /*if( dialog1.open()== IStatus.OK){ // open dialog and wait for return status code.
-      					// If user clicks ok display message box
-          String value = dialog1.getValue(); // fetch the value entered by the user.
-          MessageBox box = new MessageBox(null,SWT.ICON_INFORMATION);
-          box.setMessage("Hey there! You entered : " + value);
-          box.open();
-      }else{
-          MessageBox box = new MessageBox(null,SWT.ICON_INFORMATION);
-          box.setMessage("Bye!");
-          box.open();
-      }*/
-     
-		
-		
-		// Instantiate a FEUListener, which will also set up a BackendConnection
-		Activator.getDefault().connect(username, ip, port);
-		
+		if (login.getReturnCode() == 1)
+		{
+			// Cancel pressed, do nothing
+		}
+		else
+		{
+			// Instantiate a FEUListener, which will also set up a BackendConnection
+			Activator.getDefault().connect();
+		}
 	}
 
 	/**
