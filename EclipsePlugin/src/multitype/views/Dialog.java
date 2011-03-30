@@ -43,8 +43,9 @@ public class Dialog extends TitleAreaDialog {
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		txtMessage = new Text(container, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
+		txtMessage.setEditable(false);
 		txtMessage.setText(message);
-		txtMessage.setBounds(10, 10, 430, 148);
+		txtMessage.setBounds(10, 10, 430, 90);
 
 		return area;
 	}
@@ -64,7 +65,7 @@ public class Dialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(450, 300);
+		return new Point(450, 242);
 	}
 
 }
