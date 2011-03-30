@@ -41,6 +41,10 @@ public class FileUserManager {
 		
 	}
 	
+	/**
+	 * removes a file and its associated MarkupProcessor
+	 * @param fileid fileid of the file to be removed
+	 */
 	public void removeFile(int fileid) {
 		//kill the markup processor
 		markupprocs.remove(fileid).setDone();
