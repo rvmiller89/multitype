@@ -48,7 +48,8 @@ public class BackendClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
-				FrontEndUpdate.NotificationType.Connection_Error, -1, -1, null);
+				FrontEndUpdate.NotificationType.Connection_Error, -1, -1, 
+				e.toString());
 			fromServerQueue.add(f);
 			return;
 		} 
@@ -92,7 +93,7 @@ public class BackendClient {
 						done = true;
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 							FrontEndUpdate.NotificationType.Server_Disconnect, 
-							-1, -1, null);
+							-1, -1, e.toString());
 						fromServerQueue.add(f);
 					}
 				}
