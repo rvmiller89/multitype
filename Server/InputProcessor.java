@@ -56,7 +56,7 @@ public class InputProcessor implements Runnable {
 			Server.dprint("This InputProcessor no longer as the will to live." +
 					" Dropping client " + uid);
 			if( uid >= 0 ) {
-				fum.clientGone(uid);
+				fum.removeClient(uid);
 			}
 		}
 		catch (SocketException se) {
@@ -65,7 +65,7 @@ public class InputProcessor implements Runnable {
 			Server.dprint("This InputProcessor no longer as the will to live." +
 					" Dropping client " + uid);
 			if( uid >= 0 ) {
-				fum.clientGone(uid);
+				fum.removeClient(uid);
 			}
 		}
 		catch (IOException ioe) {

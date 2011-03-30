@@ -41,6 +41,16 @@ public class FileUserManager {
 		
 	}
 	
+	public void removeFile(int fileid) {
+		//kill the markup processor
+		markupprocs.remove(fileid).setDone();
+		
+		//remove file from filemap
+		filemap.remove(fileid);
+		
+		Server.dprint("Removed file " + fileid);
+	}
+	
 	/**
 	 * Adds a new user
 	 * @param uid UserID for the client to be added (from the FEU with username)
@@ -113,12 +123,16 @@ public class FileUserManager {
 	 * Called when a client has disconnected or been dropped.
 	 * @param uid
 	 */
-	public void clientGone(int uid) {
+	public void removeClient(int uid) {
 		//remove the OutputProcessor
-		usermap.remove(uid);
+		outprocs.remove(uid);
+		
+		//wait until server has processed all this client's updates
+		//TODO
+		
 		
 		//remove user from map
-		outprocs.remove(uid);
+		usermap.remove(uid);
 		
 		Server.dprint("Dropped client " + uid);
 	}
