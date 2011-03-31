@@ -188,7 +188,7 @@ public class LoginView extends TitleAreaDialog {
 				InputDialog dialog = new InputDialog(null,"Add a Connection Profile...",
 						"Profile Name:","",null);
 				dialog.open();
-				if (dialog.getReturnCode() != 1)	// Cancel button pressed
+				if (dialog.getReturnCode() != 1)	// Cancel button was not pressed
 				{
 					profileName = dialog.getValue();
 					
