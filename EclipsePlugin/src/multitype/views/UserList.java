@@ -2,19 +2,39 @@ package multitype.views;
 
 import java.util.ArrayList;
 
+import multitype.Activator;
+
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.equinox.internal.app.Activator;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
 
 
 /**
@@ -150,6 +170,7 @@ public class UserList extends ViewPart {
 			TreeParent p2 = new TreeParent("Parent 2");
 			p2.addChild(to4);*/
 			
+			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(user1);
 			invisibleRoot.addChild(user2);
@@ -162,10 +183,33 @@ public class UserList extends ViewPart {
 			return obj.toString();
 		}
 		public Image getImage(Object obj) {
+			ImageDescriptor descriptor = null;
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			if (obj instanceof TreeParent)
-			   imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+			if (obj instanceof TreeParent){
+				//ImageData id = new ImageData("icon/sample.gif");
+				//Activator.getImageDescriptor("icon/user.gif"); 
+				
+			}
+			//Image i = new Image(Display.getDefault(),"icon/user.gif");
+			
+			descriptor = Activator.getImageDescriptor("res/user.gif");
+			//PlatformUI.getWorkbench().get
+			//return i;
+				//obtain the cached image corresponding to the descriptor
+				   Image image = descriptor.createImage();//(Image)imageCache.get(descriptor);
+				   /*if (image == null) {
+				       image = descriptor.createImage();
+				       imageCache.put(descriptor, image);
+				   }*/
+				   return image;
+			   //imageKey = ISharedImages.IMG_OBJ_FOLDER;
+			//imageKey = "res/user.gif";
+			
+			//Image i = ImageDescriptor.//PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+			
+			//return i;
+			//return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+			//PlatformUI.getWorkbench().getSharedImages().
 		}
 	}
 	class NameSorter extends ViewerSorter {
