@@ -188,19 +188,21 @@ public class LoginView extends TitleAreaDialog {
 				InputDialog dialog = new InputDialog(null,"Add a Connection Profile...",
 						"Profile Name:","",null);
 				dialog.open();
-				profileName = dialog.getValue();
-				
-				ProfileInfo newProfile = new ProfileInfo(profileName,
-						textfield_username.getText(), 
-						textfield_host.getText(), 
-						Integer.parseInt(textfield_port.getText()));
-				
-				prefManager.addProfile(newProfile);
-				
-				// add to arraylist and list widget
-				profileList.add(newProfile);
-				listWidget.add(newProfile.getProfileName());
-				
+				if (dialog.getReturnCode() != 1)	// Cancel button pressed
+				{
+					profileName = dialog.getValue();
+					
+					ProfileInfo newProfile = new ProfileInfo(profileName,
+							textfield_username.getText(), 
+							textfield_host.getText(), 
+							Integer.parseInt(textfield_port.getText()));
+					
+					prefManager.addProfile(newProfile);
+					
+					// add to arraylist and list widget
+					profileList.add(newProfile);
+					listWidget.add(newProfile.getProfileName());
+				}
 			}
 		});
 	}

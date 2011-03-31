@@ -55,6 +55,10 @@ public class PreferenceManager
 				profileInfo.getPort());
 	}
 	
+	/**
+	 * Returns a list of ProfileInfo objects constructed from the preference store
+	 * @return ArrayList<ProfileInfo>
+	 */
 	public ArrayList<ProfileInfo> getProfileList()
 	{
 		ArrayList<ProfileInfo> list = new ArrayList<ProfileInfo>();
