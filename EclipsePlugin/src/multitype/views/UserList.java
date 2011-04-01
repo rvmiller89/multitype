@@ -192,7 +192,7 @@ public class UserList extends ViewPart {
 			}
 			//Image i = new Image(Display.getDefault(),"icon/user.gif");
 			
-			descriptor = Activator.getImageDescriptor("res/user.gif");
+			descriptor = Activator.getImageDescriptor("res/user.png");
 			//PlatformUI.getWorkbench().get
 			//return i;
 				//obtain the cached image corresponding to the descriptor

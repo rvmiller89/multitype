@@ -10,14 +10,14 @@
       </category>
       <view
             name="File List"
-            icon="icons/sample.gif"
+            icon="res/file.png"
             category="MultiType"
             class="multitype.views.FileList"
             id="multitype.views.FileList">
       </view>
       <view
             name="User List"
-            icon="icons/sample.gif"
+            icon="res/users.png"
             category="MultiType"
             class="multitype.views.UserList"
             id="multitype.views.UserList">
@@ -63,7 +63,7 @@
          </menu>
          <action
                label="Login"
-               icon="icons/sample.gif"
+               icon="res/icon.png"
                class="multitype.actions.LoginWindowAction"
                tooltip="MultiType Login"
                menubarPath="multitypeMenu/multitypeGroup"

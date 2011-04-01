@@ -2,10 +2,13 @@ package multitype.views;
 
 import java.util.ArrayList;
 
+import multitype.Activator;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -19,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
 
 import multitype.editors.ActiveEditor;
+import multitype.views.UserList.TreeParent;
 import multitype.FrontEndUpdate;
 
 
@@ -170,10 +174,20 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 			return obj.toString();
 		}
 		public Image getImage(Object obj) {
-			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			if (obj instanceof TreeParent)
-			   imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+			ImageDescriptor descriptor = null;
+			//String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			if (obj instanceof TreeParent){
+				//ImageData id = new ImageData("icon/sample.gif");
+				//Activator.getImageDescriptor("icon/user.gif"); 
+				
+			}
+			//Image i = new Image(Display.getDefault(),"icon/user.gif");
+			
+			descriptor = Activator.getImageDescriptor("res/file.png");
+			
+			Image image = descriptor.createImage();//(Image)imageCache.get(descriptor);
+			return image;
+			   
 		}
 	}
 	class NameSorter extends ViewerSorter {
