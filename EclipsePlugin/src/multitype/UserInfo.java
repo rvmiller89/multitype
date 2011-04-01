@@ -1,3 +1,7 @@
+/**
+ * @author Ryan Miller
+ */
+
 package multitype;
 
 public class UserInfo {

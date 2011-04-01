@@ -1,3 +1,8 @@
+/**
+ * @author Ryan Miller
+ * @author Azfar Khandoker
+ */
+
 package multitype.views;
 
 import java.util.ArrayList;
