@@ -73,12 +73,13 @@ public class EditorManager
 		    		doc.removeDocumentListener(listener);
 		    		doc.replace(fromPos, toPos - fromPos, "");
 					doc.addDocumentListener(listener); 
+					System.out.println("Editor Deletion-- fromPos: " + fromPos);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
 		    }
 		  });
-		System.out.println("Editor Deletion-- fromPos: " + fromPos);
+		
 	}
 	
 	private void insert(int fileId, int userId, final int fromPos, final String string)
@@ -90,13 +91,14 @@ public class EditorManager
 		    		doc.removeDocumentListener(listener);
 					doc.replace(fromPos, 0, string);
 					doc.addDocumentListener(listener);
+					System.out.println("Editor Insertion-- fromPos: " + fromPos + " string: " + string);
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
 		    }
 		  });
     	
-		System.out.println("Editor Insertion-- fromPos: " + fromPos + " string: " + string);
+		;
 	}
 	
 	private void highlight(int fileId, int userId, int fromPos, int toPos)

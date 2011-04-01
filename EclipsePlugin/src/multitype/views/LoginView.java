@@ -212,6 +212,6 @@ public class LoginView extends TitleAreaDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(552, 300);
+		return new Point(552, 333);
 	}
 }
