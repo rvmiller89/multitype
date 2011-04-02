@@ -56,12 +56,12 @@ public class ViewManager extends ViewPart{
 			case New_Host:
 				break;
 			case Host_Disconnect:
-				Activator.getDefault().showDialogAsync("Connection Error", "Host disconnected.\n\n" + feu.getContent());
+				Activator.getDefault().showDialogAsync("Connection Error", "Host disconnected.");
 
 				Activator.getDefault().isConnected = false;
 				break;
 			case Server_Disconnect:
-				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.\n\n" + feu.getContent());
+				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
 
 				Activator.getDefault().isConnected = false;
 				break;

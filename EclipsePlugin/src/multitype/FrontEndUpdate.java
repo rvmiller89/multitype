@@ -32,7 +32,9 @@ public class FrontEndUpdate implements Serializable {
 		Request_Host,
 		New_Host,
 		Host_Disconnect,
-		Server_Disconnect
+		Server_Disconnect,
+		Console_Message,			// RM: added
+		Chat_Message				// RM: added
 	}
 	private int startLocation, endLocation;
 	private int fileId, userId;
