@@ -60,13 +60,17 @@ public class NotificationProcessor implements Runnable {
 
 	private void processFEU(FrontEndUpdate feu) {
 		switch(feu.getNotificationType()) {
-		case New_Connection:
+		case New_Connection: // taken care of by the server
 			break;
 		case New_Shared_File:
+			fileUserManager.sendFEU(feu);
 			break;
 		case Close_Shared_File:
+			fileUserManager.sendFEU(feu);
+			// fileUserManager.removeFile(feu.getFileId()); TODO
 			break;
 		case Get_Shared_File:
+			// fileUserManager.sendFEUToClient(clientID, feu) TODO send to host id
 			break;
 		case User_Connected: 
 			int uid = feu.getUserId();
@@ -75,14 +79,18 @@ public class NotificationProcessor implements Runnable {
 			fileUserManager.sendFEU(feu);
 			break;
 		case User_Disconnected:
+			fileUserManager.sendFEU(feu);
+			// fileUserManager.removeClient(feu.getUserId()); TODO
 			break;
-		case Request_Host:
+		case Request_Host: 
+			// TODO no function
 			break;
-		case New_Host:
+		case New_Host: // Sent only from server to clients I believe
 			break;
 		case Host_Disconnect:
+			// TODO no function
 			break;
-		case Server_Disconnect:
+		case Server_Disconnect: // Only sent from server to clients
 			break;
 		case Console_Message:
 			fileUserManager.sendFEU(feu);
