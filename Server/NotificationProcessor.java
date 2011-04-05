@@ -86,6 +86,9 @@ public class NotificationProcessor implements Runnable {
 		case Console_Message:
 			fileUserManager.sendFEU(feu);
 			break;
+		case Chat_Message:
+			fileUserManager.sendFEU(feu);
+			break;
 		}
 	}
 }
