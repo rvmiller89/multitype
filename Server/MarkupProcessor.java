@@ -19,6 +19,9 @@ public class MarkupProcessor implements Runnable{
 	private boolean done = false;
 	private FileUserManager fileUserManager;
 	
+	
+	public Server debug_server;
+	
 	/**
 	 * Constructor for MarkupProcessor
 	 * @param fileUserManager
@@ -78,6 +81,11 @@ public class MarkupProcessor implements Runnable{
 	 * Gets the next item in the markupQueue
 	 */
 	private FrontEndUpdate getTopItem() {
+		
+		if(debug_server != null) {
+			debug_server.dump();
+		}
+		
 		FrontEndUpdate feu = null;
 		try {
 			feu = markupQueue.take();
@@ -188,4 +196,5 @@ public class MarkupProcessor implements Runnable{
 		}
 		return "\n" + sb.toString();
 	}
+	
 }

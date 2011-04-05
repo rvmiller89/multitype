@@ -155,6 +155,12 @@ public class FileUserManager {
 		}
 	}
 	
+	public void add_debug(Server s) {
+		for(MarkupProcessor m : markupprocs.values()) {
+			m.debug_server=s;
+		}
+	}
+	
 	/**
 	 * Returns a string representing the contents of the FUM and children's queues.
 	 * @return String

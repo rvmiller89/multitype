@@ -2,7 +2,7 @@
 *@author John Lima
 */
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
@@ -37,7 +37,7 @@ public class Server {
 	}
 	
 	public void serve() {
-		new Thread(new Runnable() { public void run() {
+		/* new Thread(new Runnable() { public void run() {
 				System.out.println("ASDF");
 				while(!done) {
 					System.err.println("Dump: \n" + dump());
@@ -48,7 +48,7 @@ public class Server {
 					}
 				}
 			}
-		}).start();
+		}).start();*/
 		
 		//Spawn all appropriate threads here
 		
@@ -113,7 +113,17 @@ public class Server {
 		System.err.println(s);
 	}
 	
-	public String dump() {
-		return fum.dump();
+	public void dump() {
+		try {
+			fum.add_debug(this);
+			BufferedWriter writer = new BufferedWriter(new FileWriter("dump", true));
+			writer.write(fum.dump());
+			writer.write("\n\n\n\n\n\n");
+			writer.close();
+		}
+		catch (Exception e) {
+			System.err.println("Error in dump");
+		}
+		
 	}
 }
