@@ -72,6 +72,7 @@ public class NotificationProcessor implements Runnable {
 			int uid = feu.getUserId();
 			String username = feu.getContent();
 			fileUserManager.addUser(uid, username);
+			fileUserManager.sendFEU(feu);
 			break;
 		case User_Disconnected:
 			break;
