@@ -13,9 +13,11 @@ import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 
 public class ViewManager extends ViewPart{
+	
+	public ConsoleManager consoleManager = null;
 
 	public ViewManager() {
-
+		consoleManager = new ConsoleManager();
 	}
 	
 	public void receive(FrontEndUpdate feu)
@@ -54,6 +56,14 @@ public class ViewManager extends ViewPart{
 			case Request_Host:
 				break;
 			case New_Host:
+				break;
+			case Console_Message:
+				// Console message received, have ConsoleManager add it to the view
+				consoleManager.setConsoleMessage(feu.getContent());
+				
+				break;
+			case Chat_Message:
+				// if there is time
 				break;
 			case Host_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Host disconnected.");
