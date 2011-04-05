@@ -3,6 +3,9 @@ package multitype.views;
 import java.util.ArrayList;
 
 import multitype.Activator;
+import multitype.FEUSender;
+import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.NotificationType;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
@@ -24,11 +27,18 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -226,8 +236,35 @@ public class UserList extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
+		parent.setLayout(new FormLayout());
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		Tree tree = viewer.getTree();
+		FormData fd_tree = new FormData();
+		fd_tree.top = new FormAttachment(0, 3);
+		fd_tree.right = new FormAttachment(0, 594);
+		fd_tree.left = new FormAttachment(0, 3);
+		tree.setLayoutData(fd_tree);
 		drillDownAdapter = new DrillDownAdapter(viewer);
+		
+		Button btnNewButton = new Button(parent, SWT.NONE);
+		fd_tree.bottom = new FormAttachment(100, -36);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.out.println("sending host request!!!!!!!!!" +Activator.getDefault().userInfo.getHost());
+				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+						NotificationType.Request_Host, 0, Activator.getDefault().userInfo.getUserid(), 
+						null);
+				Activator.getDefault().isHost = true;
+				//FEUSender.send(feu);
+			}
+		});
+		FormData fd_btnNewButton = new FormData();
+		fd_btnNewButton.bottom = new FormAttachment(100);
+		fd_btnNewButton.left = new FormAttachment(tree, 0, SWT.LEFT);
+		btnNewButton.setLayoutData(fd_btnNewButton);
+		btnNewButton.setText("Request to be Host");
+		
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());

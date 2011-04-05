@@ -1,14 +1,14 @@
 package multitype;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import java.util.ArrayList;
+
+import multitype.views.Dialog;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import multitype.views.Dialog;
-import multitype.views.LoginView;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -24,6 +24,8 @@ public class Activator extends AbstractUIPlugin {
 	private FEUListener feuListener;
 	public UserInfo userInfo;
 	public boolean isConnected;
+	public boolean isHost;
+	public ArrayList<UserInfo> connectedUserList; //user list
 	
 	/**
 	 * The constructor
@@ -44,6 +46,8 @@ public class Activator extends AbstractUIPlugin {
 		userInfo.setUserid(-2);
 		
 		isConnected = false;
+		
+		isHost = false;
 		
 	}
 
@@ -83,6 +87,10 @@ public class Activator extends AbstractUIPlugin {
 		// Start BackendClient
 		client.connect();
 	}
+	
+	//public void addUser(UserInfo user) {
+	//	connectedUserList.add(user);
+	//}
 	
 	public void showDialogAsync(final String title, final String message)
 	{
