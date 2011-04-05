@@ -34,6 +34,8 @@ public class Server {
 			System.err.println("Server(): " + ioe.toString());
 		}
 		
+		fum.add_debug(this); //DEBUG
+		
 	}
 	
 	public void serve() {
@@ -115,8 +117,7 @@ public class Server {
 	
 	public void dump() {
 		try {
-			fum.add_debug(this);
-			BufferedWriter writer = new BufferedWriter(new FileWriter("dump", true));
+			BufferedWriter writer = new BufferedWriter(new FileWriter("dump.txt", true));
 			writer.write(fum.dump());
 			writer.write("\n\n\n\n\n\n");
 			writer.close();

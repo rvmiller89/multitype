@@ -82,15 +82,15 @@ public class MarkupProcessor implements Runnable{
 	 */
 	private FrontEndUpdate getTopItem() {
 		
-		if(debug_server != null) {
-			debug_server.dump();
-		}
-		
 		FrontEndUpdate feu = null;
 		try {
 			feu = markupQueue.take();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+
+		if(debug_server != null) {
+			debug_server.dump();
 		}
 		
 		currentRevision++;
