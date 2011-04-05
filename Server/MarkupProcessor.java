@@ -84,14 +84,18 @@ public class MarkupProcessor implements Runnable{
 		
 		FrontEndUpdate feu = null;
 		try {
+			if(debug_server != null) {
+				while(markupQueue.peek() == null) {
+					Thread.sleep(100);
+				}
+				debug_server.dump();
+			}			
 			feu = markupQueue.take();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		if(debug_server != null) {
-			debug_server.dump();
-		}
+
 		
 		currentRevision++;
 		feu.setRevision(currentRevision);
