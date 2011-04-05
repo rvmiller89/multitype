@@ -208,6 +208,59 @@ public class FrontEndUpdate implements Serializable {
 	}
 	
 	/**
+	 * Returns a condensed, one-line version of toString
+	 * @return string containing info about the instance
+	 */
+	public String toLine() {
+		StringBuilder sb = new StringBuilder();
+		switch(this.getUpdateType()) {
+		case Markup:
+			sb.append("FEU: MU | ");
+			sb.append("FID: " + this.getFileId() + " | ");
+			sb.append("UID: " + this.getUserId() + " | ");
+			sb.append("RVN: " + this.getRevision() + " | ");
+			switch(this.getMarkupType()) {
+			case Insert:
+				sb.append("Type: Ins | ");
+				sb.append("LOC: " + this.getStartLocation() + " | ");
+				sb.append("STR: " + this.getInsertString());
+				break;
+			case Delete:
+				sb.append("Type: Del | ");
+				sb.append("SLOC: " + this.getStartLocation() + " | ");
+				sb.append("ELOC: " + this.getEndLocation());
+				break;
+			case Cursor:
+				sb.append("Type: Cursor | ");
+				sb.append("SLOC: " + this.getStartLocation());
+				break;
+			case Highlight:
+				sb.append("Type: Hlght\n");
+				sb.append("SLOC: " + this.getStartLocation() + " | ");
+				sb.append("ELOC: " + this.getEndLocation());
+				break;
+			}
+			break;
+		case Notification:
+			sb.append("FEU: NF | ");
+			sb.append("Type: "+this.getNotificationType()+" | ");
+			switch(this.getNotificationType()) {
+			case Connection_Succeed:
+				sb.append("ASGN ID: "+this.getUserId());
+				break;
+			case User_Connected:
+				sb.append("UID: "+this.getUserId()+ " | ");
+				sb.append("UNAME: "+this.getContent());
+				break;
+			}
+			break;
+		}
+		sb.append('\n');
+		//System.out.println(output);
+		return sb.toString();
+	}
+	
+	/**
 	 * Used for testing purposes
 	 */
 	public String toString() {
