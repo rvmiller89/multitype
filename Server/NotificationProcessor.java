@@ -83,6 +83,9 @@ public class NotificationProcessor implements Runnable {
 			break;
 		case Server_Disconnect:
 			break;
+		case Console_Message:
+			fileUserManager.sendFEU(feu);
+			break;
 		}
 	}
 }
