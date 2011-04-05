@@ -80,6 +80,18 @@ public class OutputProcessor implements Runnable {
 		}
 	}
 	
+	public String dump() {
+		StringBuilder sb = new StringBuilder();
+		
+		FrontEndUpdate[] oqa = this.outQueue.toArray(new FrontEndUpdate[0]);
+		for(int i = 0; i < oqa.length; i++) {
+			sb.append("FEU " + i + ": " + oqa[i].toLine());
+		}
+		
+		return sb.toString();
+	}
+	
+	
 	/**
 	 * Call this to terminate thread
 	 */

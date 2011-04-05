@@ -37,7 +37,21 @@ public class Server {
 	}
 	
 	public void serve() {
+		new Thread(new Runnable() { public void run() {
+				System.out.println("ASDF");
+				while(!done) {
+					System.err.println("Dump: \n" + dump());
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		
 		//Spawn all appropriate threads here
+		
 		while(!done) {
 			try {
 				Socket client = ssocket.accept();
@@ -97,5 +111,9 @@ public class Server {
 	
 	public static void dprint(String s) {
 		System.err.println(s);
+	}
+	
+	public String dump() {
+		return fum.dump();
 	}
 }

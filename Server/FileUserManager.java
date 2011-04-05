@@ -1,3 +1,8 @@
+/**
+ * Primarily handles associations between users and files
+ * @author John Lima
+ */
+
 import java.util.*;
 import java.net.*;
 
@@ -148,6 +153,22 @@ public class FileUserManager {
 			//add this FEU to the file's markup processor
 			markupprocs.get(fileid).addFEU(feu); 
 		}
+	}
+	
+	/**
+	 * Returns a string representing the contents of the FUM and children's queues.
+	 * @return String
+	 */
+	public synchronized String dump() {
+		StringBuilder sb = new StringBuilder();
+		for(Integer k : markupprocs.keySet()) {
+			sb.append("MP " + k + ": \n"+ markupprocs.get(k).dump() + "\n");
+		}
+		for(Integer k : outprocs.keySet()) {
+			sb.append("OP " + k + ": \n"+ outprocs.get(k).dump() + "\n");
+		}
+		
+		return sb.toString();
 	}
 
 }

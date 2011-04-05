@@ -1,3 +1,4 @@
+//import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -167,5 +168,24 @@ public class MarkupProcessor implements Runnable{
 			// or highlight)
 			return;
 		}
+	}
+	
+	/**
+	 * Prints information about the queues and their FEUs
+	 * @return a string with the desired information
+	 */
+	public synchronized String dump() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Markup Queue:\n");
+		FrontEndUpdate[] mqa = markupQueue.toArray(new FrontEndUpdate[0]);
+		for(int i = 0; i < mqa.length; i++) {
+			sb.append("FEU " + i + ": " + mqa[i].toLine());
+		}
+		sb.append("\n\n History Queue:\n");
+		FrontEndUpdate[] hqa = markupHistory.toArray(new FrontEndUpdate[0] );
+		for(int i = 0; i < hqa.length; i++) {
+			sb.append("FEU " + i + ": " + hqa[i].toLine());
+		}
+		return "\n" + sb.toString();
 	}
 }
