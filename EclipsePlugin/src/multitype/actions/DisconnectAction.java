@@ -45,6 +45,7 @@ public class DisconnectAction implements IWorkbenchWindowActionDelegate {
 					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
 					Activator.getDefault().userInfo.getUsername());
 			FEUSender.send(feu);
+			Activator.getDefault().userList.btnNewButton.setEnabled(false);
 			System.out.println("Disconnected from server.");
 		}
 		else {

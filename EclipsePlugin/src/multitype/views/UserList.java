@@ -82,6 +82,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private Action action2;
 	private Action doubleClickAction;
 	private IWorkbenchWindow window;
+	public Button btnNewButton;
 
 	/*
 	 * The content provider class is responsible for
@@ -221,15 +222,21 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		}
 		public Image getImage(Object obj) {
 			ImageDescriptor descriptor = null;
-			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			if (obj instanceof TreeParent){
+			//String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			//if (obj instanceof TreeParent){
 				//ImageData id = new ImageData("icon/sample.gif");
 				//Activator.getImageDescriptor("icon/user.gif"); 
 				
-			}
+			//}
+			descriptor = Activator.getImageDescriptor("res/user.png");
+			if (obj instanceof TreeObject && Activator.getDefault().hostName != null)
+				if (((TreeObject) obj).name == Activator.getDefault().hostName) {
+					descriptor = Activator.getImageDescriptor("res/host.png");
+				}
+			
 			//Image i = new Image(Display.getDefault(),"icon/user.gif");
 			
-			descriptor = Activator.getImageDescriptor("res/user.png");
+			
 			//PlatformUI.getWorkbench().get
 			//return i;
 				//obtain the cached image corresponding to the descriptor
@@ -273,7 +280,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		tree.setLayoutData(fd_tree);
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		
-		final Button btnNewButton = new Button(parent, SWT.NONE);
+		btnNewButton = new Button(parent, SWT.NONE);
+		btnNewButton.setEnabled(false);
 		fd_tree.bottom = new FormAttachment(100, -36);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -284,16 +292,18 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 						NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
 						Activator.getDefault().userInfo.getUsername());
 				Activator.getDefault().isHost = true;
-				
+				Activator.getDefault().hostName = "you";//Activator.getDefault().userInfo.getUsername();
 				//IWorkbenchPage[] iWBW = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
 				//Activator.getDefault().addUserToList("blah");
 				//for(int i = 0; i< iWBW.length;i++)
 				//	System.out.println(iWBW.toString());
 				//viewer.getTree().
 				//addUserToList("hell");
-				//viewer.refresh();
-				FEUSender.send(feu);
-				btnNewButton.setEnabled(false);
+				viewer.refresh();
+				if (Activator.getDefault().isConnected) {
+					FEUSender.send(feu);
+					btnNewButton.setEnabled(false);
+				}
 			}
 		});
 		FormData fd_btnNewButton = new FormData();
