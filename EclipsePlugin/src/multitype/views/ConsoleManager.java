@@ -44,9 +44,12 @@ public class ConsoleManager implements IConsoleLineTracker{
 					theConsole = (MessageConsole) existing[i];
 			
 			// If theConsole is still null, create the Multitype Console
-		 	MessageConsole multitypeConsole = new MessageConsole(name, null);
-		 	conMan.addConsoles(new IConsole[]{multitypeConsole});
-		 	theConsole = multitypeConsole;
+			if (theConsole == null)
+			{
+			 	MessageConsole multitypeConsole = new MessageConsole(name, null);
+			 	conMan.addConsoles(new IConsole[]{multitypeConsole});
+			 	theConsole = multitypeConsole;
+			}
 		}
 		
 		// Now you can write to it
