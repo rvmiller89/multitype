@@ -362,14 +362,8 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		// TODO Auto-generated method stub
 		this.window = window;
 		
+		// Capture reference to class in Activator for later use
+		Activator.getDefault().fileList = this;
+		
 	}
-	
-	 
-		private ITextEditor testEditorPart(IEditorPart editorPart) {
-			if (editorPart instanceof ITextEditor) {
-				return (ITextEditor) editorPart;
-			} else {
-				return null;
-			}
-		}
 }

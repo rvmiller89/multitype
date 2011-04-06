@@ -9,6 +9,7 @@ import multitype.FrontEndUpdate.NotificationType;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -42,6 +43,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
@@ -65,7 +68,7 @@ import org.eclipse.ui.part.ViewPart;
  * <p>
  */
 
-public class UserList extends ViewPart {
+public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate{
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -346,15 +349,6 @@ public class UserList extends ViewPart {
 		action1 = new Action() {
 			public void run() {
 				
-				/*  DEBUG:  testing a dialog...
-				 * 
-				 */
-
-				Display display = Display.getCurrent();
-				Shell shell = new Shell(display);
-				LoginView login = new LoginView(shell);
-
-				
 			}
 		};
 		action1.setText("Action 1");
@@ -399,5 +393,25 @@ public class UserList extends ViewPart {
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+
+	@Override
+	public void run(IAction action) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init(IWorkbenchWindow window) {
+
+		// Capture reference to class in Activator for later use
+		Activator.getDefault().userList = this;
+		
 	}
 }

@@ -3,6 +3,7 @@ package multitype;
 import java.util.ArrayList;
 
 import multitype.views.Dialog;
+import multitype.views.FileList;
 import multitype.views.UserList;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -30,6 +31,7 @@ public class Activator extends AbstractUIPlugin {
 	public boolean isHost;
 	public ArrayList<UserInfo> connectedUserList; //user list
 	public UserList userList;
+	public FileList fileList;
 	
 	/**
 	 * The constructor
