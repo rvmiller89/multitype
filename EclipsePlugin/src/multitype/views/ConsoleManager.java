@@ -43,13 +43,16 @@ public class ConsoleManager extends ViewPart{
 		 	theConsole = multitypeConsole;
 		}
 		
+		// Clear the console
+		theConsole.clearConsole();
+		
 		// Now you can write to it
 		
 		MessageConsoleStream out = theConsole.newMessageStream();
 		out.println(message);
 		
 		// Make sure this view is presented on screen
-		
+		// TODO this doesn't quite work...
 		IWorkbenchWindow window= 
 			Activator.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		
