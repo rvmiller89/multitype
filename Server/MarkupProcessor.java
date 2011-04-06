@@ -107,7 +107,7 @@ public class MarkupProcessor implements Runnable{
 	
 	private synchronized void addToMarkupHistory(FrontEndUpdate feu) {
 		if(markupHistory.size() == 100) {
-			markupHistory.remove(markupHistory.remove());
+			markupHistory.remove();
 			markupHistory.add(feu);
 		}
 		else {
