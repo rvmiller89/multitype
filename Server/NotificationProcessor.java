@@ -84,6 +84,7 @@ public class NotificationProcessor implements Runnable {
 			break;
 		case Request_Host: 
 			// TODO no function
+			fileUserManager.sendFEUToAll(FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.New_Host, -1, feu.getUserId(), feu.getContent()));
 			break;
 		case New_Host: // Sent only from server to clients I believe
 			break;
