@@ -2,7 +2,7 @@
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import multitype.FrontEndUpdate;
 /**
@@ -30,7 +30,7 @@ public class MarkupProcessor implements Runnable{
 	public MarkupProcessor(FileUserManager fileUserManager) {
 		this.fileUserManager = fileUserManager;
 		markupQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
-		markupHistory = new SynchronousQueue<FrontEndUpdate>();
+		markupHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
 	}
 	
 	/**
