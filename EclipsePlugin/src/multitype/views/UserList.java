@@ -81,6 +81,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	private IWorkbenchWindow window;
 
 	/*
 	 * The content provider class is responsible for
@@ -101,7 +102,14 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		TreeObject temp = new TreeObject(name);
 		invisibleRoot.addChild(temp);
 		viewer.refresh(false);
-		//IWorkbenchWindow[] iWBW = Activator.getDefault().getWorkbench().getWorkbenchWindows();
+	}
+	
+	public void deleteUserFromList(String name) {
+		for (int i = 0; i < invisibleRoot.children.size(); i++) {
+			if (invisibleRoot.children.get(i).toString() == name)
+				invisibleRoot.children.remove(i);
+		}
+		viewer.refresh(false);
 	}
 	
 	public class TreeObject implements IAdaptable {
@@ -201,6 +209,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			invisibleRoot.addChild(user);
 			//invisibleRoot.addChild(user2);
 			//invisibleRoot.addChild(user3);
+			init(window);
 		}
 		
 		
@@ -264,15 +273,16 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		tree.setLayoutData(fd_tree);
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		
-		Button btnNewButton = new Button(parent, SWT.NONE);
+		final Button btnNewButton = new Button(parent, SWT.NONE);
 		fd_tree.bottom = new FormAttachment(100, -36);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				
 				System.out.println("sending host request!!!!!!!!!" +invisibleRoot.getChildren().length);
 				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 						NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
-						null);
+						Activator.getDefault().userInfo.getUsername());
 				Activator.getDefault().isHost = true;
 				
 				//IWorkbenchPage[] iWBW = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
@@ -283,6 +293,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 				//addUserToList("hell");
 				//viewer.refresh();
 				FEUSender.send(feu);
+				btnNewButton.setEnabled(false);
 			}
 		});
 		FormData fd_btnNewButton = new FormData();
@@ -409,7 +420,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 
 	@Override
 	public void init(IWorkbenchWindow window) {
-
+		
 		// Capture reference to class in Activator for later use
 		Activator.getDefault().userList = this;
 		

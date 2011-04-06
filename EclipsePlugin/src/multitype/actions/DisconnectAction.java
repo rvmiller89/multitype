@@ -24,7 +24,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  */
 public class DisconnectAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
-
+	boolean added = false;
 	/**
 	 * The constructor.
 	 */
@@ -43,12 +43,25 @@ public class DisconnectAction implements IWorkbenchWindowActionDelegate {
 			Activator.getDefault().isConnected = false;
 			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
-					null);
+					Activator.getDefault().userInfo.getUsername());
 			FEUSender.send(feu);
 			System.out.println("Disconnected from server.");
 		}
 		else {
-			//Activator.getDefault().addUserToList("hmm");
+			/*if (added == false) {
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					NotificationType.User_Disconnected, -1, -1, 
+					"duhhhh");
+			Activator.getDefault().addUserToList(feu);
+			added= true;
+			}
+			else {
+				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+						NotificationType.User_Disconnected, -1, -1, 
+						"duhhhh");
+				Activator.getDefault().deleteUserFromList(feu);
+				added = false;
+			}*/
 			System.out.println("not connected to a server.");
 		}
 	}

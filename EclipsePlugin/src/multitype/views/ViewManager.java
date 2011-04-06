@@ -7,7 +7,7 @@ package multitype.views;
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
-import multitype.views.UserList.TreeObject;
+import multitype.UserInfo;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -50,8 +50,10 @@ public class ViewManager extends ViewPart{
 			case Get_Shared_File:
 				break;
 			case User_Connected:
+				Activator.getDefault().addUserToList(feu);
 				break;
 			case User_Disconnected:
+				Activator.getDefault().deleteUserFromList(feu);
 				break;
 			case Request_Host:
 				break;

@@ -29,6 +29,7 @@ public class Activator extends AbstractUIPlugin {
 	public UserInfo userInfo;
 	public boolean isConnected;
 	public boolean isHost;
+	//public boolean 
 	public ArrayList<UserInfo> connectedUserList; //user list
 	public UserList userList;
 	public FileList fileList;
@@ -47,12 +48,8 @@ public class Activator extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		userInfo = new UserInfo();
-		
-		
 		// Start an unconnected client with userid = -2 (not -1 because Rodrigo's a douche)
 		userInfo.setUserid(-2);
-		
-		//userList = UserList; 
 		
 		isConnected = false;
 		
@@ -77,12 +74,14 @@ public class Activator extends AbstractUIPlugin {
 		userInfo.setPort(port);
 	}
 	
-	public void addUserToList(String name) {
-		IWorkingSet[] iWS = plugin.getWorkbench().getWorkingSetManager().getAllWorkingSets();
-		
-		IAdaptable[] iAD = iWS[0].getElements();
-		for(int i = 0; i< iAD.length;i++)
-			System.out.println(iAD.toString());
+	public void addUserToList(FrontEndUpdate feu) {
+		userList.addUserToList(feu.getContent());
+		//connectedUserList.add(null);
+	}
+	
+	public void deleteUserFromList(FrontEndUpdate feu) {
+		userList.deleteUserFromList(feu.getContent());
+		//connectedUserList.add(null);
 	}
 	
 	/**
@@ -108,16 +107,6 @@ public class Activator extends AbstractUIPlugin {
 	public void disconnect() {
 		client.finish();
 	}
-	
-	//public void addUserToList(String name) {
-		//TreeObject temp = new TreeObject(name);
-		//invisibleRoot.addChild(temp);
-		//viewer.refresh(false);
-		//IWorkbenchWindow[] iWBW = Activator.getDefault().getWorkbench().getWorkbenchWindows();
-	//}
-	//public void addUser(UserInfo user) {
-	//	connectedUserList.add(user);
-	//}
 	
 	public void showDialogAsync(final String title, final String message)
 	{
