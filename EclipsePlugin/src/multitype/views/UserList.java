@@ -3,7 +3,6 @@ package multitype.views;
 import java.util.ArrayList;
 
 import multitype.Activator;
-import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.NotificationType;
 
@@ -42,6 +41,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
@@ -72,6 +72,7 @@ public class UserList extends ViewPart {
 	 */
 	public static final String ID = "multitype.views.FileList";
 
+	public TreeParent invisibleRoot;
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action action1;
@@ -88,7 +89,19 @@ public class UserList extends ViewPart {
 	 * (like Task List, for example).
 	 */
 	 
-	class TreeObject implements IAdaptable {
+	/*TreeObject temp = new TreeObject("dummy");
+	invisibleRoot.addChild(temp);
+	//invisibleRoot.
+	viewer.refresh(false);
+	*/
+	public void addUserToList(String name) {
+		TreeObject temp = new TreeObject(name);
+		invisibleRoot.addChild(temp);
+		viewer.refresh(false);
+		//IWorkbenchWindow[] iWBW = Activator.getDefault().getWorkbench().getWorkbenchWindows();
+	}
+	
+	public class TreeObject implements IAdaptable {
 		private String name;
 		private TreeParent parent;
 		
@@ -136,7 +149,7 @@ public class UserList extends ViewPart {
 
 	class ViewContentProvider implements IStructuredContentProvider, 
 										   ITreeContentProvider {
-		private TreeParent invisibleRoot;
+		//private TreeParent invisibleRoot;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
@@ -172,9 +185,9 @@ public class UserList extends ViewPart {
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject user1 = new TreeObject("User 1");
-			TreeObject user2 = new TreeObject("User 2");
-			TreeObject user3 = new TreeObject("User 3");
+			TreeObject user = new TreeObject("you");
+			//TreeObject user2 = new TreeObject("User 2");
+			//TreeObject user3 = new TreeObject("User 3");
 		
 			/*TreeObject to4 = new TreeObject("Leaf 4");
 			TreeParent p2 = new TreeParent("Parent 2");
@@ -182,10 +195,12 @@ public class UserList extends ViewPart {
 			
 			
 			invisibleRoot = new TreeParent("");
-			invisibleRoot.addChild(user1);
-			invisibleRoot.addChild(user2);
-			invisibleRoot.addChild(user3);
+			invisibleRoot.addChild(user);
+			//invisibleRoot.addChild(user2);
+			//invisibleRoot.addChild(user3);
 		}
+		
+		
 	}
 	class ViewLabelProvider extends LabelProvider {
 
@@ -251,11 +266,18 @@ public class UserList extends ViewPart {
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.out.println("sending host request!!!!!!!!!" +Activator.getDefault().userInfo.getHost());
+				System.out.println("sending host request!!!!!!!!!" +invisibleRoot.getChildren().length);
 				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 						NotificationType.Request_Host, 0, Activator.getDefault().userInfo.getUserid(), 
 						null);
 				Activator.getDefault().isHost = true;
+				
+				IWorkbenchPage[] iWBW = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
+				
+				for(int i = 0; i< iWBW.length;i++)
+					System.out.println(iWBW.toString());
+				//viewer.getTree().
+				
 				//FEUSender.send(feu);
 			}
 		});
@@ -277,7 +299,7 @@ public class UserList extends ViewPart {
 		hookDoubleClickAction();
 		contributeToActionBars();
 	}
-
+	
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		menuMgr.setRemoveAllWhenShown(true);

@@ -4,13 +4,13 @@
 
 package multitype.views;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
-
 import multitype.Activator;
-import multitype.BackendClient;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
+import multitype.views.UserList.TreeObject;
+
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.ViewPart;
 
 public class ViewManager extends ViewPart{
 	
@@ -50,6 +50,12 @@ public class ViewManager extends ViewPart{
 			case Get_Shared_File:
 				break;
 			case User_Connected:
+				//IWorkbenchWindow[] iWBW = Activator.getDefault().getWorkbench().getWorkbenchWindows();
+				//Activator.getDefault().addUserToList(feu.toString());
+				//TreeObject temp = new TreeObject(feu.toString());
+				//invisibleRoot.addChild(temp);
+				//viewer.refresh(false);
+				//UserList.invisibleRoot.addChild(null);
 				break;
 			case User_Disconnected:
 				break;

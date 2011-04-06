@@ -62,6 +62,13 @@
             </separator>
          </menu>
          <action
+               label="Disconnect"
+               icon="res/user.png"
+               class="multitype.actions.DisconnectAction"
+               menubarPath="multitypeMenu/multitypeGroup"
+               id="multitype.actions.DisconnectAction">
+         </action>
+         <action
                label="Login"
                icon="res/icon.png"
                class="multitype.actions.LoginWindowAction"

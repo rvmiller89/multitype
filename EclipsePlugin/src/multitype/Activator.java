@@ -3,6 +3,7 @@ package multitype;
 import java.util.ArrayList;
 
 import multitype.views.Dialog;
+import multitype.views.UserList;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
@@ -26,6 +27,7 @@ public class Activator extends AbstractUIPlugin {
 	public boolean isConnected;
 	public boolean isHost;
 	public ArrayList<UserInfo> connectedUserList; //user list
+	public UserList userList;
 	
 	/**
 	 * The constructor
@@ -42,8 +44,11 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 		userInfo = new UserInfo();
 		
+		
 		// Start an unconnected client with userid = -2 (not -1 because Rodrigo's a douche)
 		userInfo.setUserid(-2);
+		
+		//userList = UserList; 
 		
 		isConnected = false;
 		
@@ -68,6 +73,10 @@ public class Activator extends AbstractUIPlugin {
 		userInfo.setPort(port);
 	}
 	
+	public void addUserToList(String name) {
+		//userList.addUserToList(name);
+	}
+	
 	/**
 	 * Instantiates a FEUListener and BackendConnection
 	 * 
@@ -88,6 +97,16 @@ public class Activator extends AbstractUIPlugin {
 		client.connect();
 	}
 	
+	public void disconnect() {
+		client.finish();
+	}
+	
+	//public void addUserToList(String name) {
+		//TreeObject temp = new TreeObject(name);
+		//invisibleRoot.addChild(temp);
+		//viewer.refresh(false);
+		//IWorkbenchWindow[] iWBW = Activator.getDefault().getWorkbench().getWorkbenchWindows();
+	//}
 	//public void addUser(UserInfo user) {
 	//	connectedUserList.add(user);
 	//}
