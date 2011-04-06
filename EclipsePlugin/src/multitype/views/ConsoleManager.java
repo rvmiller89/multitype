@@ -8,6 +8,7 @@ import multitype.Activator;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.console.*;
 import org.eclipse.ui.part.ViewPart;
@@ -49,18 +50,25 @@ public class ConsoleManager extends ViewPart{
 		
 		// Make sure this view is presented on screen
 		
-		IWorkbenchPage page = 
-			Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();	//obtain the active page
-		String id = IConsoleConstants.ID_CONSOLE_VIEW;
+		IWorkbenchWindow window= 
+			Activator.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		
-		IConsoleView view = null;
-		try {
-			view = (IConsoleView) page.showView(id);
-		} catch (PartInitException e) {
-			Activator.getDefault().showDialogAsync("Error", e.toString());
-			e.printStackTrace();
+		if (window != null) {
+		    IWorkbenchPage page = window.getActivePage();
+		    if (page != null) {
+		       
+				String id = IConsoleConstants.ID_CONSOLE_VIEW;
+				
+				IConsoleView view = null;
+				try {
+					view = (IConsoleView) page.showView(id);
+				} catch (PartInitException e) {
+					Activator.getDefault().showDialogAsync("Error", e.toString());
+					e.printStackTrace();
+				}
+				view.display((IConsole)theConsole);
+		    }
 		}
-		view.display((IConsole)theConsole);
 	}
 
 	@Override
