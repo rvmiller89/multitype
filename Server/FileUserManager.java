@@ -25,6 +25,7 @@ public class FileUserManager {
 		markupprocs = new HashMap<Integer, MarkupProcessor>();
 		filemap = new HashMap<Integer,String>();
 		usermap = new HashMap<Integer,String>();
+		fileusermap = new HashMap<Integer, Vector<Integer> >();
 		
 		nextUID = 0;
 		
@@ -94,14 +95,21 @@ public class FileUserManager {
 	 */
 	public void sendFEUToClient(int clientID, FrontEndUpdate feu) {
 		//TODO
-		//examine the fileid and only send to the output procs associated with that userid
+		outprocs.get(clientID).addFEU(feu);
 		
-		//For Build 1, just send to all clients
-		//for(OutputProcessor op : outprocs.values()) {
-		//	op.addFEU(feu);
-		//}
 	}
 	
+	/**
+	 * Sends an FEU to all clients with the specified file open
+	 * @param fileID The File ID of the file
+	 * @param feu The FEU to send
+	 */
+	public void sendFEUToFile(int fileID, FrontEndUpdate feu) {
+		Vector<Integer> ulist = fileusermap.get(fileID);
+		for(Integer i : ulist) {
+			sendFEUToClient(i,feu);
+		}
+	}
 	
 	/**
 	 * Adds a new client to the system
