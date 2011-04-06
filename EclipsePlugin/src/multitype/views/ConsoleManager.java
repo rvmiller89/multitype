@@ -61,6 +61,7 @@ public class ConsoleManager extends ViewPart{
 			e.printStackTrace();
 		}
 		view.display((IConsole)theConsole);
+		//testing
 	}
 
 	@Override
