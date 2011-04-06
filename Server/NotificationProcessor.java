@@ -63,11 +63,11 @@ public class NotificationProcessor implements Runnable {
 		case New_Connection: // taken care of by the server
 			break;
 		case New_Shared_File:
-			fileUserManager.sendFEU(feu);
+			fileUserManager.sendFEUToAll(feu);
 			break;
 		case Close_Shared_File:
-			fileUserManager.sendFEU(feu);
-			// fileUserManager.removeFile(feu.getFileId()); TODO
+			fileUserManager.sendFEUToAll(feu);
+			fileUserManager.removeFile(feu.getFileId());
 			break;
 		case Get_Shared_File:
 			// fileUserManager.sendFEUToClient(clientID, feu) TODO send to host id
@@ -76,10 +76,10 @@ public class NotificationProcessor implements Runnable {
 			int uid = feu.getUserId();
 			String username = feu.getContent();
 			fileUserManager.addUser(uid, username);
-			fileUserManager.sendFEU(feu);
+			fileUserManager.sendFEUToAll(feu);
 			break;
 		case User_Disconnected:
-			fileUserManager.sendFEU(feu);
+			fileUserManager.sendFEUToAll(feu);
 			// fileUserManager.removeClient(feu.getUserId()); TODO
 			break;
 		case Request_Host: 
@@ -93,10 +93,10 @@ public class NotificationProcessor implements Runnable {
 		case Server_Disconnect: // Only sent from server to clients
 			break;
 		case Console_Message:
-			fileUserManager.sendFEU(feu);
+			fileUserManager.sendFEUToAll(feu);
 			break;
 		case Chat_Message:
-			fileUserManager.sendFEU(feu);
+			fileUserManager.sendFEUToAll(feu);
 			break;
 		}
 	}

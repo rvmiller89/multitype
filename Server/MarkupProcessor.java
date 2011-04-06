@@ -40,7 +40,7 @@ public class MarkupProcessor implements Runnable{
 	public void run() {
 		while(!done) { // TODO special feu if we want to notify markuprocessor to die but not send. 
 			FrontEndUpdate feu = getTopItem();
-			fileUserManager.sendFEU(feu);
+			fileUserManager.sendFEU(this, feu);
 		}		
 	}
 	

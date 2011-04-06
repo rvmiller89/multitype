@@ -48,20 +48,6 @@ public class FileUserManager {
 	}
 	
 	/**
-	 * removes a file and its associated MarkupProcessor
-	 * @param fileid fileid of the file to be removed
-	 */
-	public void removeFile(int fileid) {
-		//kill the markup processor
-		markupprocs.remove(fileid).setDone();
-		
-		//remove file from filemap
-		filemap.remove(fileid);
-		
-		Server.dprint("Removed file " + fileid);
-	}
-	
-	/**
 	 * Adds a new user
 	 * @param uid UserID for the client to be added (from the FEU with username)
 	 * @param username Username to associate with this username
@@ -75,19 +61,25 @@ public class FileUserManager {
 	}
 	
 	/**
-	 * Sends a Markup FEU to all the clients with that file open.
+	 * Sends a Markup FEU to all clients associated with that file
 	 * @param feu The FEU to send.
 	 */
-	public void sendFEU(FrontEndUpdate feu) {
-		//TODO
-		//examine the fileid and only send to the output procs associated with that userid
-		
-		//For Build 1, just send to all clients
+	public void sendFEU(MarkupProcessor m, FrontEndUpdate feu) {
+		int fileid = -1;
+		for(Integer i : markupprocs.keySet()) {
+			if(markupprocs.get(i) == m) {
+				fileid = i;
+				sendFEUToFile(fileid, feu);
+			}
+		}
+	}
+
+	public void sendFEUToAll(FrontEndUpdate feu) {
 		for(OutputProcessor op : outprocs.values()) {
 			op.addFEU(feu);
 		}
 	}
-
+	
 	/**
 	 * Sends a FEU to a specific client 
 	 * @param clientID userid of target client
@@ -132,6 +124,19 @@ public class FileUserManager {
 		//generate next userid
 		return nextUID++;
 		
+	}
+	
+	/**
+	 * "Closes" a file by removing it from the appropriate maps
+	 * @param fileid
+	 */
+	public void removeFile(int fileid) {
+		fileusermap.remove(fileid);
+		filemap.remove(fileid);
+		markupprocs.remove(fileid).setDone(); //kills the markup processor for this file
+		
+		Server.dprint("Removed file " + fileid);
+		//May need to wait for revisions to this file to go out??
 	}
 	
 	/**
