@@ -3,6 +3,7 @@ package multitype.views;
 import java.util.ArrayList;
 
 import multitype.Activator;
+import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.NotificationType;
 
@@ -41,7 +42,6 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
@@ -268,17 +268,18 @@ public class UserList extends ViewPart {
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("sending host request!!!!!!!!!" +invisibleRoot.getChildren().length);
 				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-						NotificationType.Request_Host, 0, Activator.getDefault().userInfo.getUserid(), 
+						NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
 						null);
 				Activator.getDefault().isHost = true;
 				
-				IWorkbenchPage[] iWBW = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
-				
-				for(int i = 0; i< iWBW.length;i++)
-					System.out.println(iWBW.toString());
+				//IWorkbenchPage[] iWBW = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
+				//Activator.getDefault().addUserToList("blah");
+				//for(int i = 0; i< iWBW.length;i++)
+				//	System.out.println(iWBW.toString());
 				//viewer.getTree().
-				
-				//FEUSender.send(feu);
+				//addUserToList("hell");
+				//viewer.refresh();
+				FEUSender.send(feu);
 			}
 		});
 		FormData fd_btnNewButton = new FormData();

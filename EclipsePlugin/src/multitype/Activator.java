@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import multitype.views.Dialog;
 import multitype.views.UserList;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -74,7 +76,11 @@ public class Activator extends AbstractUIPlugin {
 	}
 	
 	public void addUserToList(String name) {
-		//userList.addUserToList(name);
+		IWorkingSet[] iWS = plugin.getWorkbench().getWorkingSetManager().getAllWorkingSets();
+		
+		IAdaptable[] iAD = iWS[0].getElements();
+		for(int i = 0; i< iAD.length;i++)
+			System.out.println(iAD.toString());
 	}
 	
 	/**

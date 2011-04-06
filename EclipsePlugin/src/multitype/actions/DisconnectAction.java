@@ -5,16 +5,12 @@
 package multitype.actions;
 
 import multitype.Activator;
-import multitype.views.LoginView;
+import multitype.FEUSender;
+import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.NotificationType;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
@@ -45,6 +41,10 @@ public class DisconnectAction implements IWorkbenchWindowActionDelegate {
 		if (Activator.getDefault().isConnected == true) {
 			Activator.getDefault().disconnect();
 			Activator.getDefault().isConnected = false;
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
+					null);
+			FEUSender.send(feu);
 			System.out.println("Disconnected from server.");
 		}
 		else {
