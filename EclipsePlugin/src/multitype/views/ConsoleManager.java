@@ -22,6 +22,8 @@ public class ConsoleManager extends ViewPart{
 	
 	public final void setConsoleMessage(String message)
 	{	
+		//Activator.getDefault().showDialogAsync("Test", "here");
+		
 		if (theConsole == null)
 		{
 			// Link to plugin's console
@@ -47,7 +49,6 @@ public class ConsoleManager extends ViewPart{
 		
 		// Make sure this view is presented on screen
 		
-		IConsole myConsole = theConsole;	// console instance
 		IWorkbenchPage page = 
 			Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();	//obtain the active page
 		String id = IConsoleConstants.ID_CONSOLE_VIEW;
@@ -59,7 +60,7 @@ public class ConsoleManager extends ViewPart{
 			Activator.getDefault().showDialogAsync("Error", e.toString());
 			e.printStackTrace();
 		}
-		view.display(myConsole);
+		view.display((IConsole)theConsole);
 	}
 
 	@Override

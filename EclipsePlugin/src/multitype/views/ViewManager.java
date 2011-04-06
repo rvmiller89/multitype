@@ -17,7 +17,7 @@ public class ViewManager extends ViewPart{
 	public ConsoleManager consoleManager = null;
 
 	public ViewManager() {
-		//consoleManager = new ConsoleManager();
+		consoleManager = new ConsoleManager();
 	}
 	
 	public void receive(FrontEndUpdate feu)
