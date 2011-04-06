@@ -6,14 +6,14 @@ package multitype.views;
 
 import multitype.Activator;
 
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.debug.ui.console.IConsoleLineTracker;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.console.*;
-import org.eclipse.ui.part.ViewPart;
 
-public class ConsoleManager extends ViewPart{
+public class ConsoleManager implements IConsoleLineTracker{
 	
 	private static MessageConsole theConsole = null;
 
@@ -75,13 +75,21 @@ public class ConsoleManager extends ViewPart{
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void dispose() {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setFocus() {
+	public void init(org.eclipse.debug.ui.console.IConsole arg0) {
+		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void lineAppended(IRegion arg0) {
+		// TODO Auto-generated method stub
+		Activator.getDefault().showDialogAsync("Revd", "Got Console Line");
 	}
 
 }

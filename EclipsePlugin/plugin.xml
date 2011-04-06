@@ -42,6 +42,14 @@
          </view>
       </perspectiveExtension>
    </extension>
+   <extension 
+   		point="org.eclipse.debug.ui.consoleLineTrackers">
+  		<consoleLineTracker 
+    		id="multitype.views.ConsoleManager"
+     		class="multitype.views.ConsoleManager"
+    	 	processType="MultiTypeProcess">
+  		</consoleLineTracker>
+	</extension>
    <extension
          point="org.eclipse.help.contexts">
       <contexts
