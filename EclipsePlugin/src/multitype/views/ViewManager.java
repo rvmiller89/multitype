@@ -59,7 +59,7 @@ public class ViewManager extends ViewPart{
 				break;
 			case Console_Message:
 				// Console message received, have ConsoleManager add it to the view
-				consoleManager.setConsoleMessage(feu.getContent());
+				consoleManager.addConsoleLine(feu.getContent());
 				
 				break;
 			case Chat_Message:

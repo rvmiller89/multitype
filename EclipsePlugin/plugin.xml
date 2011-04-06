@@ -47,7 +47,7 @@
   		<consoleLineTracker 
     		id="multitype.views.ConsoleManager"
      		class="multitype.views.ConsoleManager"
-    	 	processType="MultiTypeProcess">
+    	 	processType="java">
   		</consoleLineTracker>
 	</extension>
    <extension

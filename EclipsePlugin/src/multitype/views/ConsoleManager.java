@@ -5,8 +5,12 @@
 package multitype.views;
 
 import multitype.Activator;
+import multitype.FEUSender;
+import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.NotificationType;
 
 import org.eclipse.debug.ui.console.IConsoleLineTracker;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -15,13 +19,15 @@ import org.eclipse.ui.console.*;
 
 public class ConsoleManager implements IConsoleLineTracker{
 	
+	private org.eclipse.debug.ui.console.IConsole listenConsole;
+	
 	private static MessageConsole theConsole = null;
 
 	public ConsoleManager() {
 		
 	}
 	
-	public final void setConsoleMessage(String message)
+	public final void addConsoleLine(String message)
 	{	
 		//Activator.getDefault().showDialogAsync("Test", "here");
 		
@@ -42,9 +48,6 @@ public class ConsoleManager implements IConsoleLineTracker{
 		 	conMan.addConsoles(new IConsole[]{multitypeConsole});
 		 	theConsole = multitypeConsole;
 		}
-		
-		// Clear the console
-		theConsole.clearConsole();
 		
 		// Now you can write to it
 		
@@ -76,20 +79,32 @@ public class ConsoleManager implements IConsoleLineTracker{
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void init(org.eclipse.debug.ui.console.IConsole arg0) {
-		// TODO Auto-generated method stub
+	public void init(org.eclipse.debug.ui.console.IConsole console) {
+		listenConsole = console;
 		
 	}
 
 	@Override
-	public void lineAppended(IRegion arg0) {
-		// TODO Auto-generated method stub
-		Activator.getDefault().showDialogAsync("Revd", "Got Console Line");
+	public void lineAppended(IRegion region) {
+		try {
+			// Grab line of output
+			String line = listenConsole.getDocument().get(region.getOffset(), region.getLength());
+			
+			// Send line to other clients
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Console_Message,
+					0,
+					Activator.getDefault().userInfo.getUserid(),
+					line);
+			FEUSender.send(feu);
+			
+			
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
