@@ -94,9 +94,7 @@ public class FileUserManager {
 	 * @param feu FEU to send
 	 */
 	public void sendFEUToClient(int clientID, FrontEndUpdate feu) {
-		//TODO
 		outprocs.get(clientID).addFEU(feu);
-		
 	}
 	
 	/**
@@ -163,6 +161,10 @@ public class FileUserManager {
 		}
 	}
 	
+	/**
+	 * For the debug dumps only!
+	 * @param s server instance
+	 */
 	public void add_debug(Server s) {
 		for(MarkupProcessor m : markupprocs.values()) {
 			m.debug_server=s;
