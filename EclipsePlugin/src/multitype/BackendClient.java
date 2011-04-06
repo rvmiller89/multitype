@@ -1,8 +1,10 @@
 package multitype;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -27,6 +29,9 @@ public class BackendClient {
 	private String url;
 	private int port;
 	
+	// DEBUG variables
+	BufferedWriter writer;
+	
 	/**
 	 * Constructor for BackendClient
 	 * @param url Url to connect to, can be domain name or ip
@@ -37,7 +42,14 @@ public class BackendClient {
 		this.port = port;
 		fromServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		fromFrontEndQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
-		markupHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();		
+		markupHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
+		
+		// DEBUG
+		/*try {
+			writer = new BufferedWriter(new FileWriter("/home/rharagut/Desktop/dump.txt", true));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
 	}
 	
 	public void connect() {
@@ -64,9 +76,11 @@ public class BackendClient {
 					try {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
-						if(feu.getUpdateType() == FrontEndUpdate.UpdateType.Markup)
-							revisionNumber = feu.getRevision();
 						fromServerQueue.add(feu);
+						// DEBUG
+						/*writer.write("\n-----------------\n");
+						writer.write("Incoming FEU: " + feu.toLine() + "\n");
+						dumpMarkupHistory();*/
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
@@ -91,8 +105,8 @@ public class BackendClient {
 						FrontEndUpdate feu = fromFrontEndQueue.take();
 						feu.setRevision(revisionNumber);
 						addToLocalHistory(feu);
-						System.out.print("Sent FEU\n"); //TODO DEBUG
-						System.out.println(feu.toString());
+						//System.out.print("Sent FEU\n"); //TODO DEBUG
+						//System.out.println(feu.toString());
 						out.writeObject(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -126,14 +140,25 @@ public class BackendClient {
 	public FrontEndUpdate getUpdate() {
 		try {
 			FrontEndUpdate update =  fromServerQueue.take();
+			System.out.println("before local update");
+			System.out.println("Received FEU " + update.toLine());
+			dumpMarkupHistory();
 			checkLocalHistory(update);
-			System.out.print("Received FEU\n"); //TODO DEBUG
-			System.out.println(update.toString());
+			System.out.println("after local update");
+			System.out.println("Received FEU " + update.toLine());
+			dumpMarkupHistory();
+			System.out.println("--------\n--------");
+			//System.out.print("Received FEU\n"); //TODO DEBUG
+			//System.out.println(update.toString());
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void FEUProcessed(FrontEndUpdate feu) {
+		revisionNumber = feu.getRevision();
 	}
 	
 	private void addToLocalHistory(FrontEndUpdate feu) {
@@ -193,6 +218,7 @@ public class BackendClient {
 		// don't update if the user is the same
 		if(toUpdate.getUserId() == given.getUserId()) 
 			return;
+		toUpdate.setRevision(given.getRevision());
 		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 			int insertAt = given.getStartLocation();
 			int sizeOfInsert = given.getInsertString().length();
@@ -245,6 +271,22 @@ public class BackendClient {
 	 */
 	public void finish() {
 		done = true;
+		
+		//DEBUG
+		/*try {
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+	}
+	
+	private void dumpMarkupHistory() {
+		System.out.println("muh----------");
+		int i=0; 
+		for(FrontEndUpdate feu : markupHistory) {
+			System.out.println(i + feu.toLine() + "\n");
+			i++;
+		}
 	}
 
 }
