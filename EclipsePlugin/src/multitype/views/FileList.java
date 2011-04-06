@@ -3,6 +3,8 @@ package multitype.views;
 import java.util.ArrayList;
 
 import multitype.Activator;
+import multitype.FEUSender;
+import multitype.FrontEndUpdate.NotificationType;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
@@ -296,36 +298,16 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				/*********************************************
 				 * 
-				 * 
-				 * Example of how to access active editor window
-				 * 
-				 * Displays message with selected text form active editor window.
-				 * 
+				 * Adding message to the console of everyone else....
 				 * 
 				 */
 				
-				ITextEditor editor = ActiveEditor.getEditor();
+				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Console_Message, 
+						0,
+						Activator.getDefault().userInfo.getUserid(),
+						"This is a test of the Console output capabilities.");
+				FEUSender.send(feu);
 				
-				IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
-				ISelectionProvider selectionProvider = editor.getSelectionProvider();
-			    ITextSelection selection = (ITextSelection) selectionProvider.getSelection();
-			    String text = selection.getText();
-			    
-			    String pasteText = "Hello";
-			    IDocumentProvider dp = editor.getDocumentProvider();
-			    IDocument doc = dp.getDocument(editor.getEditorInput());
-			    int offset = 0;
-			    
-			    //offset = doc.getLineOffset(doc.getNumberOfLines()-4);
-			    try {
-			    	
-					doc.replace(offset, 0, pasteText+"\n");
-				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				showMessage(text);
 
 			}
 		};
