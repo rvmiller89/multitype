@@ -1,7 +1,8 @@
 //import java.util.ArrayList;
-import java.util.Vector;
+import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.SynchronousQueue;
 
 import multitype.FrontEndUpdate;
 /**
@@ -14,7 +15,7 @@ import multitype.FrontEndUpdate;
 public class MarkupProcessor implements Runnable{
 
 	private BlockingQueue<FrontEndUpdate> markupQueue;
-	private Vector<FrontEndUpdate> markupHistory;
+	private Queue<FrontEndUpdate> markupHistory;
 	private int currentRevision = 0; // TODO this assumes one file
 	private boolean done = false;
 	private FileUserManager fileUserManager;
@@ -29,7 +30,7 @@ public class MarkupProcessor implements Runnable{
 	public MarkupProcessor(FileUserManager fileUserManager) {
 		this.fileUserManager = fileUserManager;
 		markupQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
-		markupHistory = new Vector<FrontEndUpdate>();
+		markupHistory = new SynchronousQueue<FrontEndUpdate>();
 	}
 	
 	/**
@@ -106,7 +107,7 @@ public class MarkupProcessor implements Runnable{
 	
 	private synchronized void addToMarkupHistory(FrontEndUpdate feu) {
 		if(markupHistory.size() == 100) {
-			markupHistory.remove(markupHistory.lastElement());
+			markupHistory.remove(markupHistory.remove());
 			markupHistory.add(feu);
 		}
 		else {
