@@ -65,13 +65,17 @@ public class FileUserManager {
 	 * @param feu The FEU to send.
 	 */
 	public void sendFEU(MarkupProcessor m, FrontEndUpdate feu) {
-		int fileid = -1;
+		
+		sendFEUToAll(feu);
+		
+		//NEEDS USER LIST!!!
+		/* int fileid = -1;
 		for(Integer i : markupprocs.keySet()) {
 			if(markupprocs.get(i) == m) {
 				fileid = i;
 				sendFEUToFile(fileid, feu);
 			}
-		}
+		}*/
 	}
 
 	public void sendFEUToAll(FrontEndUpdate feu) {
