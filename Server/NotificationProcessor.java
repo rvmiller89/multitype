@@ -80,7 +80,7 @@ public class NotificationProcessor implements Runnable {
 			break;
 		case User_Disconnected:
 			fileUserManager.sendFEUToAll(feu);
-			// fileUserManager.removeClient(feu.getUserId()); TODO
+			fileUserManager.removeClient(feu.getUserId());
 			break;
 		case Request_Host: 
 			// TODO no function
@@ -89,6 +89,7 @@ public class NotificationProcessor implements Runnable {
 			break;
 		case Host_Disconnect:
 			// TODO no function
+			// JSL - need to clear out the FUM info here?
 			break;
 		case Server_Disconnect: // Only sent from server to clients
 			break;
