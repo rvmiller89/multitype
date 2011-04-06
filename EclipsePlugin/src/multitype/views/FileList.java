@@ -307,7 +307,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 						Activator.getDefault().userInfo.getUserid(),
 						"This is a test of the Console output capabilities.");
 				FEUSender.send(feu);
-				
+				// test
 
 			}
 		};
