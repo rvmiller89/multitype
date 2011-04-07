@@ -29,7 +29,6 @@ public class Activator extends AbstractUIPlugin {
 	public UserInfo userInfo;
 	public boolean isConnected;
 	public boolean isHost;
-	public String hostName;
 	//public boolean 
 	public ArrayList<UserInfo> connectedUserList; //user list
 	public UserList userList;

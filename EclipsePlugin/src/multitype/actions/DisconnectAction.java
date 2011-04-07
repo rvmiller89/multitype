@@ -45,7 +45,7 @@ public class DisconnectAction implements IWorkbenchWindowActionDelegate {
 					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
 					Activator.getDefault().userInfo.getUsername());
 			FEUSender.send(feu);
-			Activator.getDefault().userList.btnNewButton.setEnabled(false);
+			Activator.getDefault().userList.hostRequestButton.setEnabled(false);
 			System.out.println("Disconnected from server.");
 		}
 		else {
@@ -63,6 +63,15 @@ public class DisconnectAction implements IWorkbenchWindowActionDelegate {
 				Activator.getDefault().deleteUserFromList(feu);
 				added = false;
 			}*/
+			
+			////testing purpose//////
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					NotificationType.User_Disconnected, -1, -1, 
+					"zzzzzz");
+			Activator.getDefault().addUserToList(feu);
+			Activator.getDefault().userList.hostRequestButton.setEnabled(true);
+			////testing purpose//////
+			
 			System.out.println("not connected to a server.");
 		}
 	}
