@@ -174,19 +174,13 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject test1 = new TreeObject("0_SERVER: Insert 'a' fromPosition=0");
-			TreeObject test2 = new TreeObject("1_SERVER: Insert 'b' fromPosition=1");
-			TreeObject test3 = new TreeObject("2_SERVER: Delete 'a' fromPosition=0 to null");
+			// TODO this is where you add things to the view
+			TreeObject test1 = new TreeObject("0_add file 'Test.txt' w/ fileid = 1 to Shared Files");
 			
-			/*TreeObject to4 = new TreeObject("Leaf 4");
-			TreeParent p2 = new TreeParent("Parent 2");
-			p2.addChild(to4);*/
-			//FrontEndUpdate fu;
 			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(test1);
-			invisibleRoot.addChild(test2);
-			invisibleRoot.addChild(test3);
+
 		}
 	}
 	class ViewLabelProvider extends LabelProvider {
@@ -306,27 +300,15 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 				 * Handle double click on test items
 				 * 
 				 */
-
-				FrontEndUpdate fu;
+				// TODO fill in your actions here
 				
 				char c = obj.toString().charAt(0);
 				switch (c)
 				{
 					case '0':
-						//showMessage("0");
-						// userid = 500 just so we can test all of these no matter what user we are
-						fu = FrontEndUpdate.createInsertFEU(0, 50, 0, "a");
-						FEUSender.send(fu);
-						break;
-					case '1':
-						//showMessage("1");
-						fu = FrontEndUpdate.createInsertFEU(0, 50, 1, "b");
-						FEUSender.send(fu);
-						break;
-					case '2':
-						//showMessage("2");
-						fu = FrontEndUpdate.createDeleteFEU(0, 50, 0, 1);
-						FEUSender.send(fu);
+
+						Activator.getDefault().fileList.addSharedFile(1, "Test.txt");
+					
 						break;
 					default:
 						showMessage("Not implemented...");

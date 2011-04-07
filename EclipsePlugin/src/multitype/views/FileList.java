@@ -60,6 +60,9 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 	
 	private IWorkbenchWindow window;
 	
+	private TreeParent openFiles;
+	private TreeParent sharedFiles;
+	
 
 	/*
 	 * The content provider class is responsible for
@@ -73,13 +76,22 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 	 
 	class TreeObject implements IAdaptable {
 		private String name;
+		private int fileid;
 		private TreeParent parent;
 		
 		public TreeObject(String name) {
 			this.name = name;
 		}
+		public TreeObject(String name, int fileid) {
+			this.name = name;
+			this.fileid = fileid;
+		}
 		public String getName() {
 			return name;
+		}
+		public int getFileID()
+		{
+			return fileid;
 		}
 		public void setParent(TreeParent parent) {
 			this.parent = parent;
@@ -155,9 +167,12 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject file1 = new TreeObject("File 1");
+			/*TreeObject file1 = new TreeObject("File 1");
 			TreeObject file2 = new TreeObject("File 2");
-			TreeObject file3 = new TreeObject("File 3");
+			TreeObject file3 = new TreeObject("File 3");*/
+			
+			openFiles = new TreeParent("Open Files");
+			sharedFiles = new TreeParent("Shared Files");
 			
 			/*TreeObject to4 = new TreeObject("Leaf 4");
 			TreeParent p2 = new TreeParent("Parent 2");
@@ -165,9 +180,9 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 			//FrontEndUpdate fu;
 			
 			invisibleRoot = new TreeParent("");
-			invisibleRoot.addChild(file1);
-			invisibleRoot.addChild(file2);
-			invisibleRoot.addChild(file3);
+			invisibleRoot.addChild(openFiles);
+			invisibleRoot.addChild(sharedFiles);
+			init(window);
 		}
 	}
 	class ViewLabelProvider extends LabelProvider {
@@ -176,14 +191,13 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 			return obj.toString();
 		}
 		public Image getImage(Object obj) {
-			ImageDescriptor descriptor = null;
-			//String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			if (obj instanceof TreeParent){
-				//ImageData id = new ImageData("icon/sample.gif");
-				//Activator.getImageDescriptor("icon/user.gif"); 
-				
+			if (obj instanceof TreeParent)
+			{
+				String imageKey = ISharedImages.IMG_OBJ_FOLDER;
+				return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 			}
-			//Image i = new Image(Display.getDefault(),"icon/user.gif");
+			
+			ImageDescriptor descriptor = null;
 			
 			descriptor = Activator.getImageDescriptor("res/file.png");
 			
@@ -200,6 +214,23 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 	 */
 	public FileList() {
 	}
+	
+	/**
+	 * Adds a filename and id number to the FileList treeview under "Shared Files"
+	 * @param fileid
+	 * @param filename
+	 */
+	public void addSharedFile(int fileid, String filename)
+	{
+		TreeObject newFile = new TreeObject(filename, fileid);
+		sharedFiles.addChild(newFile);
+		viewer.refresh(false);
+		viewer.expandAll();	// To open up those folders if need be
+	}
+	
+	// TODO addOpenFile, removeSharedFile, removeOpenFile ...
+	
+	
 
 	/**
 	 * This is a callback that will allow us
@@ -320,6 +351,8 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
 				showMessage("Double-click detected on "+obj.toString());
+				
+				// TODO have it print the fileid, too (cast as TreeObject, first)
 			}
 		};
 	}
