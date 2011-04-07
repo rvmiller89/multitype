@@ -33,6 +33,7 @@ public class ViewManager extends ViewPart{
 
 				// Save userid and respond with User_Connected
 				Activator.getDefault().userInfo.setUserid(feu.getUserId());
+				Activator.getDefault().userInfo.setUsername(feu.getContent());
 				
 				FrontEndUpdate connectedFEU = 
 					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.User_Connected, 
