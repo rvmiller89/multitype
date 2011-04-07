@@ -1,16 +1,12 @@
 package multitype;
 
-import java.util.ArrayList;
-
 import multitype.views.Dialog;
 import multitype.views.FileList;
 import multitype.views.UserList;
 
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -29,8 +25,7 @@ public class Activator extends AbstractUIPlugin {
 	public UserInfo userInfo;
 	public boolean isConnected;
 	public boolean isHost;
-	//public boolean 
-	public ArrayList<UserInfo> connectedUserList; //user list
+
 	public UserList userList;
 	public FileList fileList;
 	
@@ -40,27 +35,16 @@ public class Activator extends AbstractUIPlugin {
 	public Activator() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		userInfo = new UserInfo();
 		// Start an unconnected client with userid = -2 (not -1 because Rodrigo's a douche)
 		userInfo.setUserid(-2);
-		
 		isConnected = false;
-		
 		isHost = false;
-		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
@@ -113,14 +97,11 @@ public class Activator extends AbstractUIPlugin {
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		      //MessageDialog.openInformation(null, title, message);
-		    	
 		    	Display display = Display.getCurrent();
 				Shell shell = new Shell(display);
 				Dialog dialog = new Dialog(shell, title, message);
 		    }
 		  });
-		
 	}
 	
 
