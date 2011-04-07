@@ -7,6 +7,7 @@ import multitype.FEUSender;
 import multitype.FrontEndUpdate.NotificationType;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.*;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -220,12 +221,17 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 	 * @param fileid
 	 * @param filename
 	 */
-	public void addSharedFile(int fileid, String filename)
+	public void addSharedFile(final int fileid, final String filename)
 	{
-		TreeObject newFile = new TreeObject(filename, fileid);
-		sharedFiles.addChild(newFile);
-		viewer.refresh(false);
-		viewer.expandAll();	// To open up those folders if need be
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+				TreeObject newFile = new TreeObject(filename, fileid);
+				sharedFiles.addChild(newFile);
+				viewer.refresh(false);
+				viewer.expandAll();	// To open up those folders if need be
+		    }
+		  });
 	}
 	
 	// TODO addOpenFile, removeSharedFile, removeOpenFile ...
@@ -348,13 +354,26 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
+				// Handle double-click action on a treeview item
+				
+				// Grab item
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
+				TreeObject item = (TreeObject)obj;
 				
-				TreeObject tObj = (TreeObject)obj;
+				// TODO implement these:
 				
-				showMessage("Double-click detected on " + tObj.getName() + " with id: " + tObj.getFileID());
-				// TODO have it print the fileid, too (cast as TreeObject, first)
+				// if parent.getName() is "Shared Files" and _non-host_, signal EditorManager 
+				// to Get_Shared_file and add file to "Open Files" (create if needed)
+				
+				
+				// if parent.getName() is "Shared Files" and _host_, signal EditorManager
+				// to Close_Shared_file and remove file from "Shared Files"
+				
+				// TODO remove file from "Shared Files" when _non_host_ and user closes editor tab
+				
+				showMessage("Double-click detected on " + 
+						item.getName() + " with id: " + item.getFileID() + " and parent: " + item.parent.getName());
 			}
 		};
 	}

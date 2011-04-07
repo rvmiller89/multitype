@@ -33,6 +33,9 @@ public class ViewManager extends ViewPart{
 
 				// Save userid and respond with User_Connected
 				Activator.getDefault().userInfo.setUserid(feu.getUserId());
+				
+				// TODO This value is already set from the LoginView...
+				// probably remove this call
 				Activator.getDefault().userInfo.setUsername(feu.getContent());
 				
 				FrontEndUpdate connectedFEU = 
@@ -42,7 +45,11 @@ public class ViewManager extends ViewPart{
 				
 				Activator.getDefault().isConnected = true;
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
+				
+				// TODO run asynchronously
 				Activator.getDefault().userList.hostRequestButton.setEnabled(true);
+				// TODO take this function out of Activator
+				// TODO run asynchronously
 				Activator.getDefault().addUserToList(feu);
 				break;
 			case New_Shared_File:
@@ -52,15 +59,23 @@ public class ViewManager extends ViewPart{
 			case Get_Shared_File:
 				break;
 			case User_Connected:
+				// TODO take this function out of Activator
+				// TODO run asynchronously
 				Activator.getDefault().addUserToList(feu);
 				break;
 			case User_Disconnected:
+				// TODO take this function out of Activator
+				// TODO run asynchronously
 				Activator.getDefault().deleteUserFromList(feu);
 				break;
 			case Request_Host:
 				break;
 			case New_Host:
+				
+				// TODO check on this... first of all, is content (a string) containing the userid of the new host?
+				// second, is the userid associated with this FEU the same as yourself (which means it's being ignored)
 				Activator.getDefault().userInfo.setHost(feu.getContent());
+				// TODO run asynchronously
 				Activator.getDefault().userList.hostRequestButton.setEnabled(false);
 				break;
 			case Console_Message:
