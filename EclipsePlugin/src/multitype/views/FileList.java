@@ -350,8 +350,10 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
 				
+				TreeObject tObj = (TreeObject)obj;
+				
+				showMessage("Double-click detected on " + tObj.getName() + " with id: " + tObj.getFileID());
 				// TODO have it print the fileid, too (cast as TreeObject, first)
 			}
 		};
