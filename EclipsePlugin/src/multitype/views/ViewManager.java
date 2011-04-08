@@ -48,10 +48,25 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().userList.addUserToList(Activator.getDefault().userInfo.getUsername(), Activator.getDefault().userInfo.getUserid());
 				break;
 			case New_Shared_File:
+				// Non-host clients receive this, add to Shared FileList
+				// fileid, content = filename
+				Activator.getDefault().fileList.addSharedFile(feu.getFileId(), feu.getContent());
+				
 				break;
 			case Close_Shared_File:
 				break;
 			case Get_Shared_File:
+				// Host receives this
+				// userid of requester, fileid
+				// immediately send out Send_File FEU to requesting non_host client
+				// TODO
+				/*FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
+						feu.getFileId(),
+						feu.getUserId(),
+						feu.getContent());
+						
+				FEUSender.send(sentFeu);*/
+				
 				break;
 			case User_Connected:
 				// TODO run asynchronously
