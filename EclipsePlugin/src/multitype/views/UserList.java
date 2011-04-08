@@ -221,8 +221,9 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 				//Activator.getImageDescriptor("icon/user.gif"); 
 				
 			//}
+			System.out.println("finding the host: "+((TreeObject) obj).id + " vs "+hostId);
 			descriptor = Activator.getImageDescriptor("res/user.png");
-			if (obj instanceof TreeObject && Activator.getDefault().userInfo.getHost() != null)
+			if (obj instanceof TreeObject && Activator.getDefault().userList.hostId != -1)
 				if (((TreeObject) obj).id == hostId) {//Activator.getDefault().userInfo.getHost()) {
 					descriptor = Activator.getImageDescriptor("res/host.png");
 					System.out.println("host found: "+((TreeObject) obj).name);

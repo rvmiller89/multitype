@@ -98,7 +98,7 @@ public class ViewManager extends ViewPart{
 				break;
 			case Server_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
-
+				Activator.getDefault().userList.clearList();
 				Activator.getDefault().isConnected = false;
 				break;
 			default:
