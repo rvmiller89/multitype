@@ -36,7 +36,7 @@ public class ViewManager extends ViewPart{
 				
 				FrontEndUpdate connectedFEU = 
 					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.User_Connected, 
-							-1, feu.getUserId(), null);
+							-1, feu.getUserId(), Activator.getDefault().userInfo.getUsername());
 				FEUSender.send(connectedFEU);
 				
 				Activator.getDefault().isConnected = true;
