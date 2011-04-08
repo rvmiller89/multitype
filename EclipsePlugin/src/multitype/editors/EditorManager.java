@@ -38,6 +38,14 @@ public class EditorManager
 	public EditorManager()
 	{
 		editor = ActiveEditor.getEditor();
+		
+		if (editor == null)
+		{
+			System.err.println("ERROR: WE CANNOT START THE PLUG-IN WITH NO FILE OPEN....YET");
+			System.err.println("THIS MEANS THAT YOU CANNOT EDIT FOR THIS SESSION!!!");
+			return;
+		}
+		
 	    dp = editor.getDocumentProvider();
 	    doc = dp.getDocument(editor.getEditorInput());
 	    
@@ -88,16 +96,16 @@ public class EditorManager
 		switch(markupType)
 		{
 		case Cursor:
-			cursorPos(feu.getStartLocation(), feu.getUserId());
+			cursorPos(feu);
 			break;
 		case Delete:
-			delete(feu.getFileId(), feu.getUserId(), feu.getStartLocation(), feu.getEndLocation(), feu);
+			delete(feu);
 			break;
 		case Highlight:
-			highlight(feu.getFileId(), feu.getUserId(), feu.getStartLocation(), feu.getEndLocation());
+			highlight(feu);
 			break;
 		case Insert:
-			insert(feu.getFileId(), feu.getUserId(), feu.getStartLocation(), feu.getInsertString(), feu);
+			insert(feu);
 			break;
 		default:
 			throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + markupType);
@@ -105,17 +113,17 @@ public class EditorManager
 		
 	}
 	
-	private void delete(int fileId, int userId, final int fromPos, final int toPos, final FrontEndUpdate feu)
+	private void delete(final FrontEndUpdate feu)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
 		    	try {
 		    		doc.removeDocumentListener(listener);
-		    		doc.replace(fromPos, toPos - fromPos, "");
+		    		doc.replace(feu.getStartLocation(), feu.getEndLocation() - feu.getStartLocation(), "");
 		    		Activator.getDefault().client.FEUProcessed(feu);
 					doc.addDocumentListener(listener); 
-					System.out.println("Editor Deletion-- fromPos: " + fromPos);
+					System.out.println("Editor Deletion-- fromPos: " + feu.getStartLocation());
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
@@ -124,17 +132,17 @@ public class EditorManager
 		
 	}
 	
-	private void insert(int fileId, int userId, final int fromPos, final String string, final FrontEndUpdate feu)
+	private void insert(final FrontEndUpdate feu)
 	{
     	Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
 		    	try {
 		    		doc.removeDocumentListener(listener);
-					doc.replace(fromPos, 0, string);
+					doc.replace(feu.getStartLocation(), 0, feu.getInsertString());
 					Activator.getDefault().client.FEUProcessed(feu);
 					doc.addDocumentListener(listener);
-					System.out.println("Editor Insertion-- fromPos: " + fromPos + " string: " + string);
+					System.out.println("Editor Insertion-- fromPos: " + feu.getStartLocation() + " string: " + feu.getInsertString());
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
@@ -142,7 +150,7 @@ public class EditorManager
 		  });
 	}
 	
-	private void highlight(int fileId, int userId, int fromPos, int toPos)
+	private void highlight(final FrontEndUpdate feu)
 	{
 //		ISelectionProvider selectionProvider = editor.getSelectionProvider();
 //	    ITextSelection selection = (ITextSelection) selectionProvider.getSelection();
@@ -150,7 +158,7 @@ public class EditorManager
 //	    String text = selection.getText();
 	}
 	
-	private void cursorPos(int pos, int userId)
+	private void cursorPos(final FrontEndUpdate feu)
 	{
 		// TODO: build 2
 	}
@@ -173,9 +181,7 @@ int i = 0;
 //			    	try {
 //			    		IEditorReference iEditorReference = Activator.getDefault()
 //						.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-//						.getEditorReferences()[i];
-//			    		
-//			    		i = i == 0 ? 1 : 0;
+//						.getEditorReferences()[i = i == 0 ? 1 : 0];
 //			    		
 //			    		ITextEditor ieditor = ((ITextEditor)iEditorReference.getEditor(true));
 //			    		IDocument idoc = ieditor.getDocumentProvider().getDocument(ieditor.getEditorInput());
@@ -188,6 +194,13 @@ int i = 0;
 //					}
 //			    }
 //			  });
+			
+			for (int j = 0 ; j < Activator.getDefault()
+			.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+			.getEditorReferences().length ; j++)
+			System.err.println(Activator.getDefault()
+			.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+			.getEditorReferences()[j].getName() + " " + i++);
 
 			//key pressed....need to generate FEU
 			
