@@ -64,27 +64,43 @@ public class NotificationProcessor implements Runnable {
 			break;
 		case New_Shared_File:
 			fileUserManager.sendFEUToAll(feu);
+			fileUserManager.addFile(feu.getFileId(), feu.getContent());
 			break;
 		case Close_Shared_File:
 			fileUserManager.sendFEUToAll(feu);
 			fileUserManager.removeFile(feu.getFileId());
 			break;
 		case Get_Shared_File:
-			// fileUserManager.sendFEUToClient(clientID, feu) TODO send to host id
+			fileUserManager.sendFEUToClient(fileUserManager.getHost(), feu);
+			break;
+		case Send_File:
+			fileUserManager.sendFEUToClient(feu.getUserId(), feu);
+			fileUserManager.openFile(feu.getUserId(), feu.getFileId());
 			break;
 		case User_Connected: 
 			int uid = feu.getUserId();
 			String username = feu.getContent();
 			fileUserManager.addUser(uid, username);
 			fileUserManager.sendFEUToAll(feu);
+			fileUserManager.sendUsersToClient(uid);
 			break;
 		case User_Disconnected:
 			fileUserManager.sendFEUToAll(feu);
 			fileUserManager.removeClient(feu.getUserId());
 			break;
 		case Request_Host: 
-			// TODO no function
-			fileUserManager.sendFEUToAll(FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.New_Host, -1, feu.getUserId(), feu.getContent()));
+			if(fileUserManager.getHost() == -1) {
+				fileUserManager.setHost(feu.getUserId());
+				
+				fileUserManager.sendFEUToAll(
+					FrontEndUpdate.createNotificationFEU(
+							FrontEndUpdate.NotificationType.New_Host,
+							-1, feu.getUserId(), ""));
+			}
+			else {
+				
+				//silently drop request if a host already exists
+			}
 			break;
 		case New_Host: // Sent only from server to clients I believe
 			break;

@@ -20,6 +20,8 @@ public class FileUserManager {
 	
 	int nextUID;
 	
+	int hostid;
+	
 	public FileUserManager() {
 		outprocs = new HashMap<Integer, OutputProcessor>();
 		markupprocs = new HashMap<Integer, MarkupProcessor>();
@@ -28,6 +30,7 @@ public class FileUserManager {
 		fileusermap = new HashMap<Integer, Vector<Integer> >();
 		
 		nextUID = 0;
+		hostid = -1;
 		
 	}
 	
@@ -41,10 +44,17 @@ public class FileUserManager {
 		//spawn a new MarkupProcessor and add to Vector
 	 	MarkupProcessor thisMarkupProc = new MarkupProcessor(this);
 		markupprocs.put(fileid, thisMarkupProc);
+		filemap.put(fileid, filename);
+		fileusermap.put(fileid, new Vector<Integer>());
 		new Thread(thisMarkupProc).start();
 		
 		Server.dprint("Added a new file. FID: " + fileid);
 		
+	}
+	
+	
+	public void openFile(int userid, int fileid) {
+		fileusermap.get(fileid).add(userid);
 	}
 	
 	/**
@@ -58,6 +68,27 @@ public class FileUserManager {
 		usermap.put(uid,username);
 		
 		//TODO Will need to send this as a notification to the other users
+	}
+
+	public void sendUsersToClient(int uid) {
+		for(Integer i : usermap.keySet()) {
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					FrontEndUpdate.NotificationType.User_Connected, -1, i,
+					usermap.get(i));
+			this.sendFEUToClient(uid, feu);
+		}
+	}
+	
+	/**
+	 * Sets the given userid to the host
+	 * @param userid
+	 */
+	public void setHost(int userid) {
+		hostid = userid;
+	}
+	
+	public int getHost() {
+		return hostid;
 	}
 	
 	/**
