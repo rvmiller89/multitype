@@ -43,7 +43,7 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
 				
 				// TODO run asynchronously
-				// Activator.getDefault().userList.setButton(true);
+				Activator.getDefault().userList.setButton(true);
 				// TODO run asynchronously
 				Activator.getDefault().userList.addUserToList(Activator.getDefault().userInfo.getUsername(), Activator.getDefault().userInfo.getUserid());
 				break;
@@ -84,7 +84,7 @@ public class ViewManager extends ViewPart{
 				// second, is the userid associated with this FEU the same as yourself (which means it's being ignored)
 				Activator.getDefault().userInfo.setHost(feu.getContent());
 				// TODO run asynchronously
-				//Activator.getDefault().userList.setButton(false);
+				Activator.getDefault().userList.setButton(false);
 				break;
 			case Console_Message:
 				// Console message received, have ConsoleManager add it to the view
