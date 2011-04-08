@@ -36,6 +36,7 @@ public class LoginView extends TitleAreaDialog {
 	private Text textfield_host;
 	private Text textfield_port;
 	private Text textfield_password;
+	private Button button_2;
 	private PreferenceManager prefManager;
 	private ArrayList<ProfileInfo> profileList = null;
 	private List listWidget = null;
@@ -135,6 +136,7 @@ public class LoginView extends TitleAreaDialog {
 					// load values from list into fields
 					if (entry != null)
 					{
+						button_2.setEnabled(true);
 						textfield_username.setText(entry.getUsername());
 						textfield_host.setText(entry.getServer());
 						textfield_port.setText(entry.getPort() + "");
@@ -216,7 +218,8 @@ public class LoginView extends TitleAreaDialog {
 		button.setSelection(true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
-		Button button_2 = createButton(parent, REMOVE_ID, "Remove Profile", false);
+		button_2 = createButton(parent, REMOVE_ID, "Remove Profile", false);
+		button_2.setEnabled(false);
 		button_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

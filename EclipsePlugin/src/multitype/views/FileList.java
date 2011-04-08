@@ -396,9 +396,9 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		
 		action2 = new Action() {
 			public void run() {
-				
-				new FileEditorInput(null);
 
+				// Action 2
+				
 			}
 		};
 		action2.setText("Action 2");
