@@ -31,11 +31,11 @@ public class EditorManager
 	private IDocument doc;
 	private DocListener listener;
 	private IDocumentProvider dp;
-	private Map<Integer, Document> map;
+//	private Map<Integer, Document> map;
 	
 	public EditorManager()
 	{
-		map = new HashMap<Integer, Document>();
+//		map = new HashMap<Integer, Document>();
 		
 		editor = ActiveEditor.getEditor();
 		
