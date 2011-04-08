@@ -363,8 +363,14 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				// TODO implement these:
 				
+				boolean isHost = Activator.getDefault().isHost;
 				// if parent.getName() is "Shared Files" and _non-host_, signal EditorManager 
 				// to Get_Shared_file and add file to "Open Files" (create if needed)
+				//if (parent.getName().equals())
+				if (!isHost)
+				{
+					//if 
+				}
 				
 				
 				// if parent.getName() is "Shared Files" and _host_, signal EditorManager

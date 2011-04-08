@@ -32,7 +32,7 @@ public class FEUListener {
 						manager.dispatchFEU(fu);
 					else if (fu.getUpdateType() == FrontEndUpdate.UpdateType.Notification)
 					{
-						if (fu.getNotificationType() == NotificationType.Get_Shared_File
+						if (fu.getNotificationType() == NotificationType.Send_File
 								|| fu.getNotificationType() == NotificationType.New_Host)
 						{
 							// Special cases, send FEU even though userid is your own
