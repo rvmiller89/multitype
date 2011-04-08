@@ -83,7 +83,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private Action doubleClickAction;
 	private IWorkbenchWindow window;
 	private Button hostRequestButton;
-	public int hostId;
+	public int hostId = -1;
 
 	/*
 	 * The content provider class is responsible for
