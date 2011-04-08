@@ -34,10 +34,6 @@ public class ViewManager extends ViewPart{
 				// Save userid and respond with User_Connected
 				Activator.getDefault().userInfo.setUserid(feu.getUserId());
 				
-				// TODO This value is already set from the LoginView...
-				// probably remove this call
-				Activator.getDefault().userInfo.setUsername(feu.getContent());
-				
 				FrontEndUpdate connectedFEU = 
 					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.User_Connected, 
 							-1, feu.getUserId(), null);
@@ -47,10 +43,9 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
 				
 				// TODO run asynchronously
-				Activator.getDefault().userList.hostRequestButton.setEnabled(true);
-				// TODO take this function out of Activator
+				Activator.getDefault().userList.setButton(true);
 				// TODO run asynchronously
-				Activator.getDefault().addUserToList(feu);
+				Activator.getDefault().userList.addUserToList(Activator.getDefault().userInfo.getUsername(), Activator.getDefault().userInfo.getUserid());
 				break;
 			case New_Shared_File:
 				break;
@@ -59,14 +54,12 @@ public class ViewManager extends ViewPart{
 			case Get_Shared_File:
 				break;
 			case User_Connected:
-				// TODO take this function out of Activator
 				// TODO run asynchronously
-				Activator.getDefault().addUserToList(feu);
+				Activator.getDefault().userList.addUserToList(feu.getContent(), feu.getUserId());
 				break;
 			case User_Disconnected:
-				// TODO take this function out of Activator
 				// TODO run asynchronously
-				Activator.getDefault().deleteUserFromList(feu);
+				Activator.getDefault().userList.deleteUserFromList(feu.getUserId());
 				break;
 			case Request_Host:
 				break;
@@ -76,7 +69,7 @@ public class ViewManager extends ViewPart{
 				// second, is the userid associated with this FEU the same as yourself (which means it's being ignored)
 				Activator.getDefault().userInfo.setHost(feu.getContent());
 				// TODO run asynchronously
-				Activator.getDefault().userList.hostRequestButton.setEnabled(false);
+				Activator.getDefault().userList.setButton(false);
 				break;
 			case Console_Message:
 				// Console message received, have ConsoleManager add it to the view

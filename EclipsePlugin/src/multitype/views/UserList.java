@@ -82,7 +82,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private Action action2;
 	private Action doubleClickAction;
 	private IWorkbenchWindow window;
-	public Button hostRequestButton;
+	private Button hostRequestButton;
 
 	/*
 	 * The content provider class is responsible for
@@ -99,29 +99,21 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	//invisibleRoot.
 	viewer.refresh(false);
 	*/
-	public void addUserToList(String name) {
-		TreeObject temp = new TreeObject(name);
-		invisibleRoot.addChild(temp);
-		viewer.refresh(false);
-	}
-	
-	public void deleteUserFromList(String name) {
-		for (int i = 0; i < invisibleRoot.children.size(); i++) {
-			if (invisibleRoot.children.get(i).toString() == name)
-				invisibleRoot.children.remove(i);
-		}
-		viewer.refresh(false);
-	}
 	
 	public class TreeObject implements IAdaptable {
 		private String name;
+		private int id;
 		private TreeParent parent;
 		
-		public TreeObject(String name) {
+		public TreeObject(String name, int id) {
 			this.name = name;
+			this.id = id;
 		}
 		public String getName() {
 			return name;
+		}
+		public int getId() {
+			return id;
 		}
 		public void setParent(TreeParent parent) {
 			this.parent = parent;
@@ -140,7 +132,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	class TreeParent extends TreeObject {
 		private ArrayList children;
 		public TreeParent(String name) {
-			super(name);
+			super(name, -1); //not an user
 			children = new ArrayList();
 		}
 		public void addChild(TreeObject child) {
@@ -197,7 +189,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject user = new TreeObject("you");
+			//TreeObject user = new TreeObject("you");
 			//TreeObject user2 = new TreeObject("User 2");
 			//TreeObject user3 = new TreeObject("User 3");
 		
@@ -207,7 +199,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			
 			
 			invisibleRoot = new TreeParent("");
-			invisibleRoot.addChild(user);
+			//invisibleRoot.addChild(user);
 			//invisibleRoot.addChild(user2);
 			//invisibleRoot.addChild(user3);
 			init(window);
@@ -265,6 +257,42 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	public UserList() {
 	}
 
+	public void addUserToList(final String name, final int id) {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	TreeObject temp = new TreeObject(name, id);
+		    	invisibleRoot.addChild(temp);
+		    	viewer.refresh(false);
+		    }
+		});
+	}
+	
+	public void deleteUserFromList(final int id) {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	for (int i = 0; i < invisibleRoot.children.size(); i++) {
+			    	if (((TreeObject) invisibleRoot.children.get(i)).id == id) {
+			    		invisibleRoot.children.remove(i);
+			    		viewer.refresh(false);
+			    		break;
+			    	}
+			    }
+		    }
+		});	
+	}
+	
+	public void setButton(final boolean bol) {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	hostRequestButton.setEnabled(bol);
+		    }
+		});	
+	}
+	
+	
 	/**
 	 * This is a callback that will allow us
 	 * to create the viewer and initialize it.
