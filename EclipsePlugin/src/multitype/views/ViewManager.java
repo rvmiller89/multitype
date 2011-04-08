@@ -60,27 +60,27 @@ public class ViewManager extends ViewPart{
 				// userid of requester, fileid
 				// immediately send out Send_File FEU to requesting non_host client with content from Editor
 
+				// TODO Azfar - have this grab the content from the associated <<Document>> with feu.getFileId()
+				
+				String content = "Hello world.";
+				
 				FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
 						feu.getFileId(),
 						feu.getUserId(),
-						"Test.txt (debug)");
-				
-				//HOST
-				// TODO Azfar - have this grab the content from the associated <<Document>> with feu.getFileId()
-						
+						content);
+
 				FEUSender.send(sentFeu);
 				
 				break;
 			case Send_File:
 				// Non-host receives this
 				// userid (own), fileid, content
-				
-				// NON-HOST
-				
-				// TODO Azfar - open editor on screen with feu.getContent()
+
+				// TODO Azfar - open editor on screen with feu.getContent() for feu.getFileID();
 				
 				Activator.getDefault().fileList.removeSharedFile(feu.getFileId());
-				Activator.getDefault().fileList.addOpenFile(feu.getFileId(), feu.getContent());
+				Activator.getDefault().fileList.addOpenFile(feu.getFileId(), "Debug.txt");
+				// TODO grab filename from fileid mapping before adding to Open Files
 				
 				break;
 			case User_Connected:
