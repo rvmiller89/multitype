@@ -141,8 +141,8 @@ public class BackendClient {
 	 * @param feu Pre-constructed FrontEndUpdate to be sent
 	 */
 	public void sendUpdate(FrontEndUpdate feu) {
-		//for(FrontEndUpdate f : dumbUIThreadQueue)
-		//	updateFEUgivenFEU(f, feu);
+		for(FrontEndUpdate f : fromServerQueue)
+			updateFEUgivenFEU(f, feu, false);
 		fromFrontEndQueue.add(feu);
 	}
 	
@@ -152,7 +152,13 @@ public class BackendClient {
 	 */
 	public FrontEndUpdate getUpdate() {
 		try {
-			FrontEndUpdate update =  fromServerQueue.take();
+			FrontEndUpdate update;
+			while(true) {
+				Thread.sleep(10);
+				update =  fromServerQueue.peek();
+				if(update != null)
+					break;
+			}
 			System.out.println("before local update");
 			System.out.println("Received FEU " + update.toLine());
 			dumpFromFE();
@@ -171,8 +177,8 @@ public class BackendClient {
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 	
 	public void FEUProcessed(FrontEndUpdate feu) {
@@ -200,8 +206,8 @@ public class BackendClient {
 								update.getInsertString().equals(top.getInsertString()))
 							markupHistory.remove(top);
 						else {
-							updateFEUgivenFEU(top, update);
-							updateFEUgivenFEU(update, top);
+							updateFEUgivenFEU(top, update, true);
+							updateFEUgivenFEU(update, top, false);
 							top.setRevision(update.getRevision());
 						}
 					}
@@ -210,15 +216,15 @@ public class BackendClient {
 								update.getEndLocation() == top.getEndLocation())
 							markupHistory.remove(top);
 						else {
-							updateFEUgivenFEU(top, update);
-							updateFEUgivenFEU(update, top);
+							updateFEUgivenFEU(top, update, true);
+							updateFEUgivenFEU(update, top, false);
 							top.setRevision(update.getRevision());
 						}
 					}
 				}
 				else {
-					updateFEUgivenFEU(top, update);
-					updateFEUgivenFEU(update, top);
+					updateFEUgivenFEU(top, update, true);
+					updateFEUgivenFEU(update, top, false);
 					top.setRevision(update.getRevision());
 				}
 			}
@@ -231,10 +237,11 @@ public class BackendClient {
 	 * @param given
 	 */
 	private void updateFEUgivenFEU (FrontEndUpdate toUpdate, 
-			FrontEndUpdate given) {
+			FrontEndUpdate given, boolean updateRevision) {
 		if(toUpdate == given) //don't update itself
 			return;
-		toUpdate.setRevision(given.getRevision());
+		if(updateRevision)
+			toUpdate.setRevision(given.getRevision());
 		// don't update if the user is the same
 		if(toUpdate.getUserId() == given.getUserId()) 
 			return;
