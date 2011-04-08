@@ -92,10 +92,12 @@ public class ViewManager extends ViewPart{
 			case Request_Host:
 				break;
 			case New_Host:
-				Activator.getDefault().userList.hostId = feu.getUserId();
-				if (Activator.getDefault().userInfo.getUserid() == feu.getUserId())
-					Activator.getDefault().isHost = true;
-				Activator.getDefault().userList.setButton(false);
+				if (feu.getUserId() != -1) {
+					Activator.getDefault().userList.hostId = feu.getUserId();
+					if (Activator.getDefault().userInfo.getUserid() == feu.getUserId())
+						Activator.getDefault().isHost = true;
+					Activator.getDefault().userList.setButton(false);
+				}
 				break;
 			case Console_Message:
 				// Console message received, have ConsoleManager add it to the view
