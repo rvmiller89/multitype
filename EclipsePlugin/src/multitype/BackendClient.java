@@ -107,11 +107,14 @@ public class BackendClient {
 						addToLocalHistory(feu);
 						
 						// DEBUG
-						System.out.println("Sending FEU " + feu.toLine());
+						System.out.print("\tSending FEU " + feu.toLine());
+						System.out.print("\t");
 						dumpFromFE();
+						System.out.print("\t");
 						dumpFromServer();
+						System.out.print("\t");
 						dumpMarkupHistory();
-						System.out.println("xxxxxxxxxxx\nxxxxxxxxxxx");
+						System.out.println("\txxxxxxxxxxx\n\txxxxxxxxxxx");
 						
 						
 						
@@ -152,13 +155,13 @@ public class BackendClient {
 		try {
 			FrontEndUpdate update = fromServerQueue.take();
 			System.out.println("before local update");
-			System.out.println("Received FEU " + update.toLine());
+			System.out.print("Received FEU " + update.toLine());
 			dumpFromFE();
 			dumpFromServer();
 			dumpMarkupHistory();
 			checkLocalHistory(update);
 			System.out.println("after local update");
-			System.out.println("Received FEU " + update.toLine());
+			System.out.print("Received FEU " + update.toLine());
 			dumpFromFE();
 			dumpFromServer();
 			dumpMarkupHistory();
@@ -302,7 +305,7 @@ public class BackendClient {
 		System.out.println("muh----------");
 		int i=0; 
 		for(FrontEndUpdate feu : markupHistory) {
-			System.out.println(i + feu.toLine());
+			System.out.print(i + feu.toLine());
 			i++;
 		}
 	}
@@ -311,7 +314,7 @@ public class BackendClient {
 		System.out.println("from FE----------");
 		int i=0; 
 		for(FrontEndUpdate feu : fromFrontEndQueue) {
-			System.out.println(i + feu.toLine());
+			System.out.print(i + feu.toLine());
 			i++;
 		}
 	}
@@ -320,7 +323,7 @@ public class BackendClient {
 		System.out.println("from Server----------");
 		int i=0; 
 		for(FrontEndUpdate feu : fromServerQueue) {
-			System.out.println(i + feu.toLine());
+			System.out.print(i + feu.toLine());
 			i++;
 		}
 	}
