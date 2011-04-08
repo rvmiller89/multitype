@@ -7,7 +7,6 @@ package multitype.views;
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
-import multitype.FrontEndUpdate.NotificationType;
 import multitype.UserInfo;
 
 import org.eclipse.swt.widgets.Composite;
@@ -42,9 +41,10 @@ public class ViewManager extends ViewPart{
 				
 				Activator.getDefault().isConnected = true;
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
-
+				
+				// TODO run asynchronously
 				Activator.getDefault().userList.setButton(true);
-
+				// TODO run asynchronously
 				Activator.getDefault().userList.addUserToList(Activator.getDefault().userInfo.getUsername(), Activator.getDefault().userInfo.getUserid());
 				break;
 			case New_Shared_File:
@@ -60,35 +60,28 @@ public class ViewManager extends ViewPart{
 				// userid of requester, fileid
 				// immediately send out Send_File FEU to requesting non_host client
 				// TODO
-				FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
+				/*FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
 						feu.getFileId(),
 						feu.getUserId(),
 						feu.getContent());
 						
-				FEUSender.send(sentFeu);
-				
-				break;
-			case Send_File:
-				// Non-host receives this
-				// userid (own), fileid, content
-				// TODO  Azfar - open on screen
-				
+				FEUSender.send(sentFeu);*/
 				
 				break;
 			case User_Connected:
+				// TODO run asynchronously
 				Activator.getDefault().userList.addUserToList(feu.getContent(), feu.getUserId());
 				break;
 			case User_Disconnected:
+				// TODO run asynchronously
 				Activator.getDefault().userList.deleteUserFromList(feu.getUserId());
 				break;
 			case Request_Host:
 				break;
 			case New_Host:
-				
-				// TODO check on this... first of all, is content (a string) containing the userid of the new host?
-				// second, is the userid associated with this FEU the same as yourself (which means it's being ignored)
-				Activator.getDefault().userInfo.setHost(feu.getContent());
-
+				Activator.getDefault().userList.hostId = feu.getUserId();
+				if (Activator.getDefault().userInfo.getUserid() == feu.getUserId())
+					Activator.getDefault().isHost = true;
 				Activator.getDefault().userList.setButton(false);
 				break;
 			case Console_Message:

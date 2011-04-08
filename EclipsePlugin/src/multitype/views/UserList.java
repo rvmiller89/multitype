@@ -83,6 +83,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private Action doubleClickAction;
 	private IWorkbenchWindow window;
 	private Button hostRequestButton;
+	public int hostId;
 
 	/*
 	 * The content provider class is responsible for
@@ -222,7 +223,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			//}
 			descriptor = Activator.getImageDescriptor("res/user.png");
 			if (obj instanceof TreeObject && Activator.getDefault().userInfo.getHost() != null)
-				if (((TreeObject) obj).name == Activator.getDefault().userInfo.getHost()) {
+				if (((TreeObject) obj).id == hostId) {//Activator.getDefault().userInfo.getHost()) {
 					descriptor = Activator.getImageDescriptor("res/host.png");
 				}
 			
@@ -288,10 +289,29 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    @Override
 		    public void run() {
 		    	hostRequestButton.setEnabled(bol);
+		    	viewer.refresh(false);
 		    }
 		});	
 	}
 	
+	public void clearList() {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	invisibleRoot.children.clear();
+		    	viewer.refresh(false);
+		    }
+		});
+	}
+	
+	public void refresh() {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	viewer.refresh(false);
+		    }
+		});	
+	}
 	
 	/**
 	 * This is a callback that will allow us
@@ -319,8 +339,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 						NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
 						Activator.getDefault().userInfo.getUsername());
-				Activator.getDefault().isHost = true;
-				Activator.getDefault().userInfo.setHost("you");//Activator.getDefault().userInfo.getUsername();
+				//Activator.getDefault().isHost = true;
+				//Activator.getDefault().userInfo.setHost("you");//Activator.getDefault().userInfo.getUsername();
 				//IWorkbenchPage[] iWBW = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
 				//Activator.getDefault().addUserToList("blah");
 				//for(int i = 0; i< iWBW.length;i++)
