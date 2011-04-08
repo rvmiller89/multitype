@@ -4,6 +4,8 @@
 
 package multitype;
 
+import multitype.FrontEndUpdate.NotificationType;
+
 public class FEUListener {
 
 	private boolean done = false;
@@ -23,9 +25,20 @@ public class FEUListener {
 				while(!done) {
 					// Sends feu to FEUManager to dispatch 
 					// to EditorManager or ViewManager
+	
 					FrontEndUpdate fu = bc.getUpdate();
+					
 					if (!(fu.getUserId() == Activator.getDefault().userInfo.getUserid()))
 						manager.dispatchFEU(fu);
+					else if (fu.getUpdateType() == FrontEndUpdate.UpdateType.Notification)
+					{
+						if (fu.getNotificationType() == NotificationType.Get_Shared_File
+								|| fu.getNotificationType() == NotificationType.New_Host)
+						{
+							// Special cases, send FEU even though userid is your own
+							manager.dispatchFEU(fu);
+						}
+					}
 					
 				}
 			}			
