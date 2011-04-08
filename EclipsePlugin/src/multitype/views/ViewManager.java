@@ -95,7 +95,10 @@ public class ViewManager extends ViewPart{
 				if (feu.getUserId() != -1) {
 					Activator.getDefault().userList.hostId = feu.getUserId();
 					if (Activator.getDefault().userInfo.getUserid() == feu.getUserId())
+					{
 						Activator.getDefault().isHost = true;
+						Activator.getDefault().fileList.removeOpenFilesFolder();
+					}
 					Activator.getDefault().userList.setButton(false);
 				}
 				break;

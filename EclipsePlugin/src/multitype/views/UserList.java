@@ -336,19 +336,11 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		hostRequestButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				System.out.println("sending host request!!!!!!!!!" +invisibleRoot.getChildren().length);
+
 				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 						NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
 						Activator.getDefault().userInfo.getUsername());
-				//Activator.getDefault().isHost = true;
-				//Activator.getDefault().userInfo.setHost("you");//Activator.getDefault().userInfo.getUsername();
-				//IWorkbenchPage[] iWBW = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getPages();
-				//Activator.getDefault().addUserToList("blah");
-				//for(int i = 0; i< iWBW.length;i++)
-				//	System.out.println(iWBW.toString());
-				//viewer.getTree().
-				//addUserToList("hell");
+
 				viewer.refresh();
 				if (Activator.getDefault().isConnected) {
 					FEUSender.send(feu);

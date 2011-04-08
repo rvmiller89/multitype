@@ -63,6 +63,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 	
 	private TreeParent openFiles;
 	private TreeParent sharedFiles;
+	private TreeParent invisibleRoot;
 	
 
 	/*
@@ -132,7 +133,6 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 
 	class ViewContentProvider implements IStructuredContentProvider, 
 										   ITreeContentProvider {
-		private TreeParent invisibleRoot;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
@@ -279,6 +279,18 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		  });
 	}
 	
+	public void removeOpenFilesFolder()
+	{
+		invisibleRoot.removeChild(openFiles);
+		viewer.refresh(false);
+	}
+	
+	public void addOpenFilesFolder()
+	{
+		invisibleRoot.addChild(openFiles);
+		viewer.refresh(false);
+	}
+	
 
 	/**
 	 * This is a callback that will allow us
@@ -402,9 +414,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
 				TreeObject item = (TreeObject)obj;
-				
-				// TODO implement these:
-				
+
 				boolean isHost = Activator.getDefault().isHost;
 				// if parent.getName() is "Shared Files" and _non-host_, signal EditorManager 
 				// to Get_Shared_file and add file to "Open Files" (create if needed)
@@ -428,8 +438,6 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				// TODO remove file from "Shared Files" when _non_host_ and user closes editor tab
 				
-				showMessage("Double-click detected on " + 
-						item.getName() + " with id: " + item.getFileID() + " and parent: " + item.parent.getName());
 			}
 		};
 	}
