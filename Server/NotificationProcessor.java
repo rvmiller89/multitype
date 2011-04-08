@@ -83,6 +83,9 @@ public class NotificationProcessor implements Runnable {
 			fileUserManager.addUser(uid, username);
 			fileUserManager.sendFEUToAll(feu);
 			fileUserManager.sendUsersToClient(uid);
+			fileUserManager.sendFEUToClient(uid, FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.New_Host, -1, 
+						fileUserManager.getHost(),""));
 			break;
 		case User_Disconnected:
 			fileUserManager.sendFEUToAll(feu);
