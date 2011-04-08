@@ -24,7 +24,7 @@ public class BackendClient {
 	private BlockingQueue<FrontEndUpdate> fromServerQueue;
 	private BlockingQueue<FrontEndUpdate> fromFrontEndQueue;
 	private ConcurrentLinkedQueue<FrontEndUpdate> markupHistory;
-	private ConcurrentLinkedQueue<FrontEndUpdate> dumbUIThreadQueue;
+	//private ConcurrentLinkedQueue<FrontEndUpdate> dumbUIThreadQueue;
 	private boolean done = false;
 	private int revisionNumber = 0;
 	private String url;
@@ -44,7 +44,7 @@ public class BackendClient {
 		fromServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		fromFrontEndQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		markupHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
-		dumbUIThreadQueue = new ConcurrentLinkedQueue<FrontEndUpdate>();
+		//dumbUIThreadQueue = new ConcurrentLinkedQueue<FrontEndUpdate>();
 		
 		// DEBUG
 		/*try {
@@ -132,8 +132,8 @@ public class BackendClient {
 	 * @param feu Pre-constructed FrontEndUpdate to be sent
 	 */
 	public void sendUpdate(FrontEndUpdate feu) {
-		for(FrontEndUpdate f : dumbUIThreadQueue)
-			updateFEUgivenFEU(f, feu);
+		//for(FrontEndUpdate f : dumbUIThreadQueue)
+		//	updateFEUgivenFEU(f, feu);
 		fromFrontEndQueue.add(feu);
 	}
 	
@@ -154,7 +154,7 @@ public class BackendClient {
 			System.out.println("--------\n--------");
 			//System.out.print("Received FEU\n"); //TODO DEBUG
 			//System.out.println(update.toString());
-			dumbUIThreadQueue.add(update);
+			//dumbUIThreadQueue.add(update);
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -164,7 +164,7 @@ public class BackendClient {
 	
 	public void FEUProcessed(FrontEndUpdate feu) {
 		revisionNumber = feu.getRevision();
-		dumbUIThreadQueue.remove(feu);
+		//dumbUIThreadQueue.remove(feu);
 	}
 	
 	private void addToLocalHistory(FrontEndUpdate feu) {
