@@ -153,11 +153,8 @@ public class BackendClient {
 	public FrontEndUpdate getUpdate() {
 		try {
 			FrontEndUpdate update;
-			while(true) {
+			while((update = fromServerQueue.peek())==null) {
 				Thread.sleep(10);
-				update =  fromServerQueue.peek();
-				if(update != null)
-					break;
 			}
 			System.out.println("before local update");
 			System.out.println("Received FEU " + update.toLine());
