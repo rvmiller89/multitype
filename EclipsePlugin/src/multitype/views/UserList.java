@@ -221,12 +221,12 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 				//Activator.getImageDescriptor("icon/user.gif"); 
 				
 			//}
-			System.out.println("finding the host: "+((TreeObject) obj).id + " vs "+hostId);
+			//System.out.println("finding the host: "+((TreeObject) obj).id + " vs "+hostId);
 			descriptor = Activator.getImageDescriptor("res/user.png");
 			if (obj instanceof TreeObject && Activator.getDefault().userList.hostId != -1)
 				if (((TreeObject) obj).id == hostId) {//Activator.getDefault().userInfo.getHost()) {
 					descriptor = Activator.getImageDescriptor("res/host.png");
-					System.out.println("host found: "+((TreeObject) obj).name);
+					//System.out.println("host found: "+((TreeObject) obj).name);
 				}
 			
 			//Image i = new Image(Display.getDefault(),"icon/user.gif");
@@ -266,7 +266,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    public void run() {
 		    	TreeObject temp = new TreeObject(name, id);
 		    	invisibleRoot.addChild(temp);
-		    	viewer.refresh(false);
+		    	viewer.refresh();
 		    }
 		});
 	}
@@ -278,7 +278,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    	for (int i = 0; i < invisibleRoot.children.size(); i++) {
 			    	if (((TreeObject) invisibleRoot.children.get(i)).id == id) {
 			    		invisibleRoot.children.remove(i);
-			    		viewer.refresh(false);
+			    		viewer.refresh();
 			    		break;
 			    	}
 			    }
@@ -291,8 +291,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    @Override
 		    public void run() {
 		    	hostRequestButton.setEnabled(bol);
-		    	System.out.println("hostId = "+hostId);
-		    	viewer.refresh(false);
+		    	viewer.refresh();
 		    }
 		});	
 	}
@@ -302,7 +301,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    @Override
 		    public void run() {
 		    	invisibleRoot.children.clear();
-		    	viewer.refresh(false);
+		    	viewer.refresh();
 		    }
 		});
 	}
@@ -311,7 +310,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		    	viewer.refresh(false);
+		    	viewer.refresh();
 		    }
 		});	
 	}
