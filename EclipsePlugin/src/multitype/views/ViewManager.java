@@ -7,6 +7,7 @@ package multitype.views;
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.NotificationType;
 import multitype.UserInfo;
 
 import org.eclipse.swt.widgets.Composite;
@@ -41,10 +42,9 @@ public class ViewManager extends ViewPart{
 				
 				Activator.getDefault().isConnected = true;
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
-				
-				// TODO run asynchronously
+
 				Activator.getDefault().userList.setButton(true);
-				// TODO run asynchronously
+
 				Activator.getDefault().userList.addUserToList(Activator.getDefault().userInfo.getUsername(), Activator.getDefault().userInfo.getUserid());
 				break;
 			case New_Shared_File:
@@ -58,22 +58,21 @@ public class ViewManager extends ViewPart{
 			case Get_Shared_File:
 				// Host receives this
 				// userid of requester, fileid
-				// immediately send out Send_File FEU to requesting non_host client
-				// TODO
-				/*FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
+				// immediately send out Send_File FEU to requesting non_host client with content from Editor
+
+				FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
 						feu.getFileId(),
 						feu.getUserId(),
-						feu.getContent());
+						null);
+				// TODO Azfar - have this grab the content from the associated <<Document>> with feu.getFileId()
 						
-				FEUSender.send(sentFeu);*/
+				FEUSender.send(sentFeu);
 				
 				break;
 			case User_Connected:
-				// TODO run asynchronously
 				Activator.getDefault().userList.addUserToList(feu.getContent(), feu.getUserId());
 				break;
 			case User_Disconnected:
-				// TODO run asynchronously
 				Activator.getDefault().userList.deleteUserFromList(feu.getUserId());
 				break;
 			case Request_Host:
