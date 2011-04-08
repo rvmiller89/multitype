@@ -64,9 +64,23 @@ public class ViewManager extends ViewPart{
 						feu.getFileId(),
 						feu.getUserId(),
 						null);
+				
+				//HOST
 				// TODO Azfar - have this grab the content from the associated <<Document>> with feu.getFileId()
 						
 				FEUSender.send(sentFeu);
+				
+				break;
+			case Send_File:
+				// Non-host receives this
+				// userid (own), fileid, content
+				
+				// NON-HOST
+				
+				// TODO Azfar - open editor on screen with feu.getContent()
+				
+				Activator.getDefault().fileList.removeSharedFile(feu.getFileId());
+				Activator.getDefault().fileList.addOpenFile(feu.getFileId(), feu.getContent());
 				
 				break;
 			case User_Connected:

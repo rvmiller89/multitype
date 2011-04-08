@@ -234,8 +234,50 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		  });
 	}
 	
-	// TODO addOpenFile, removeSharedFile, removeOpenFile ...
+	public void removeSharedFile(final int fileid)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	for (int i = 0; i < sharedFiles.children.size(); i++) {
+			    	if (((TreeObject) sharedFiles.children.get(i)).getFileID() == fileid) {
+			    		sharedFiles.children.remove(i);
+			    		viewer.refresh(false);
+			    		break;
+			    	}
+			    }
+		    }
+		  });
+	}
 	
+	public void addOpenFile(final int fileid, final String filename)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+				TreeObject newFile = new TreeObject(filename, fileid);
+				openFiles.addChild(newFile);
+				viewer.refresh(false);
+				viewer.expandAll();	// To open up those folders if need be
+		    }
+		  });
+	}
+	
+	public void removeOpenFile(final int fileid)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	for (int i = 0; i < openFiles.children.size(); i++) {
+			    	if (((TreeObject) openFiles.children.get(i)).getFileID() == fileid) {
+			    		openFiles.children.remove(i);
+			    		viewer.refresh(false);
+			    		break;
+			    	}
+			    }
+		    }
+		  });
+	}
 	
 
 	/**
@@ -370,12 +412,17 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				{
 					if (!isHost)	// only non-hosts can add to Open Files
 					{
-						// TODO tell Azfar to Get_Shared_File
+						// Send Get_Shared_File
+						FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Get_Shared_File,
+								item.getFileID(),
+								Activator.getDefault().userInfo.getUserid(),
+								null);
+						FEUSender.send(feu);
 					}
 				}
 				
 				
-				
+				// TODO
 				// if parent.getName() is "Shared Files" and _host_, signal EditorManager
 				// to Close_Shared_file and remove file from "Shared Files"
 				
@@ -410,19 +457,16 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 
 	@Override
 	public void run(IAction action) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
 		this.window = window;
 		
 		// Capture reference to class in Activator for later use
