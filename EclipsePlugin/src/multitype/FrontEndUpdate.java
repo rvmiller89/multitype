@@ -27,6 +27,7 @@ public class FrontEndUpdate implements Serializable {
 		New_Shared_File,
 		Close_Shared_File,
 		Get_Shared_File,
+		Send_File,
 		User_Connected,
 		User_Disconnected,
 		Request_Host,
