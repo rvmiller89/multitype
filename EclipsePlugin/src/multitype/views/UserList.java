@@ -309,7 +309,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		
 		hostRequestButton = new Button(parent, SWT.NONE);
-		hostRequestButton.setEnabled(false);
+		//hostRequestButton.setEnabled(false);
 		fd_tree.bottom = new FormAttachment(100, -36);
 		hostRequestButton.addSelectionListener(new SelectionAdapter() {
 			@Override
