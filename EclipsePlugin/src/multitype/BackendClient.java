@@ -144,6 +144,8 @@ public class BackendClient {
 	public void sendUpdate(FrontEndUpdate feu) {
 		for(FrontEndUpdate f : dumbUIThreadQueue)
 			updateFEUgivenFEU(f, feu, false);
+		for(FrontEndUpdate f : fromServerQueue)
+			updateFEUgivenFEU(f, feu, false);
 		fromFrontEndQueue.add(feu);
 	}
 	
