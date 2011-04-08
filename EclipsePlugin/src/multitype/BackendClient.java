@@ -1,7 +1,5 @@
 package multitype;
 import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -24,7 +22,7 @@ public class BackendClient {
 	private BlockingQueue<FrontEndUpdate> fromServerQueue;
 	private BlockingQueue<FrontEndUpdate> fromFrontEndQueue;
 	private ConcurrentLinkedQueue<FrontEndUpdate> markupHistory;
-	//private ConcurrentLinkedQueue<FrontEndUpdate> dumbUIThreadQueue;
+	private ConcurrentLinkedQueue<FrontEndUpdate> dumbUIThreadQueue;
 	private boolean done = false;
 	private int revisionNumber = 0;
 	private String url;
@@ -44,7 +42,7 @@ public class BackendClient {
 		fromServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		fromFrontEndQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		markupHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
-		//dumbUIThreadQueue = new ConcurrentLinkedQueue<FrontEndUpdate>();
+		dumbUIThreadQueue = new ConcurrentLinkedQueue<FrontEndUpdate>();
 		
 		// DEBUG
 		/*try {
@@ -141,7 +139,7 @@ public class BackendClient {
 	 * @param feu Pre-constructed FrontEndUpdate to be sent
 	 */
 	public void sendUpdate(FrontEndUpdate feu) {
-		for(FrontEndUpdate f : fromServerQueue)
+		for(FrontEndUpdate f : dumbUIThreadQueue)
 			updateFEUgivenFEU(f, feu, false);
 		fromFrontEndQueue.add(feu);
 	}
@@ -152,10 +150,7 @@ public class BackendClient {
 	 */
 	public FrontEndUpdate getUpdate() {
 		try {
-			FrontEndUpdate update;
-			while((update = fromServerQueue.peek())==null) {
-				Thread.sleep(10);
-			}
+			FrontEndUpdate update = fromServerQueue.take();
 			System.out.println("before local update");
 			System.out.println("Received FEU " + update.toLine());
 			dumpFromFE();
@@ -170,7 +165,7 @@ public class BackendClient {
 			System.out.println("xxxxxxxxxxx\nxxxxxxxxxxx");
 			//System.out.print("Received FEU\n"); //TODO DEBUG
 			//System.out.println(update.toString());
-			//dumbUIThreadQueue.add(update);
+			dumbUIThreadQueue.add(update);
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -180,7 +175,7 @@ public class BackendClient {
 	
 	public void FEUProcessed(FrontEndUpdate feu) {
 		revisionNumber = feu.getRevision();
-		//dumbUIThreadQueue.remove(feu);
+		dumbUIThreadQueue.remove(feu);
 	}
 	
 	private void addToLocalHistory(FrontEndUpdate feu) {
