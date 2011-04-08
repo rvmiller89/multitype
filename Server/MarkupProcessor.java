@@ -87,7 +87,7 @@ public class MarkupProcessor implements Runnable{
 		try {
 			if(debug_server != null) {
 				while(markupQueue.peek() == null) {
-					Thread.sleep(100);
+					Thread.sleep(10);
 				}
 				debug_server.dump();
 			}			
