@@ -205,7 +205,6 @@ public class BackendClient {
 						else {
 							updateFEUgivenFEU(top, update, true);
 							updateFEUgivenFEU(update, top, false);
-							top.setRevision(update.getRevision());
 						}
 					}
 					else { // its a delete
@@ -215,14 +214,12 @@ public class BackendClient {
 						else {
 							updateFEUgivenFEU(top, update, true);
 							updateFEUgivenFEU(update, top, false);
-							top.setRevision(update.getRevision());
 						}
 					}
 				}
 				else {
 					updateFEUgivenFEU(top, update, true);
 					updateFEUgivenFEU(update, top, false);
-					top.setRevision(update.getRevision());
 				}
 			}
 		}
