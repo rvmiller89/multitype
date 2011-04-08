@@ -88,7 +88,15 @@ public class NotificationProcessor implements Runnable {
 						fileUserManager.getHost(),""));
 			break;
 		case User_Disconnected:
-			fileUserManager.sendFEUToAll(feu);
+			if(feu.getUserId() == fileUserManager.getHost()) {
+				fileUserManager.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.Host_Disconnect,-1,
+						feu.getUserId(), ""));
+				fileUserManager.setHost(-1); //remove host
+			}
+			else {
+				fileUserManager.sendFEUToAll(feu);
+			}
 			fileUserManager.removeClient(feu.getUserId());
 			break;
 		case Request_Host: 
