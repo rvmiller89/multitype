@@ -281,14 +281,24 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 	
 	public void removeOpenFilesFolder()
 	{
-		invisibleRoot.removeChild(openFiles);
-		viewer.refresh(false);
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	invisibleRoot.removeChild(openFiles);
+		    	viewer.refresh(false);
+		    }
+		  });
 	}
 	
 	public void addOpenFilesFolder()
 	{
-		invisibleRoot.addChild(openFiles);
-		viewer.refresh(false);
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	invisibleRoot.addChild(openFiles);
+		    	viewer.refresh(false);
+		    }
+		  });	
 	}
 	
 
