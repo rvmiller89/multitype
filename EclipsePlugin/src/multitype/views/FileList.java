@@ -397,18 +397,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		action2 = new Action() {
 			public void run() {
 				
-				/*********************************************
-				 * 
-				 * Adding message to the console of everyone else....
-				 * 
-				 */
-				
-				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Console_Message, 
-						0,
-						Activator.getDefault().userInfo.getUserid(),
-						"This is a test of the Console output capabilities.");
-				FEUSender.send(feu);
-				// test
+				new FileEditorInput(null);
 
 			}
 		};

@@ -17,10 +17,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class PreferenceManager
 {
 	private IPreferenceStore ps;
-	private final String PROFILE_KEY = "multitype_profile";
-	private final String USERNAME_KEY = "multitype_username";
-	private final String SERVER_KEY = "multitype_server";
-	private final String PORT_KEY = "multitype_port";
+
+	private final String PROFILE = "multitype_profile";
 	private final String PROFILE_COUNT = "multitype_profile_count";
 	private int count;
 	
@@ -36,28 +34,54 @@ public class PreferenceManager
 	 * @param server
 	 * @param port
 	 */
-	public void addProfile(String profileName, String username, String server, int port)
+	private void addProfile(String profileName, String username, String server, int port)
 	{
-		ps.setValue(PROFILE_KEY + count, profileName);
-		ps.setValue(USERNAME_KEY + count, username);
-		ps.setValue(SERVER_KEY + count, server);
-		ps.setValue(PORT_KEY + count, port);
-
-		// add one to count
-		count++;
-		ps.setValue(PROFILE_COUNT, count);
+		ps.setValue(count + PROFILE, profileName + "," + username + "," + server + "," + port);
 	}
 	
 	/**
 	 * Adds a profile to the preference store
 	 * @param profileInfo
 	 */
-	public void addProfile(ProfileInfo profileInfo)
+	private void addProfile(ProfileInfo profileInfo)
 	{
 		addProfile(profileInfo.getProfileName(), 
 				profileInfo.getUsername(), 
 				profileInfo.getServer(),
 				profileInfo.getPort());
+	}
+	
+	/**
+	 * Refreshes profiles in preference store with new list
+	 * @param list
+	 */
+	public void updateProfiles(List<ProfileInfo> list)
+	{
+		removeProfiles();
+		
+		for (ProfileInfo info : list)
+		{
+			addProfile(info);
+			
+			// add one to count
+			count++;
+		}
+		ps.setValue(PROFILE_COUNT, count);
+	}
+	
+	/**
+	 * Removes all profiles from the preference store
+	 */
+	private void removeProfiles()
+	{
+		for (int i = 0; i < count; i++)
+		{
+			ps.setValue(i + PROFILE, "");
+		}
+		
+		count = 0;
+		ps.setValue(PROFILE_COUNT, count);
+		
 	}
 	
 	/**
@@ -70,12 +94,19 @@ public class PreferenceManager
 		for (int i = 0; i < count; i++)
 		{
 			// grab each set of values and add as a ProfileInfo object to list
-			ProfileInfo info = new ProfileInfo(ps.getString(PROFILE_KEY + i),
-					ps.getString(USERNAME_KEY + i),
-					ps.getString(SERVER_KEY + i),
-					ps.getInt(PORT_KEY + i));
+			String str = ps.getString(i + PROFILE);
 			
-			list.add(info);
+			String[] values = str.split(",");
+			
+			if (values.length == 4)	// Should be 4 strings representing values
+			{
+				ProfileInfo info = new ProfileInfo(values[0],
+					values[1],
+					values[2],
+					Integer.parseInt(values[3]));
+			
+				list.add(info);
+			}
 		}
 		
 		return list;

@@ -29,6 +29,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 
 public class LoginView extends TitleAreaDialog {
+	private static final int REMOVE_ID = IDialogConstants.CLIENT_ID + 3;
 	private static final int CREATE_PROFILE = IDialogConstants.CLIENT_ID + 2;
 	private static final int BUTTON_LOGIN = IDialogConstants.CLIENT_ID + 1;
 	private Text textfield_username;
@@ -144,19 +145,7 @@ public class LoginView extends TitleAreaDialog {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				
-				/*
-				 * TODO BUILD 2:
-				 * Here you can add code to check the formatting 
-				 */
-				
-				
-				Activator.getDefault().setupUser(textfield_username.getText(),
-						textfield_password.getText(),
-						textfield_host.getText(),
-						Integer.parseInt(textfield_port.getText()));
-										
-				// Close the login dialog
-				close();
+				connectToServer();
 				
 			}
 		});
@@ -164,6 +153,48 @@ public class LoginView extends TitleAreaDialog {
 		container.setTabList(new Control[]{textfield_username, textfield_password, textfield_host, textfield_port});
 
 		return area;
+	}
+	
+	public void connectToServer()
+	{
+		/*
+		 * TODO BUILD 2:
+		 * Here you can add code to check the formatting 
+		 */
+		try
+		{
+			if (textfield_username.getText().equals(""))
+			{
+				// Username not filled in
+				Activator.getDefault().showDialogAsync("Error", "Please enter a username.");
+				return;
+			}
+			else if (textfield_host.getText().equals(""))
+			{
+				// Host not filled in
+				Activator.getDefault().showDialogAsync("Error", "Please enter a server.");
+				return;
+			}
+			else if (textfield_port.getText().equals(""))
+			{
+				// Port not filled in
+				Activator.getDefault().showDialogAsync("Error", "Please enter a valid port number.");
+				return;
+			}
+			
+			Activator.getDefault().setupUser(textfield_username.getText(),
+					textfield_password.getText(),
+					textfield_host.getText(),
+					Integer.parseInt(textfield_port.getText()));
+									
+			// Close the login dialog
+			close();
+		}
+		catch (NumberFormatException e)
+		{
+			// Port was not an integer
+			Activator.getDefault().showDialogAsync("Error", "Port value must be a number.");
+		}
 	}
 
 	/**
@@ -178,25 +209,58 @@ public class LoginView extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				/*
-				 * TODO BUILD 2:
-				 * Here you can add code to check the formatting 
-				 */
-				
-				
-				Activator.getDefault().setupUser(textfield_username.getText(),
-						textfield_password.getText(),
-						textfield_host.getText(),
-						Integer.parseInt(textfield_port.getText()));
-										
-				// Close the login dialog
-				close();
+				connectToServer();
 				
 			}
 		});
 		button.setSelection(true);
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
+		Button button_2 = createButton(parent, REMOVE_ID, "Remove Profile", false);
+		button_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Grab selected profile to remove
+				int index = listWidget.getSelectionIndex();
+
+				if (index != -1)	// sanity check
+				{
+					String desiredProfile = listWidget.getItem(index);
+					
+					Iterator<ProfileInfo> iterator = profileList.iterator();
+					
+					ProfileInfo entry = null;
+					while (iterator.hasNext())
+					{
+						ProfileInfo current = iterator.next();
+						if (current.getProfileName().equals(desiredProfile))
+						{
+							entry = current;
+							break;
+						}
+					}
+
+					if (entry != null)
+					{
+						// Remove selected profile from list
+						profileList.remove(entry);
+						
+						// Remove from view widget
+						listWidget.remove(index);
+						
+						// Clear text fields
+						textfield_username.setText("");
+						textfield_password.setText("");
+						textfield_host.setText("");
+						textfield_port.setText("");
+						
+						// Update pref with new list of profiles
+						prefManager.updateProfiles(profileList);
+
+					}
+				}
+			}
+		});
 		Button button_1 = createButton(parent, CREATE_PROFILE, "Create Profile", false);
 		button_1.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -216,12 +280,13 @@ public class LoginView extends TitleAreaDialog {
 							textfield_username.getText(), 
 							textfield_host.getText(), 
 							Integer.parseInt(textfield_port.getText()));
-					
-					prefManager.addProfile(newProfile);
-					
+
 					// add to arraylist and list widget
 					profileList.add(newProfile);
 					listWidget.add(newProfile.getProfileName());
+					
+					// Update pref with new list of profiles
+					prefManager.updateProfiles(profileList);
 				}
 			}
 		});
