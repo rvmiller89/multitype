@@ -141,6 +141,24 @@ public class LoginView extends TitleAreaDialog {
 				}
 				
 			}
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				
+				/*
+				 * TODO BUILD 2:
+				 * Here you can add code to check the formatting 
+				 */
+				
+				
+				Activator.getDefault().setupUser(textfield_username.getText(),
+						textfield_password.getText(),
+						textfield_host.getText(),
+						Integer.parseInt(textfield_port.getText()));
+										
+				// Close the login dialog
+				close();
+				
+			}
 		});
 		listWidget.setBounds(10, 13, 143, 145);
 		container.setTabList(new Control[]{textfield_username, textfield_password, textfield_host, textfield_port});
@@ -170,9 +188,7 @@ public class LoginView extends TitleAreaDialog {
 						textfield_password.getText(),
 						textfield_host.getText(),
 						Integer.parseInt(textfield_port.getText()));
-				
-				//prefManager.setPrevLoginSettings(textfield_username.getText(), textfield_host.getText(), Integer.parseInt(textfield_port.getText()));
-						
+										
 				// Close the login dialog
 				close();
 				
