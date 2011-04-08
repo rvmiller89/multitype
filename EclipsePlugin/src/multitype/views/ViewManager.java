@@ -63,7 +63,7 @@ public class ViewManager extends ViewPart{
 				FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
 						feu.getFileId(),
 						feu.getUserId(),
-						null);
+						"Test.txt (debug)");
 				
 				//HOST
 				// TODO Azfar - have this grab the content from the associated <<Document>> with feu.getFileId()
