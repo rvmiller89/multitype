@@ -1,24 +1,21 @@
 package multitype.editors;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.MarkupType;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -31,12 +28,15 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class EditorManager
 {
 	private ITextEditor editor;
-	private IDocumentProvider dp;
 	private IDocument doc;
 	private DocListener listener;
+	private IDocumentProvider dp;
+	private Map<Integer, Document> map;
 	
 	public EditorManager()
 	{
+		map = new HashMap<Integer, Document>();
+		
 		editor = ActiveEditor.getEditor();
 		
 		if (editor == null)
@@ -53,28 +53,13 @@ public class EditorManager
 	    listener = new DocListener();
 	    doc.addDocumentListener(listener);
 	    
-	    
-		
-		
-//		Display.getDefault().asyncExec(new Runnable() {
-//		    @Override
-//		    public void run() {
-//		    	try {
-//		    		IEditorReference iEditorReference = Activator.getDefault()
-//					.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-//					.getEditorReferences()[0];
-//		    		
-//		    		ITextEditor ieditor = ((ITextEditor)iEditorReference.getEditor(true));
-//		    		IDocument idoc = ieditor.getDocumentProvider().getDocument(ieditor.getEditorInput());
-//		    		
-//		    		for (int i = 0 ; i < 1E4 ; i++)
-//					idoc.replace(0, 0, "hello\n");
-//				} catch (BadLocationException e) {
-//					e.printStackTrace();
-//				}
-//		    }
-//		  });
-	    
+//	    int size = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences().length;
+//	    array = new int[size];
+//	    for (int i = 0 ; i < size ; i++)
+//	    {
+//	    	map.put(i, ((ITextEditor)Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences()[i].getEditor(true)));
+//	    	array[i] = i;
+//	    }
 	    
 //	    how to implement selection listeners:
 //	    ((ITextEditor)iEditorReference.getEditor(true)).getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
@@ -88,29 +73,63 @@ public class EditorManager
 //		});
 	}
 	
+//	public void newDocument(int fileID)
+//	{
+//		if (Activator.getDefault().isHost)
+//		{
+//			/*
+//			 * use file i/o to open
+//			 */
+//		}
+//		
+//		else
+//		{
+//			//something else
+//		}
+//	}
+//	
+//	public void removeDocument(int fileID)
+//	{
+//		//TODO
+//	}
+	
 	public void receive(FrontEndUpdate feu)
 	{
-		//Activator.getDefault().showDialogAsync("Debug", feu.getUserId() + " ");		// DEBUG
-		MarkupType markupType = feu.getMarkupType();
-		
-		switch(markupType)
+		switch(feu.getMarkupType())
 		{
-		case Cursor:
-			cursorPos(feu);
-			break;
-		case Delete:
-			delete(feu);
-			break;
-		case Highlight:
-			highlight(feu);
-			break;
-		case Insert:
-			insert(feu);
-			break;
-		default:
-			throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + markupType);
+			case Cursor:
+				cursorPos(feu);
+				break;
+			case Delete:
+				delete(feu);
+				break;
+			case Highlight:
+				highlight(feu);
+				break;
+			case Insert:
+				insert(feu);
+				break;
+			default:
+				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());
 		}
 		
+//		switch(feu.getMarkupType())
+//		{
+//			case Cursor:
+//				map.get(feu.getFileId()).cursorPos(feu);
+//				break;
+//			case Delete:
+//				map.get(feu.getFileId()).delete(feu);
+//				break;
+//			case Highlight:
+//				map.get(feu.getFileId()).highlight(feu);
+//				break;
+//			case Insert:
+//				map.get(feu.getFileId()).insert(feu);
+//				break;
+//			default:
+//				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());
+//		}
 	}
 	
 	private void delete(final FrontEndUpdate feu)
@@ -171,7 +190,7 @@ public class EditorManager
 
 			
 		}
-int i = 0;
+		
 		@Override
 		public void documentChanged(DocumentEvent event) {
 			
@@ -181,7 +200,7 @@ int i = 0;
 //			    	try {
 //			    		IEditorReference iEditorReference = Activator.getDefault()
 //						.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-//						.getEditorReferences()[i = i == 0 ? 1 : 0];
+//						.getEditorReferences()[0];
 //			    		
 //			    		ITextEditor ieditor = ((ITextEditor)iEditorReference.getEditor(true));
 //			    		IDocument idoc = ieditor.getDocumentProvider().getDocument(ieditor.getEditorInput());
@@ -189,23 +208,26 @@ int i = 0;
 //			    		idoc.removeDocumentListener(listener);
 //						idoc.replace(0, 0, "hello\n");
 //			    		idoc.addDocumentListener(listener);
+//			    		
+//			    		int size = array.length;
+//			    	    for (int i = 0 ; i < size ; i++)
+//			    	    {
+//			    	    	ITextEditor ieditor = map.get(i);
+//			    	    	System.err.println(ieditor == null ? "i" : "");
+//				    		IDocument idoc = ieditor.getDocumentProvider().getDocument(ieditor.getEditorInput());
+//				    		idoc.removeDocumentListener(listener);
+//							idoc.replace(0, 0, "hello " + i + "\n");
+//				    		idoc.addDocumentListener(listener);
+//			    	    }
 //					} catch (BadLocationException e) {
 //						e.printStackTrace();
 //					}
 //			    }
 //			  });
-			
-			for (int j = 0 ; j < Activator.getDefault()
-			.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-			.getEditorReferences().length ; j++)
-			System.err.println(Activator.getDefault()
-			.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-			.getEditorReferences()[j].getName() + " " + i++);
 
-			//key pressed....need to generate FEU
+//			key pressed....need to generate FEU
 			
 //				System.out.println("Rev. #" + event.fModificationStamp + ": INSERTED TEXT: " + event.fText);	// TEST
-			//Activator.getDefault().userInfo.getUserid();
 			FrontEndUpdate feu;
 			
 			if (event.fText.equals(""))
@@ -227,9 +249,6 @@ int i = 0;
 			}
 			
 			FEUSender.send(feu);
-
-			//event.
 		}
-		
 	}
 }
