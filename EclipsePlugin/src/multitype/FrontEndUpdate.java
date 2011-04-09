@@ -227,6 +227,7 @@ public class FrontEndUpdate implements Serializable {
 			sb.append("FID: " + this.getFileId() + " | ");
 			sb.append("UID: " + this.getUserId() + " | ");
 			sb.append("RVN: " + this.getRevision() + " | ");
+			sb.append("FEUID: " + this.getFEUid() + " | ");
 			switch(this.getMarkupType()) {
 			case Insert:
 				sb.append("Type: Ins | ");
