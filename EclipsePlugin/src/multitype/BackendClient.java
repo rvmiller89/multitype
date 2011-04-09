@@ -27,7 +27,7 @@ public class BackendClient {
 	private String url;
 	private int port;
 	private int nextSentToFrontEndIndex = -1;
-	private int userId = 2;
+	private int userId = -1;
 	private int curFEUid = 0;
 	
 	/**
