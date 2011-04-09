@@ -99,7 +99,7 @@ public class ViewManager extends ViewPart{
 						Activator.getDefault().isHost = true;
 						Activator.getDefault().fileList.removeOpenFilesFolder();
 					}
-					Activator.getDefault().userList.setButton(false);
+					Activator.getDefault().userList.setButton(false); //host already exists
 				}
 				break;
 			case Console_Message:
@@ -112,8 +112,10 @@ public class ViewManager extends ViewPart{
 				break;
 			case Host_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Host disconnected.");
-
-				Activator.getDefault().isConnected = false;
+				Activator.getDefault().userList.deleteUserFromList(feu.getUserId());
+				Activator.getDefault().userList.hostId = -1;
+				Activator.getDefault().userList.setButton(true); //no host anymore
+				//Activator.getDefault().isConnected = false;
 				break;
 			case Server_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");

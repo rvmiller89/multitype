@@ -87,5 +87,25 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+         <command
+                commandId="multitype.command"
+                icon="res/file.png"
+                label="Share File">
+            </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="multitype.command.ShareFile"
+            id="multitype.command"
+            name="Convert">
+      </command>
+   </extension>
+	
 
 </plugin>
