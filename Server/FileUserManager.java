@@ -52,7 +52,11 @@ public class FileUserManager {
 		
 	}
 	
-	
+	/**
+	 * Called when a non-host client opens a shared file
+	 * @param userid non-host client's userid
+	 * @param fileid shared file
+	 */
 	public void openFile(int userid, int fileid) {
 		fileusermap.get(fileid).add(userid);
 	}
@@ -70,6 +74,10 @@ public class FileUserManager {
 		//TODO Will need to send this as a notification to the other users
 	}
 
+	/**
+	 * Sends all the connected users to the specified client
+	 * @param uid userid of the client to send to
+	 */
 	public void sendUsersToClient(int uid) {
 		for(Integer i : usermap.keySet()) {
 			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
@@ -109,6 +117,10 @@ public class FileUserManager {
 		}*/
 	}
 
+	/**
+	 * Sends an FEU to all connected users
+	 * @param feu FEU to send
+	 */
 	public void sendFEUToAll(FrontEndUpdate feu) {
 		for(OutputProcessor op : outprocs.values()) {
 			op.addFEU(feu);
@@ -192,6 +204,10 @@ public class FileUserManager {
 		Server.dprint("Dropped client " + uid);
 	}
 	
+	/**
+	 * Adds an FEU to the markup processor associated with its file
+	 * @param feu FEU to add
+	 */
 	public synchronized void addFEUToMarkup(FrontEndUpdate feu) {
 		//get the FEU's fileID
 		int fileid = feu.getFileId();

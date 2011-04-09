@@ -18,6 +18,8 @@ public class InputProcessor implements Runnable {
 	ObjectInputStream in;
 	NotificationProcessor np;
 	int uid;
+	BufferedWriter writer;
+	
 	/**
 	 * Constructor
 	 * @param s The socket that this will be communicating with
@@ -29,8 +31,10 @@ public class InputProcessor implements Runnable {
 		np = n;
 		uid = -1;
 		
+		
 		try {
 			in = new ObjectInputStream(sclient.getInputStream());
+			writer = new BufferedWriter(new FileWriter("input.txt", true));
 		} 
 		catch (IOException e) {
 			System.err.println("InputProcessor(): " + e.toString());
@@ -47,7 +51,7 @@ public class InputProcessor implements Runnable {
 		try {
 			
 			FrontEndUpdate ret = (FrontEndUpdate) in.readObject();
-						
+			writer.write("IP: Received: " + ret.toLine());
 			return ret;
 		}
 		catch (EOFException eofe) {
@@ -105,6 +109,7 @@ public class InputProcessor implements Runnable {
 		
 		try {
 			in.close();
+			writer.close();
 		} catch (IOException e) {
 			System.err.println("InputProcessor - close: " + e.toString());
 		}
