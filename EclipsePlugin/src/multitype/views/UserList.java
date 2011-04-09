@@ -188,19 +188,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
  * expose its hierarchy.
  */
 		private void initialize() {
-			//TreeObject user = new TreeObject("you");
-			//TreeObject user2 = new TreeObject("User 2");
-			//TreeObject user3 = new TreeObject("User 3");
-		
-			/*TreeObject to4 = new TreeObject("Leaf 4");
-			TreeParent p2 = new TreeParent("Parent 2");
-			p2.addChild(to4);*/
-			
-			
 			invisibleRoot = new TreeParent("");
-			//invisibleRoot.addChild(user);
-			//invisibleRoot.addChild(user2);
-			//invisibleRoot.addChild(user3);
 			init(window);
 		}
 		
@@ -305,15 +293,6 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		});
 	}
 	
-	public void refresh() {
-		Display.getDefault().asyncExec(new Runnable() {
-		    @Override
-		    public void run() {
-		    	viewer.refresh();
-		    }
-		});	
-	}
-	
 	private void requestToBeHost() {
 		FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 				NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
@@ -325,6 +304,33 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			//hostRequestButton.setEnabled(false);
 			setButton(false);
 		}
+	}
+	
+	public void disconnect() {
+		if (Activator.getDefault().isConnected == true) {
+			Activator.getDefault().disconnect();
+			Activator.getDefault().isConnected = false;
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
+					Activator.getDefault().userInfo.getUsername());
+			FEUSender.send(feu);
+			Activator.getDefault().userList.setButton(false);
+			//System.out.println("Disconnected from server.");
+			Activator.getDefault().userList.clearList();
+		}
+		else {
+			//System.out.println("not connected to a server.");
+			showMessage("not connected to a server.");
+		}
+	}
+	
+	public void refresh() {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	viewer.refresh();
+		    }
+		});	
 	}
 	
 	/**
@@ -427,20 +433,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		//if this can somehow call DisconnectAction it should be replaced
 		disconnect_action = new Action() {
 			public void run() {
-				if (Activator.getDefault().isConnected == true) {
-					Activator.getDefault().disconnect();
-					Activator.getDefault().isConnected = false;
-					FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-							NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
-							Activator.getDefault().userInfo.getUsername());
-					FEUSender.send(feu);
-					Activator.getDefault().userList.setButton(false);
-					System.out.println("Disconnected from server.");
-					Activator.getDefault().userList.clearList();
-				}
-				else {
-					System.out.println("not connected to a server.");
-				}
+				disconnect();
 			}
 		};
 		disconnect_action.setText("Disconnect");

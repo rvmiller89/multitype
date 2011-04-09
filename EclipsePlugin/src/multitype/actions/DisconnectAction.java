@@ -38,43 +38,7 @@ public class DisconnectAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		if (Activator.getDefault().isConnected == true) {
-			Activator.getDefault().disconnect();
-			Activator.getDefault().isConnected = false;
-			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
-					Activator.getDefault().userInfo.getUsername());
-			FEUSender.send(feu);
-			Activator.getDefault().userList.setButton(false);
-			System.out.println("Disconnected from server.");
-			Activator.getDefault().userList.clearList();
-		}
-		else {
-			/*if (added == false) {
-			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-					NotificationType.User_Disconnected, -1, -1, 
-					"duhhhh");
-			Activator.getDefault().addUserToList(feu);
-			added= true;
-			}
-			else {
-				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-						NotificationType.User_Disconnected, -1, -1, 
-						"duhhhh");
-				Activator.getDefault().deleteUserFromList(feu);
-				added = false;
-			}*/
-			
-			////testing purpose//////
-			//FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-			//		NotificationType.User_Disconnected, -1, -1, 
-			//		"zzzzzz");
-			//Activator.getDefault().userList.addUserToList(feu.getContent(), feu.getUserId());
-			//Activator.getDefault().userList.setButton(true);
-			////testing purpose//////
-			
-			System.out.println("not connected to a server.");
-		}
+		Activator.getDefault().userList.disconnect();
 	}
 
 	/**
