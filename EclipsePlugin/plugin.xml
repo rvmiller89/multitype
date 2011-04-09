@@ -23,6 +23,13 @@
             id="multitype.views.UserList">
       </view>
       <view
+            name="MultiType Chat"
+            icon="res/file.png"
+            category="MultiType"
+            class="multitype.views.ChatView"
+            id="multitype.views.ChatView">
+      </view>
+      <view
             name="View Driver (debug)"
             icon="icons/sample.gif"
             category="MultiType"

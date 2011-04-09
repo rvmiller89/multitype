@@ -39,6 +39,9 @@ public class ViewManager extends ViewPart{
 					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.User_Connected, 
 							-1, feu.getUserId(), Activator.getDefault().userInfo.getUsername());
 				FEUSender.send(connectedFEU);
+
+				// Tell backendclient our userid
+				Activator.getDefault().client.setUserId(feu.getUserId());
 				
 				Activator.getDefault().isConnected = true;
 				Activator.getDefault().showDialogAsync("Connection Success", "Successfully connected. You are user: " + Activator.getDefault().userInfo.getUserid());
