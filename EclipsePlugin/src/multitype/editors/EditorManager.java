@@ -163,6 +163,7 @@ public class EditorManager
 					doc.addDocumentListener(listener);
 					System.out.println("Editor Insertion-- fromPos: " + feu.getStartLocation() + " string: " + feu.getInsertString());
 				} catch (BadLocationException e) {
+					System.out.print("Bad location: "+feu.toLine());
 					e.printStackTrace();
 				}
 		    }
