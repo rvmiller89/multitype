@@ -71,7 +71,7 @@
          </menu>
          <action
                label="Disconnect"
-               icon="res/user.png"
+               icon="res/exit.png"
                class="multitype.actions.DisconnectAction"
                menubarPath="multitypeMenu/multitypeGroup"
                id="multitype.actions.DisconnectAction">

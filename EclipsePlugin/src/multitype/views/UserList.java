@@ -78,8 +78,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	public TreeParent invisibleRoot;
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action action1;
-	private Action action2;
+	private Action hostRequest_action;
+	private Action disconnect_action;
 	private Action doubleClickAction;
 	private IWorkbenchWindow window;
 	private Button hostRequestButton;
@@ -291,7 +291,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    @Override
 		    public void run() {
 		    	hostRequestButton.setEnabled(bool);
-		    	action1.setEnabled(bool);
+		    	hostRequest_action.setEnabled(bool);
 		    	viewer.refresh();
 		    }
 		});	
@@ -392,14 +392,14 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
+		manager.add(hostRequest_action);
 		manager.add(new Separator());
-		manager.add(action2);
+		manager.add(disconnect_action);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(hostRequest_action);
+		manager.add(disconnect_action);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -407,27 +407,27 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-		manager.add(action2);
+		manager.add(hostRequest_action);
+		manager.add(disconnect_action);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
+		hostRequest_action = new Action() {
 			public void run() {
 				requestToBeHost();
 			}
 		};
-		action1.setText("Request to be Host");
-		action1.setToolTipText("Request to be Host");
-		action1.setImageDescriptor(Activator.getImageDescriptor("res/host.png"));
-		action1.setEnabled(false);
+		hostRequest_action.setText("Request to be Host");
+		hostRequest_action.setToolTipText("Request to be Host");
+		hostRequest_action.setImageDescriptor(Activator.getImageDescriptor("res/host_text.png"));
+		hostRequest_action.setEnabled(false);
 		//action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 		//	getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
 		//if this can somehow call DisconnectAction it should be replaced
-		action2 = new Action() {
+		disconnect_action = new Action() {
 			public void run() {
 				if (Activator.getDefault().isConnected == true) {
 					Activator.getDefault().disconnect();
@@ -445,9 +445,9 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 				}
 			}
 		};
-		action2.setText("Disconnect");
-		action2.setToolTipText("Disconnect");
-		action2.setImageDescriptor(Activator.getImageDescriptor("res/exit.png"));
+		disconnect_action.setText("Disconnect");
+		disconnect_action.setToolTipText("Disconnect");
+		disconnect_action.setImageDescriptor(Activator.getImageDescriptor("res/exit.png"));
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
