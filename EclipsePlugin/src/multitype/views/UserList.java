@@ -286,11 +286,12 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		});	
 	}
 	
-	public void setButton(final boolean bol) {
+	public void setButton(final boolean bool) {
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		    	hostRequestButton.setEnabled(bol);
+		    	hostRequestButton.setEnabled(bool);
+		    	action1.setEnabled(bool);
 		    	viewer.refresh();
 		    }
 		});	
@@ -315,6 +316,19 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		});	
 	}
 	
+	private void requestToBeHost() {
+		FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+				NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
+				Activator.getDefault().userInfo.getUsername());
+
+		viewer.refresh();
+		if (Activator.getDefault().isConnected) {
+			FEUSender.send(feu);
+			//hostRequestButton.setEnabled(false);
+			setButton(false);
+		}
+	}
+	
 	/**
 	 * This is a callback that will allow us
 	 * to create the viewer and initialize it.
@@ -336,16 +350,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		hostRequestButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
-				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-						NotificationType.Request_Host, -1, Activator.getDefault().userInfo.getUserid(), 
-						Activator.getDefault().userInfo.getUsername());
-
-				viewer.refresh();
-				if (Activator.getDefault().isConnected) {
-					FEUSender.send(feu);
-					hostRequestButton.setEnabled(false);
-				}
+				requestToBeHost();
 			}
 		});
 		FormData fd_btnNewButton = new FormData();
@@ -411,23 +416,38 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				
+				requestToBeHost();
 			}
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		action1.setText("Request to be Host");
+		action1.setToolTipText("Request to be Host");
+		action1.setImageDescriptor(Activator.getImageDescriptor("res/host.png"));
+		action1.setEnabled(false);
+		//action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+		//	getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
+		//if this can somehow call DisconnectAction it should be replaced
 		action2 = new Action() {
 			public void run() {
-				showMessage("Action 2 executed");
+				if (Activator.getDefault().isConnected == true) {
+					Activator.getDefault().disconnect();
+					Activator.getDefault().isConnected = false;
+					FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+							NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
+							Activator.getDefault().userInfo.getUsername());
+					FEUSender.send(feu);
+					Activator.getDefault().userList.setButton(false);
+					System.out.println("Disconnected from server.");
+					Activator.getDefault().userList.clearList();
+				}
+				else {
+					System.out.println("not connected to a server.");
+				}
 			}
 		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		action2.setText("Disconnect");
+		action2.setToolTipText("Disconnect");
+		action2.setImageDescriptor(Activator.getImageDescriptor("res/exit.png"));
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
