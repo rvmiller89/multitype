@@ -202,11 +202,35 @@ public class BackendClient {
 	 */
 	private FrontEndUpdate updateIncomingFEUWithScreenHistory(
 			FrontEndUpdate feu) {
+
 		FrontEndUpdate newFEU = feu;
+		
+		// DEBUG
+		System.out.println("Screen History Before update");
+		System.out.print("Received "+newFEU.toLine());
+		System.out.println("Screen History");
+		for(FrontEndUpdate screenFEU : screenHistory) {
+			System.out.print(screenFEU.toLine());
+		}
+		
+		// END DEBUG
+		
+		
 		for(FrontEndUpdate screenFEU : screenHistory) {
 			assert(screenFEU.getRevision() < feu.getRevision());
 			updateFEUgivenFEU(newFEU, screenFEU, false);
 		}
+		
+		
+		// DEBUG
+		System.out.println("Screen History After update");
+		System.out.print("Received "+newFEU.toLine());
+		System.out.println("Screen History");
+		for(FrontEndUpdate screenFEU : screenHistory) {
+			System.out.print(screenFEU.toLine());
+		}
+		
+		// END DEBUG
 		return newFEU;
 	}
 	
