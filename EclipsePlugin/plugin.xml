@@ -78,7 +78,7 @@
          </action>
          <action
                label="Login"
-               icon="res/icon.png"
+               icon="res/icon_b.png"
                class="multitype.actions.LoginWindowAction"
                tooltip="MultiType Login"
                menubarPath="multitypeMenu/multitypeGroup"
