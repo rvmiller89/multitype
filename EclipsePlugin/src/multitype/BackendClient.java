@@ -52,6 +52,10 @@ public class BackendClient {
 		}*/
 	}
 	
+	/**
+	 * Used to connect to the actual server. Must have a thread waiting for
+	 * FEU's before calling this function
+	 */
 	public void connect() {
 		try {
 			serverSocket = new Socket(url, port);
@@ -77,6 +81,7 @@ public class BackendClient {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
 						fromServerQueue.add(feu);
+						checkLocalHistory(feu);
 						// DEBUG
 						/*writer.write("\n-----------------\n");
 						writer.write("Incoming FEU: " + feu.toLine() + "\n");
@@ -161,7 +166,6 @@ public class BackendClient {
 			dumpFromFE();
 			dumpFromServer();
 			dumpMarkupHistory();
-			checkLocalHistory(update);
 			System.out.println("after local update");
 			System.out.print("Received FEU " + update.toLine());
 			dumpFromFE();
@@ -199,27 +203,59 @@ public class BackendClient {
 			if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
 				if(update.getMarkupType() == top.getMarkupType()) {
 					if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-						if(update.getStartLocation() == top.getStartLocation() &&
+						if(update.getUserId() == top.getUserId() &&
+								update.getStartLocation() == top.getStartLocation() &&
 								update.getInsertString().equals(top.getInsertString()))
 							markupHistory.remove(top);
 						else {
-							updateFEUgivenFEU(top, update, true);
+							FrontEndUpdate updateClone = 
+								FrontEndUpdate.createInsertFEU(
+										update.getFileId(), 
+										update.getUserId(), 
+										update.getStartLocation(), 
+										update.getInsertString());
 							updateFEUgivenFEU(update, top, false);
+							updateFEUgivenFEU(top, updateClone, true);
 						}
 					}
 					else { // its a delete
-						if(update.getStartLocation() == top.getStartLocation() &&
+						if(update.getUserId() == top.getUserId() &&
+								update.getStartLocation() == top.getStartLocation() &&
 								update.getEndLocation() == top.getEndLocation())
 							markupHistory.remove(top);
 						else {
-							updateFEUgivenFEU(top, update, true);
+							FrontEndUpdate updateClone = 
+								FrontEndUpdate.createDeleteFEU(
+										update.getFileId(), 
+										update.getUserId(), 
+										update.getStartLocation(), 
+										update.getEndLocation());
 							updateFEUgivenFEU(update, top, false);
+							updateFEUgivenFEU(top, updateClone, true);
 						}
 					}
 				}
 				else {
-					updateFEUgivenFEU(top, update, true);
-					updateFEUgivenFEU(update, top, false);
+					if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+						FrontEndUpdate updateClone = 
+							FrontEndUpdate.createInsertFEU(
+									update.getFileId(), 
+									update.getUserId(), 
+									update.getStartLocation(), 
+									update.getInsertString());
+						updateFEUgivenFEU(update, top, false);
+						updateFEUgivenFEU(top, updateClone, true);
+					}
+					else { // It is a delete type
+						FrontEndUpdate updateClone = 
+							FrontEndUpdate.createDeleteFEU(
+									update.getFileId(), 
+									update.getUserId(), 
+									update.getStartLocation(), 
+									update.getEndLocation());
+						updateFEUgivenFEU(update, top, false);
+						updateFEUgivenFEU(top, updateClone, true);
+					}
 				}
 			}
 		}
