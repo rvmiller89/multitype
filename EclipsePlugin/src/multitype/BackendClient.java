@@ -76,7 +76,7 @@ public class BackendClient {
 							continue;
 						}
 						feu = updateIncomingFEUWithScreenHistory(feu);
-						fromServerQueue.add(0, feu); // adding at the left
+						addFEUToBegOfFromServerQueue(feu);
 						nextSentToFrontEndIndex++;
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -239,10 +239,14 @@ public class BackendClient {
 	 * to the server
 	 * @param feu given FEU passed from FrontEnd to be sent to the server
 	 */
-	private void updateFromServerQueueWithSent(FrontEndUpdate feu) {
+	private synchronized void updateFromServerQueueWithSent(FrontEndUpdate feu) {
 		for(FrontEndUpdate fromServerFEU : fromServerQueue) {
 			updateFEUgivenFEU(fromServerFEU, feu, false);
 		}
+	}
+	
+	private synchronized void addFEUToBegOfFromServerQueue(FrontEndUpdate feu) {
+		fromServerQueue.add(0, feu); // adding at the left
 	}
 	
 	/**
