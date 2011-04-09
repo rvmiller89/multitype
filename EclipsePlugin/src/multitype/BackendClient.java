@@ -167,6 +167,7 @@ public class BackendClient {
 		this.fromServerQueue.remove(feu);
 		updateScreenHistoryWithProcessed(feu);
 		this.revisionNumber = feu.getRevision();
+		System.out.print("Processed "+feu.toLine());
 	}
 	
 	/**
