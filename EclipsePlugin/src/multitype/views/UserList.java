@@ -250,6 +250,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
+		    	// Maintains list of users
+		    	Activator.getDefault().connectedUsers.put(id, name);
 		    	TreeObject temp = new TreeObject(name, id);
 		    	invisibleRoot.addChild(temp);
 		    	viewer.refresh();
@@ -263,6 +265,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    public void run() {
 		    	for (int i = 0; i < invisibleRoot.children.size(); i++) {
 			    	if (((TreeObject) invisibleRoot.children.get(i)).id == id) {
+			    		// Maintains list of users
+			    		Activator.getDefault().connectedUsers.remove(id);
 			    		invisibleRoot.children.remove(i);
 			    		viewer.refresh();
 			    		break;

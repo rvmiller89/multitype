@@ -49,6 +49,16 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().userList.setButton(true);
 
 				Activator.getDefault().userList.addUserToList(Activator.getDefault().userInfo.getUsername(), Activator.getDefault().userInfo.getUserid());
+				
+				// Ignore if Chat View is not opened
+				ChatView chatView = Activator.getDefault().chatView;
+				if (chatView != null)
+				{
+					// Otherwise, enable the ability to send chat messages
+					chatView.enableChat();
+				}
+				
+				
 				break;
 			case New_Shared_File:
 				// Non-host clients receive this, add to Shared FileList
@@ -111,7 +121,13 @@ public class ViewManager extends ViewPart{
 				
 				break;
 			case Chat_Message:
-				// if there is time
+				// Ignore if Chat View is not opened
+				chatView = Activator.getDefault().chatView;
+				if (chatView != null)
+				{
+					// Otherwise, display message in the chat window
+					chatView.addMessage(Activator.getDefault().connectedUsers.get(feu.getUserId()), feu.getContent(), false);
+				}
 				break;
 			case Host_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Host disconnected.");

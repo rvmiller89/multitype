@@ -1,5 +1,9 @@
 package multitype;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import multitype.views.ChatView;
 import multitype.views.Dialog;
 import multitype.views.FileList;
 import multitype.views.UserList;
@@ -28,6 +32,9 @@ public class Activator extends AbstractUIPlugin {
 
 	public UserList userList;
 	public FileList fileList;
+	public ChatView chatView;
+	
+	public Map<Integer, String> connectedUsers;
 	
 	/**
 	 * The constructor
@@ -43,6 +50,7 @@ public class Activator extends AbstractUIPlugin {
 		userInfo.setUserid(-2);
 		isConnected = false;
 		isHost = false;
+		connectedUsers = new HashMap<Integer, String>();
 	}
 
 	public void stop(BundleContext context) throws Exception {
