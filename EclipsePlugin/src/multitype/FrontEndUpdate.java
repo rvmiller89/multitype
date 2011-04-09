@@ -44,6 +44,7 @@ public class FrontEndUpdate implements Serializable {
 	private UpdateType updateType;
 	private MarkupType markupType;
 	private NotificationType notificationType;
+	private int FEUid;
 	
 	/**
 	 * Creates an Insert FrontEndUpdate
@@ -206,6 +207,12 @@ public class FrontEndUpdate implements Serializable {
 	}
 	public void setInsertString(String insertString) {
 		this.insertString = insertString;
+	}
+	public void setFEUid(int FEUid) {
+		this.FEUid = FEUid;
+	}
+	public int getFEUid() {
+		return FEUid;
 	}
 	
 	/**

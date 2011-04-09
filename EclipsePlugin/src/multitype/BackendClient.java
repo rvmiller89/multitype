@@ -1,8 +1,8 @@
 package multitype;
-import java.io.BufferedWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -19,17 +19,15 @@ public class BackendClient {
 	private ObjectInputStream in;
 	private Thread receiveUpdateThread;
 	private Thread sendUpdateThread;
-	private BlockingQueue<FrontEndUpdate> fromServerQueue;
-	private BlockingQueue<FrontEndUpdate> fromFrontEndQueue;
-	private ConcurrentLinkedQueue<FrontEndUpdate> markupHistory;
-	private ConcurrentLinkedQueue<FrontEndUpdate> dumbUIThreadQueue;
+	private Vector<FrontEndUpdate> fromServerQueue;
+	private BlockingQueue<FrontEndUpdate> toServerQueue;
+	private ConcurrentLinkedQueue<FrontEndUpdate> screenHistory;
 	private boolean done = false;
 	private int revisionNumber = 0;
 	private String url;
 	private int port;
-	
-	// DEBUG variables
-	BufferedWriter writer;
+	private int nextSentToFrontEndIndex = -1;
+	private int userId = -1;
 	
 	/**
 	 * Constructor for BackendClient
@@ -39,17 +37,9 @@ public class BackendClient {
 	public BackendClient(String url, int port) {
 		this.url = url;
 		this.port = port;
-		fromServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
-		fromFrontEndQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
-		markupHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
-		dumbUIThreadQueue = new ConcurrentLinkedQueue<FrontEndUpdate>();
-		
-		// DEBUG
-		/*try {
-			writer = new BufferedWriter(new FileWriter("/home/rharagut/Desktop/dump.txt", true));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+		fromServerQueue = new Vector<FrontEndUpdate>();
+		toServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
+		screenHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
 	}
 	
 	/**
@@ -80,12 +70,12 @@ public class BackendClient {
 					try {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
-						fromServerQueue.add(feu);
-						checkLocalHistory(feu);
-						// DEBUG
-						/*writer.write("\n-----------------\n");
-						writer.write("Incoming FEU: " + feu.toLine() + "\n");
-						dumpMarkupHistory();*/
+						if(deleteFromScreenHistoryIfOwn(feu)) {
+							continue;
+						}
+						feu = updateIncomingFEUWithScreenHistory(feu);
+						fromServerQueue.add(0, feu); // adding at the left
+						nextSentToFrontEndIndex++;
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
@@ -98,7 +88,7 @@ public class BackendClient {
 						fromServerQueue.add(f);
 					}			
 				}
-			}			
+			}	
 		});
 		receiveUpdateThread.start();
 		
@@ -107,23 +97,8 @@ public class BackendClient {
 			public void run() {
 				while(!done) {
 					try {
-						FrontEndUpdate feu = fromFrontEndQueue.take();
-						feu.setRevision(revisionNumber);
-						addToLocalHistory(feu);
-						
-						// DEBUG
-						System.out.print("\tSending FEU " + feu.toLine());
-						System.out.print("\t");
-						dumpFromFE();
-						System.out.print("\t");
-						dumpFromServer();
-						System.out.print("\t");
-						dumpMarkupHistory();
-						System.out.println("\txxxxxxxxxxx\n\txxxxxxxxxxx");
-						
-						
-						
-						
+						FrontEndUpdate feu = toServerQueue.take();
+						feu.setRevision(revisionNumber);						
 						out.writeObject(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -143,38 +118,36 @@ public class BackendClient {
 	}
 	
 	/**
+	 * Must be called by the Front End to set the user id
+	 * @param id
+	 */
+	public void setUserId(int id) {
+		this.userId = id;
+	}
+	
+	/**
 	 * Sends a FrontEndUpdate to the server
 	 * @param feu Pre-constructed FrontEndUpdate to be sent
 	 */
 	public void sendUpdate(FrontEndUpdate feu) {
-		for(FrontEndUpdate f : dumbUIThreadQueue)
-			updateFEUgivenFEU(f, feu, false);
-		for(FrontEndUpdate f : fromServerQueue)
-			updateFEUgivenFEU(f, feu, false);
-		fromFrontEndQueue.add(feu);
+		updateFromServerQueueWithSent(feu);
+		screenHistory.add(feu); // Concurrent-safe
+		toServerQueue.add(feu); // Concurrent-safe
 	}
-	
+
 	/**
 	 * Gets a FrontEndUpdate from the FEU Queue
 	 * @return next FEU from Queue
 	 */
 	public FrontEndUpdate getUpdate() {
 		try {
-			FrontEndUpdate update = fromServerQueue.take();
-			System.out.println("before local update");
-			System.out.print("Received FEU " + update.toLine());
-			dumpFromFE();
-			dumpFromServer();
-			dumpMarkupHistory();
-			System.out.println("after local update");
-			System.out.print("Received FEU " + update.toLine());
-			dumpFromFE();
-			dumpFromServer();
-			dumpMarkupHistory();
-			System.out.println("xxxxxxxxxxx\nxxxxxxxxxxx");
-			//System.out.print("Received FEU\n"); //TODO DEBUG
-			//System.out.println(update.toString());
-			dumbUIThreadQueue.add(update);
+			assert(this.nextSentToFrontEndIndex >= -1);
+			while(this.nextSentToFrontEndIndex == -1) {
+				Thread.sleep(1);				
+			}
+			FrontEndUpdate update = this.fromServerQueue.get(
+					this.nextSentToFrontEndIndex);
+			this.nextSentToFrontEndIndex--; // getting added from the left
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -182,23 +155,81 @@ public class BackendClient {
 		}
 	}
 	
+	/**
+	 * Used to notify the backendclient that the frontend has actually painted
+	 * an feu
+	 * @param feu that was just painted
+	 */
 	public void FEUProcessed(FrontEndUpdate feu) {
-		revisionNumber = feu.getRevision();
-		dumbUIThreadQueue.remove(feu);
+		this.fromServerQueue.remove(feu);
+		updateScreenHistoryWithProcessed(feu);
+		this.revisionNumber = feu.getRevision();
 	}
 	
-	private void addToLocalHistory(FrontEndUpdate feu) {
-		if(feu.getUpdateType() == 
-			FrontEndUpdate.UpdateType.Markup) {
-			markupHistory.add(feu);
+	/**
+	 * Checks if the feu that was received belongs to us, and if so, we delete 
+	 * it from the screenHistory queue
+	 * @param feu FEU to be checked
+	 * @return true if feu belongs to us and was deleted, false if the feu
+	 * did not belong to us
+	 */
+	private boolean deleteFromScreenHistoryIfOwn(FrontEndUpdate feu) {
+		if(feu.getUserId() == this.userId) {
+			for(FrontEndUpdate screenHistoryFEU : screenHistory) {
+				if(screenHistoryFEU.getFEUid() == feu.getFEUid()) {
+					screenHistory.remove(screenHistoryFEU);
+					return true;
+				}					
+			}
+			assert (false);
 		}
+		return false;
+	}	
+
+	/**
+	 * Updates an FEU coming from the server with FEUs in screenHistory (FEUs
+	 * that are on the screen but haven't been sent to the server) before
+	 * inserting it into the fromServerQueue
+	 * @param feu FEU to be updated
+	 * @return a new FEU that has been updated
+	 */
+	private FrontEndUpdate updateIncomingFEUWithScreenHistory(
+			FrontEndUpdate feu) {
+		FrontEndUpdate newFEU = feu;
+		for(FrontEndUpdate screenFEU : screenHistory) {
+			assert(screenFEU.getRevision() < feu.getRevision());
+			updateFEUgivenFEU(newFEU, screenFEU, false);
+		}
+		return newFEU;
+	}
+	
+	/**
+	 * Updates the fromServerQueue with an FEU that we are going to send
+	 * to the server
+	 * @param feu given FEU passed from FrontEnd to be sent to the server
+	 */
+	private void updateFromServerQueueWithSent(FrontEndUpdate feu) {
+		for(FrontEndUpdate fromServerFEU : fromServerQueue) {
+			updateFEUgivenFEU(fromServerFEU, feu, false);
+		}
+	}
+	
+	/**
+	 * Updates the screenHistory queue with a FEU that has been painted on
+	 * the FrontEnd
+	 * @param feu FEU that was just processed, or just painted
+	 */
+	private void updateScreenHistoryWithProcessed(FrontEndUpdate feu) {
+		for(FrontEndUpdate screenHistoryFEU : screenHistory) {
+			updateFEUgivenFEU(screenHistoryFEU, feu, false);
+		}		
 	}
 	
 	/**
 	 * Used 
 	 * @param update
 	 */
-	private void checkLocalHistory(FrontEndUpdate update) {
+	/*private void checkLocalHistory(FrontEndUpdate update) {
 		for(FrontEndUpdate top : markupHistory) {
 			if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
 				if(update.getMarkupType() == top.getMarkupType()) {
@@ -214,6 +245,7 @@ public class BackendClient {
 										update.getUserId(), 
 										update.getStartLocation(), 
 										update.getInsertString());
+							updateClone.setRevision(update.getRevision());
 							updateFEUgivenFEU(update, top, false);
 							updateFEUgivenFEU(top, updateClone, true);
 						}
@@ -230,6 +262,7 @@ public class BackendClient {
 										update.getUserId(), 
 										update.getStartLocation(), 
 										update.getEndLocation());
+							updateClone.setRevision(update.getRevision());
 							updateFEUgivenFEU(update, top, false);
 							updateFEUgivenFEU(top, updateClone, true);
 						}
@@ -243,6 +276,7 @@ public class BackendClient {
 									update.getUserId(), 
 									update.getStartLocation(), 
 									update.getInsertString());
+						updateClone.setRevision(update.getRevision());
 						updateFEUgivenFEU(update, top, false);
 						updateFEUgivenFEU(top, updateClone, true);
 					}
@@ -253,13 +287,14 @@ public class BackendClient {
 									update.getUserId(), 
 									update.getStartLocation(), 
 									update.getEndLocation());
+						updateClone.setRevision(update.getRevision());
 						updateFEUgivenFEU(update, top, false);
 						updateFEUgivenFEU(top, updateClone, true);
 					}
 				}
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Updates an FEU given an FEU
@@ -327,16 +362,9 @@ public class BackendClient {
 	 */
 	public void finish() {
 		done = true;
-		
-		//DEBUG
-		/*try {
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 	}
 	
-	private void dumpMarkupHistory() {
+	/*private void dumpMarkupHistory() {
 		System.out.println("muh----------");
 		int i=0; 
 		for(FrontEndUpdate feu : markupHistory) {
@@ -361,6 +389,6 @@ public class BackendClient {
 			System.out.print(i + feu.toLine());
 			i++;
 		}
-	}
+	}*/
 
 }
