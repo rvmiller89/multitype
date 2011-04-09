@@ -160,7 +160,7 @@ public class MarkupProcessor implements Runnable{
 		}
 		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
 			int insertAt = given.getStartLocation();
-			int sizeOfInsert = given.getEndLocation() - insertAt + 1;
+			int sizeOfInsert = given.getEndLocation() - insertAt;
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
