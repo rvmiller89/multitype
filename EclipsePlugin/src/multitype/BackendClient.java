@@ -28,6 +28,7 @@ public class BackendClient {
 	private int port;
 	private int nextSentToFrontEndIndex = -1;
 	private int userId = -1;
+	private int curFEUid = 0;
 	
 	/**
 	 * Constructor for BackendClient
@@ -98,7 +99,9 @@ public class BackendClient {
 				while(!done) {
 					try {
 						FrontEndUpdate feu = toServerQueue.take();
-						feu.setRevision(revisionNumber);						
+						feu.setRevision(revisionNumber);	
+						feu.setFEUid(curFEUid);
+						curFEUid++;
 						out.writeObject(feu);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -174,6 +177,7 @@ public class BackendClient {
 	 * did not belong to us
 	 */
 	private boolean deleteFromScreenHistoryIfOwn(FrontEndUpdate feu) {
+		assert (this.userId != -1);
 		if(feu.getUserId() == this.userId) {
 			for(FrontEndUpdate screenHistoryFEU : screenHistory) {
 				if(screenHistoryFEU.getFEUid() == feu.getFEUid()) {
