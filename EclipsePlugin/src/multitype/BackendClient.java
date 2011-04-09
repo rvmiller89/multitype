@@ -71,6 +71,7 @@ public class BackendClient {
 					try {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
+						System.err.println("Received: " + feu.toLine());
 						if(deleteFromScreenHistoryIfOwn(feu)) {
 							continue;
 						}
@@ -150,6 +151,7 @@ public class BackendClient {
 			}
 			FrontEndUpdate update = this.fromServerQueue.get(
 					this.nextSentToFrontEndIndex);
+			System.err.print("GetUpdate: " + update.toLine());
 			this.nextSentToFrontEndIndex--; // getting added from the left
 			return update;
 		} catch (InterruptedException e) {
