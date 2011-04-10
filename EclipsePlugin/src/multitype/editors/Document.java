@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
@@ -128,10 +127,9 @@ public class Document
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() 
 			{
-				editor.setHighlightRange(feu.getStartLocation(), feu.getEndLocation(), false);
-//				editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
-//				editor.getSelectionProvider().setSelection(new TextSelection(doc, feu.getStartLocation(), feu.getEndLocation()));
-//				editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
+				editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
+				editor.getSelectionProvider().setSelection(new TextSelection(doc, feu.getStartLocation(), feu.getEndLocation()));
+				editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
 			}
 		});
 
