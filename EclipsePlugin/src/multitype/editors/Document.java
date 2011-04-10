@@ -28,7 +28,6 @@ public class Document
 	private ITextEditor editor;
 	private IDocument doc;
 	private String fileName; //TODO
-	private FrontEndUpdate selectedFEU;
 	private final IDocumentListener DOCUMENT_LISTENER = new IDocumentListener() {
 		
 		public void documentAboutToBeChanged(DocumentEvent event) {}
@@ -83,7 +82,6 @@ public class Document
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		doc.addDocumentListener(DOCUMENT_LISTENER);
 		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
-		selectedFEU = null;
 	}
 	
 	public void delete(final FrontEndUpdate feu)
@@ -111,11 +109,6 @@ public class Document
 		    @Override
 		    public void run() {
 		    	try {
-		    		if (selectedFEU != null)
-		    		{
-		    			delete(selectedFEU);
-		    		}
-		    		
 		    		doc.removeDocumentListener(DOCUMENT_LISTENER);
 					doc.replace(feu.getStartLocation(), 0, feu.getInsertString());
 					Activator.getDefault().client.FEUProcessed(feu);
@@ -133,17 +126,6 @@ public class Document
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run()
 			{
-				selectedFEU = null;
-				
-				if (feu.getEndLocation() > 0)
-				{
-					selectedFEU = FrontEndUpdate.createDeleteFEU(
-							feu.getFileId(), 
-							feu.getUserId(), 
-							feu.getStartLocation(), 
-							feu.getEndLocation());
-				}
-				
 				editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
 				editor.getSelectionProvider().setSelection(new TextSelection(doc, feu.getStartLocation(), feu.getEndLocation()));
 				editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
