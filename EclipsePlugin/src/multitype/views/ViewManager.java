@@ -50,14 +50,6 @@ public class ViewManager extends ViewPart{
 
 				Activator.getDefault().userList.addUserToList(Activator.getDefault().userInfo.getUsername(), Activator.getDefault().userInfo.getUserid());
 				
-				// Ignore if Chat View is not opened
-				ChatView chatView = Activator.getDefault().chatView;
-				if (chatView != null)
-				{
-					// Otherwise, enable the ability to send chat messages
-					chatView.enableChat();
-				}
-				
 				
 				break;
 			case New_Shared_File:
@@ -108,10 +100,8 @@ public class ViewManager extends ViewPart{
 				if (feu.getUserId() != -1) {
 					Activator.getDefault().userList.hostId = feu.getUserId();
 					if (Activator.getDefault().userInfo.getUserid() == feu.getUserId())
-					{
 						Activator.getDefault().isHost = true;
-						Activator.getDefault().fileList.removeOpenFilesFolder();
-					}
+
 					Activator.getDefault().userList.setButton(false); //host already exists
 				}
 				break;
@@ -122,7 +112,7 @@ public class ViewManager extends ViewPart{
 				break;
 			case Chat_Message:
 				// Ignore if Chat View is not opened
-				chatView = Activator.getDefault().chatView;
+				ChatView chatView = Activator.getDefault().chatView;
 				if (chatView != null)
 				{
 					// Otherwise, display message in the chat window
@@ -134,12 +124,17 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().userList.deleteUserFromList(feu.getUserId());
 				Activator.getDefault().userList.hostId = -1;
 				Activator.getDefault().userList.setButton(true); //no host anymore
-				//Activator.getDefault().isConnected = false;
+				Activator.getDefault().fileList.clearList();
+				
+				// TODO Prompt to save files?
 				break;
 			case Server_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
 				Activator.getDefault().userList.clearList();
+				Activator.getDefault().fileList.clearList();
 				Activator.getDefault().isConnected = false;
+				
+				// TODO Prompt to save files?
 				break;
 			default:
 				Activator.getDefault().showDialogAsync("FrontEndUpdate Error", "Unknown FrontEndUpdate receieved.");

@@ -74,8 +74,6 @@ public class ChatView extends ViewPart {
 		        sr1.length = end;
 		        if (isOwn)
 		        	sr1.foreground = Display.getDefault().getSystemColor(SWT.COLOR_RED);
-		        //sr1.foreground = display.getSystemColor(SWT.COLOR_GREEN);
-		        //sr1.background = display.getSystemColor(SWT.COLOR_WHITE);
 		        sr1.fontStyle = SWT.BOLD;
 
 		        text_room.setStyleRange(sr1);
@@ -101,25 +99,31 @@ public class ChatView extends ViewPart {
 		text_room.setLineSpacing(4);
 		
 		text_sender = new Text(sashForm, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-		text_sender.setEnabled(false);
 		text_sender.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.character == SWT.CR)
 				{
-					// Add text to room
-					addMessage(Activator.getDefault().userInfo.getUsername(),
-							text_sender.getText(), true);
-					
-					// Send out Chat FEU
-					FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Chat_Message, 
-							-1, 
-							Activator.getDefault().userInfo.getUserid(),
-							text_sender.getText());
-					FEUSender.send(feu);
-					
-					// Remove text from box
-					text_sender.setText("");
+					if (Activator.getDefault().isConnected)
+					{
+						// Add text to room
+						addMessage(Activator.getDefault().userInfo.getUsername(),
+								text_sender.getText(), true);
+						
+						// Send out Chat FEU
+						FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Chat_Message, 
+								-1, 
+								Activator.getDefault().userInfo.getUserid(),
+								text_sender.getText());
+						FEUSender.send(feu);
+						
+						// Remove text from box
+						text_sender.setText("");
+					}
+					else
+					{
+						Activator.getDefault().showDialogAsync("Chat Error", "Not connected to a server.");
+					}
 				}
 			}
 		});

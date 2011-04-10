@@ -279,28 +279,20 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		  });
 	}
 	
-	public void removeOpenFilesFolder()
+	/**
+	 * Removes all Open Files and Shared Files from the FileList view
+	 */
+	public void clearList()
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		    	invisibleRoot.removeChild(openFiles);
-		    	viewer.refresh(false);
+		    	openFiles.children.clear();
+		    	sharedFiles.children.clear();
+		    	viewer.refresh();
 		    }
-		  });
+		  });		
 	}
-	
-	public void addOpenFilesFolder()
-	{
-		Display.getDefault().asyncExec(new Runnable() {
-		    @Override
-		    public void run() {
-		    	invisibleRoot.addChild(openFiles);
-		    	viewer.refresh(false);
-		    }
-		  });	
-	}
-	
 
 	/**
 	 * This is a callback that will allow us

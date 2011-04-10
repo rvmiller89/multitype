@@ -66,18 +66,6 @@ public class Activator extends AbstractUIPlugin {
 		userInfo.setPort(port);
 	}
 	
-	/* no use for now
-	public void addUserToList(FrontEndUpdate feu) {
-		//userList.addUserToList(feu.getContent());
-		//connectedUserList.add(null);
-	}
-	
-	public void deleteUserFromList(FrontEndUpdate feu) {
-		userList.deleteUserFromList(feu.getContent());
-		//connectedUserList.add(null);
-	}
-	*/
-	
 	/**
 	 * Instantiates a FEUListener and BackendConnection
 	 * 
