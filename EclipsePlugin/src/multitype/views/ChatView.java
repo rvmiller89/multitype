@@ -77,6 +77,7 @@ public class ChatView extends ViewPart {
 		        sr1.fontStyle = SWT.BOLD;
 
 		        text_room.setStyleRange(sr1);
+		        text_room.setTopIndex(text_room.getLineCount());
 		    }
 		});
 	}
