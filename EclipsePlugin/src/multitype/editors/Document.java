@@ -10,11 +10,14 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
@@ -82,6 +85,19 @@ public class Document
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		doc.addDocumentListener(DOCUMENT_LISTENER);
 		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
+		Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(new ISelectionListener() {
+			public void selectionChanged(IWorkbenchPart part, ISelection selection)
+			{
+				if (part.getSite().getId().equals(editor.getSite().getId()))
+				{
+					FEUSender.send(
+							FrontEndUpdate.createCursorPosFEU(
+									getFileID(), 
+									Activator.getDefault().userInfo.getUserid(), 
+									((ITextSelection)selection).getOffset()));
+				}
+			}
+		});
 	}
 	
 	public void delete(final FrontEndUpdate feu)
@@ -136,6 +152,6 @@ public class Document
 	
 	public void cursorPos(final FrontEndUpdate feu)
 	{
-		// TODO: build 2
+		System.out.println("received cursor at: " + feu.getStartLocation());
 	}
 }
