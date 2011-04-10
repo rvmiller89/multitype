@@ -319,12 +319,10 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 					Activator.getDefault().userInfo.getUsername());
 			FEUSender.send(feu);
 			Activator.getDefault().userList.setButton(false);
-			//System.out.println("Disconnected from server.");
 			Activator.getDefault().userList.clearList();
 		}
 		else {
-			//System.out.println("not connected to a server.");
-			showMessage("not connected to a server.");
+			Activator.getDefault().showDialogAsync("Error", "Not connected to a server.");
 		}
 	}
 	
