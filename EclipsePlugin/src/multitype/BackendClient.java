@@ -97,13 +97,25 @@ public class BackendClient {
 		sendUpdateThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(!done) {
+				while(true) {
 					try {
-						FrontEndUpdate feu = toServerQueue.take();
-						feu.setRevision(revisionNumber);	
-						feu.setFEUid(curFEUid);
-						curFEUid++;
-						out.writeObject(feu);
+						if(done) {
+							while(toServerQueue.size() > 0) {
+								FrontEndUpdate feu = toServerQueue.take();
+								feu.setRevision(revisionNumber);	
+								feu.setFEUid(curFEUid);
+								curFEUid++;
+								out.writeObject(feu);
+							}
+							break;
+						} 
+						else {
+							FrontEndUpdate feu = toServerQueue.take();
+							feu.setRevision(revisionNumber);	
+							feu.setFEUid(curFEUid);
+							curFEUid++;
+							out.writeObject(feu);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
