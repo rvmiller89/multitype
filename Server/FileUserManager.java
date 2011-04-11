@@ -204,6 +204,21 @@ public class FileUserManager {
 		Server.dprint("Dropped client " + uid);
 	}
 	
+	public void removeHost() {
+		if(this.hostid != -1) {
+			//remove host status
+			
+			this.hostid = -1;
+			
+			//close all files
+			for(MarkupProcessor mp : markupprocs.values()) {
+				mp.setDone();
+			}
+			fileusermap.clear();
+			filemap.clear();
+		}
+	}
+	
 	/**
 	 * Adds an FEU to the markup processor associated with its file
 	 * @param feu FEU to add

@@ -118,6 +118,10 @@ public class NotificationProcessor implements Runnable {
 		case Host_Disconnect:
 			// TODO no function
 			// JSL - need to clear out the FUM info here?
+			// all files will close
+			fileUserManager.removeHost();
+			fileUserManager.sendFEUToAll(feu);
+			// all users will remain connected
 			break;
 		case Server_Disconnect: // Only sent from server to clients
 			break;
