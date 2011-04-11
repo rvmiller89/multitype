@@ -1,9 +1,15 @@
 package multitype.editors;
 
+import java.util.HashMap;
+
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -19,6 +25,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.MarkerUtilities;
 
 /**
  * 
@@ -31,6 +38,10 @@ public class Document
 	private ITextEditor editor;
 	private IDocument doc;
 	private String fileName; //TODO
+	
+	// Cusor marker mapping
+	HashMap<String, Integer> cursorMap = new HashMap<String, Integer>();
+	
 	private final IDocumentListener DOCUMENT_LISTENER = new IDocumentListener() {
 		
 		public void documentAboutToBeChanged(DocumentEvent event) {}
@@ -153,5 +164,27 @@ public class Document
 	public void cursorPos(final FrontEndUpdate feu)
 	{
 		System.out.println("received cursor at: " + feu.getStartLocation());
+		
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run()
+			{
+				int lineNumber = 0;	// DEBUG, eventually turn to cursor position
+				
+				MarkerUtilities.setLineNumber(cursorMap, lineNumber+1); //1-based line numbering
+				MarkerUtilities.setMessage(cursorMap, "This is some sample warning.");
+				cursorMap.put(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+				try {
+					IResource resource =
+		            (IResource) ((IAdaptable) editor)
+		                .getAdapter(IResource.class);
+					
+				    MarkerUtilities.createMarker(resource, cursorMap, "myproblem");//.createMarker(f, map, "myproblem");
+				} catch (CoreException e) {
+				    //something went terribly wrong
+				}
+			}
+		});		
+		
+		
 	}
 }

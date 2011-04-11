@@ -110,9 +110,17 @@
       <command
             defaultHandler="multitype.command.ShareFile"
             id="multitype.command"
-            name="Convert">
+            name="Share">
       </command>
    </extension>
+   <extension id="cursorMarker"
+    	point="org.eclipse.core.resources.markers"
+    	name="Cursor Marker">
+        
+        <super type="org.eclipse.core.resources.problemmarker"/>
+        <super type="org.eclipse.core.resources.textmarker"/>
+        <persistent value="true"/>
+	</extension>
 	
 
 </plugin>
