@@ -35,6 +35,7 @@ public class Activator extends AbstractUIPlugin {
 	public ChatView chatView;
 	
 	public Map<Integer, String> connectedUsers;
+	public Map<Integer, String> sharedFiles;
 	
 	/**
 	 * The constructor
@@ -51,6 +52,7 @@ public class Activator extends AbstractUIPlugin {
 		isConnected = false;
 		isHost = false;
 		connectedUsers = new HashMap<Integer, String>();
+		sharedFiles = new HashMap<Integer, String>();
 	}
 
 	public void stop(BundleContext context) throws Exception {

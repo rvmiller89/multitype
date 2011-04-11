@@ -57,9 +57,23 @@ public class ViewManager extends ViewPart{
 				// fileid, content = filename
 				Activator.getDefault().fileList.addSharedFile(feu.getFileId(), feu.getContent());
 				
+				// Add to fileid/filename mapping
+				Activator.getDefault().sharedFiles.put(feu.getFileId(), feu.getContent());
+				
+				
 				break;
 			case Close_Shared_File:
+				// Non-hosts receive this to indicate that the host has stopped sharing a file
+				// fileid
+				Activator.getDefault().fileList.removeOpenFile(feu.getFileId());
+				
+				// Remove from fileid/filename mapping
+				Activator.getDefault().sharedFiles.remove(feu.getFileId());
+				
+				// TODO Prompt to save files? (and close tabs)
+				
 				break;
+				
 			case Get_Shared_File:
 				// Host receives this
 				// userid of requester, fileid
@@ -84,8 +98,12 @@ public class ViewManager extends ViewPart{
 				// TODO Azfar - open editor on screen with feu.getContent() for feu.getFileID();
 				
 				Activator.getDefault().fileList.removeSharedFile(feu.getFileId());
-				Activator.getDefault().fileList.addOpenFile(feu.getFileId(), "Debug.txt");
+				
 				// TODO grab filename from fileid mapping before adding to Open Files
+				// right now it's "debug.txt"
+				
+				Activator.getDefault().fileList.addOpenFile(feu.getFileId(), "Debug.txt");
+				
 				
 				break;
 			case User_Connected:
@@ -120,19 +138,29 @@ public class ViewManager extends ViewPart{
 				}
 				break;
 			case Host_Disconnect:
-				Activator.getDefault().showDialogAsync("Connection Error", "Host disconnected.");
+				Activator.getDefault().showDialogAsync("Server Notification", "Host disconnected.");
 				Activator.getDefault().userList.deleteUserFromList(feu.getUserId());
 				Activator.getDefault().userList.hostId = -1;
 				Activator.getDefault().userList.setButton(true); //no host anymore
 				Activator.getDefault().fileList.clearList();
 				
-				// TODO Prompt to save files?
+				// Clear all fileid/filename mappings
+				Activator.getDefault().sharedFiles.clear();
+				
+				// TODO Prompt to save files? (and close tabs)
+				
 				break;
 			case Server_Disconnect:
 				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
 				Activator.getDefault().userList.clearList();
 				Activator.getDefault().fileList.clearList();
 				Activator.getDefault().isConnected = false;
+				
+				// Clear all fileid/filename mappings
+				Activator.getDefault().sharedFiles.clear();
+				
+				// Clear all userid/username mappings
+				Activator.getDefault().connectedUsers.clear();
 				
 				// TODO Prompt to save files?
 				break;
