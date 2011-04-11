@@ -5,6 +5,7 @@
 package multitype.views;
 
 import multitype.Activator;
+import multitype.FEUManager;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.NotificationType;
@@ -70,7 +71,9 @@ public class ViewManager extends ViewPart{
 				// Remove from fileid/filename mapping
 				Activator.getDefault().sharedFiles.remove(feu.getFileId());
 				
-				// TODO Prompt to save files? (and close tabs)
+				// Add a document for the file with this fileid
+				// TODO Azfar, check this
+				FEUManager.getInstance().editorManager.removeDocument(feu.getFileId());
 				
 				break;
 				
@@ -95,14 +98,16 @@ public class ViewManager extends ViewPart{
 				// Non-host receives this
 				// userid (own), fileid, content
 
-				// TODO Azfar - open editor on screen with feu.getContent() for feu.getFileID();
-				
 				Activator.getDefault().fileList.removeSharedFile(feu.getFileId());
 				
-				// TODO grab filename from fileid mapping before adding to Open Files
-				// right now it's "debug.txt"
+				// Grab filename from fileid mapping before adding to Open Files
+				Activator.getDefault().fileList.addOpenFile(feu.getFileId(),
+						Activator.getDefault().sharedFiles.get(feu.getFileId()));
 				
-				Activator.getDefault().fileList.addOpenFile(feu.getFileId(), "Debug.txt");
+				// Add a document for the file with this fileid
+				// TODO Azfar, check this
+				FEUManager.getInstance().editorManager.newDocument(feu.getFileId());
+
 				
 				
 				break;

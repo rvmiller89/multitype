@@ -39,6 +39,8 @@ public class EditorManager
 	
 	public void removeDocument(int fileID)
 	{
+		// TODO maybe prompt to save files here?
+		
 		//TODO
 	}
 	

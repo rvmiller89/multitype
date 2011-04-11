@@ -81,6 +81,7 @@ public class Activator extends AbstractUIPlugin {
 		client = new BackendClient(userInfo.getHost(), userInfo.getPort());
 		
 		// Construct a FEUListener and start thread
+		// This also starts a FEUManager (which starts EditorManager and ViewManager)
 		feuListener = new FEUListener(client);
 		feuListener.start();
 		

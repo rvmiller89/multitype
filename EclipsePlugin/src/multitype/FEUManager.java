@@ -9,7 +9,7 @@ import multitype.views.*;
 
 public class FEUManager {
 	
-	private EditorManager editorManager;
+	public EditorManager editorManager;
 	private ViewManager viewManager;
 	
 	private static FEUManager instance;
