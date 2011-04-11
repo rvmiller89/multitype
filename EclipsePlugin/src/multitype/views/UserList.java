@@ -312,7 +312,6 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	
 	public void disconnect() {
 		if (Activator.getDefault().isConnected == true) {
-			Activator.getDefault().disconnect();
 			Activator.getDefault().isConnected = false;
 			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
@@ -320,6 +319,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			FEUSender.send(feu);
 			Activator.getDefault().userList.setButton(false);
 			Activator.getDefault().userList.clearList();
+			Activator.getDefault().disconnect();
 		}
 		else {
 			Activator.getDefault().showDialogAsync("Error", "Not connected to a server.");
