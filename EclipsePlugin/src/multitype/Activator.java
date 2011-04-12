@@ -56,6 +56,11 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public void stop(BundleContext context) throws Exception {
+		
+		// Disconnect from server if connected
+		if (isConnected)
+			Activator.getDefault().userList.disconnect();
+
 		plugin = null;
 		super.stop(context);
 	}
