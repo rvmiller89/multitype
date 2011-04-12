@@ -10,6 +10,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import multitype.FrontEndUpdate.UpdateType;
+
 /**
  * The BackendClient is used as means of communication with the 
  * BackendServer. 
@@ -24,6 +26,7 @@ public class BackendClient {
 	private Thread sendUpdateThread;
 	private Thread keepAliveThread;
 	private Vector<FrontEndUpdate> fromServerQueue;
+	private Vector<FrontEndUpdate> fromServerNotificationQueue;
 	private BlockingQueue<FrontEndUpdate> toServerQueue;
 	private ConcurrentLinkedQueue<FrontEndUpdate> screenHistory;
 	private boolean done = false;
@@ -45,6 +48,7 @@ public class BackendClient {
 		this.url = url;
 		this.port = port;
 		fromServerQueue = new Vector<FrontEndUpdate>();
+		fromServerNotificationQueue = new Vector<FrontEndUpdate>();
 		toServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		screenHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
 		revisionHistoryMap = new HashMap<Integer, Integer>();
@@ -231,15 +235,22 @@ public class BackendClient {
 	 */
 	public FrontEndUpdate getUpdate() {
 		try {
-			assert(this.nextSentToFrontEndIndex >= -1);
-			while(this.nextSentToFrontEndIndex == -1) {
-				Thread.sleep(1);				
+			if(fromServerNotificationQueue.size() > 0) {
+				FrontEndUpdate update = fromServerNotificationQueue.get(0);
+				System.err.print("GetUpdate: " + update.toLine());
+				return update;
 			}
-			FrontEndUpdate update = this.fromServerQueue.get(
-					this.nextSentToFrontEndIndex);
-			System.err.print("GetUpdate: " + update.toLine());
-			this.nextSentToFrontEndIndex--; // getting added from the left
-			return update;
+			else {
+				assert(this.nextSentToFrontEndIndex >= -1);
+				while(this.nextSentToFrontEndIndex == -1) {
+					Thread.sleep(1);				
+				}
+				FrontEndUpdate update = this.fromServerQueue.get(
+						this.nextSentToFrontEndIndex);
+				System.err.print("GetUpdate: " + update.toLine());
+				this.nextSentToFrontEndIndex--; // getting added from the left
+				return update;
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return null;
@@ -337,7 +348,10 @@ public class BackendClient {
 	 * @param feu FEU to be added
 	 */
 	private synchronized void addFEUToBegOfFromServerQueue(FrontEndUpdate feu) {
-		fromServerQueue.add(0, feu); // adding at the left
+		if(feu.getUpdateType() == UpdateType.Markup)
+			fromServerQueue.add(0, feu); // adding at the left
+		else
+			fromServerNotificationQueue.add(0, feu);
 	}
 	
 	/**
