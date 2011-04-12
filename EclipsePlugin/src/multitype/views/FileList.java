@@ -9,12 +9,7 @@ import multitype.FrontEndUpdate.NotificationType;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.*;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.jface.action.*;
@@ -24,8 +19,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 import org.eclipse.core.runtime.IAdaptable;
 
-import multitype.editors.ActiveEditor;
-import multitype.views.UserList.TreeParent;
 import multitype.FrontEndUpdate;
 
 
@@ -311,7 +304,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
-		contributeToActionBars();
+		//contributeToActionBars();
 	}
 
 	private void hookContextMenu() {
@@ -327,18 +320,6 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
-	private void contributeToActionBars() {
-		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
-		fillLocalToolBar(bars.getToolBarManager());
-	}
-
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(new Separator());
-		manager.add(action2);
-	}
-
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
 		manager.add(action2);
@@ -347,42 +328,38 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		// Other plug-ins can contribute there actions here
 		//manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
-	
-	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(action1);
-		manager.add(action2);
-		//manager.add(new Separator());
-		//drillDownAdapter.addNavigationActions(manager);
-	}
 
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
 				
-				/*
-				// Get a handle to the active editor (if any).
-				if (window == null)
-					showMessage("Window is null...");
-				 IWorkbenchPage page = getSite().getPage();
-				 
+				// Grab item
+				ISelection selection = viewer.getSelection();
+				Object obj = ((IStructuredSelection)selection).getFirstElement();
+				TreeObject item = (TreeObject)obj;
 				
-				String title = page.getActivePart().getTitle();
-				
-				
-				showMessage(title);*/
-				
-				/*ViewManager vm = new ViewManager();
-				FrontEndUpdate fu = 
-					FrontEndUpdate.createNotificationFEU(FrontEndUpdate.NotificationType.Connection_Error, 
-							0, 0, null);
-					
-				//	new FrontEndUpdate(FrontEndUpdate.UpdateType.Notification);
-				fu.setNotificationType(FrontEndUpdate.NotificationType.Connection_Error);
-				vm.receive(fu);*/
+				if (item != null)
+				{
+					boolean isHost = Activator.getDefault().isHost;
+					// if parent.getName() is "Shared Files" and _non-host_, signal EditorManager 
+					// to Get_Shared_file and add file to "Open Files" (create if needed)
+					if (item.parent.getName().equals("Shared Files"))
+					{
+						if (!isHost)	// only non-hosts can add to Open Files
+						{
+							// Send Get_Shared_File
+							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Get_Shared_File,
+									item.getFileID(),
+									Activator.getDefault().userInfo.getUserid(),
+									null);
+							FEUSender.send(feu);
+						}
+					}
+				}
 			}
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
+		action1.setText("Open File");
+		action1.setToolTipText("Start editing a shared file");
 		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		
@@ -391,43 +368,34 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 
 				// Action 2
 				
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		doubleClickAction = new Action() {
-			public void run() {
-				// Handle double-click action on a treeview item
-				
-				// Grab item
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				TreeObject item = (TreeObject)obj;
-
-				boolean isHost = Activator.getDefault().isHost;
-				// if parent.getName() is "Shared Files" and _non-host_, signal EditorManager 
-				// to Get_Shared_file and add file to "Open Files" (create if needed)
-				if (item.parent.getName().equals("Shared Files"))
-				{
-					if (!isHost)	// only non-hosts can add to Open Files
-					{
-						// Send Get_Shared_File
-						FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Get_Shared_File,
-								item.getFileID(),
-								Activator.getDefault().userInfo.getUserid(),
-								null);
-						FEUSender.send(feu);
-					}
-				}
-				
-				
 				// TODO
 				// if parent.getName() is "Shared Files" and _host_, signal EditorManager
 				// to Close_Shared_file and remove file from "Shared Files"
 				
 				// TODO remove file from "Shared Files" when _non_host_ and user closes editor tab
+
+				// Grab item
+				ISelection selection = viewer.getSelection();
+				Object obj = ((IStructuredSelection)selection).getFirstElement();
+				TreeObject item = (TreeObject)obj;
+				
+				if (item != null)
+				{
+					
+					
+					
+				}
+				
+			}
+		};
+		action2.setText("Close File");
+		action2.setToolTipText("Stop receiving updates on a shared file");
+		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		doubleClickAction = new Action() {
+			public void run() {
+				// Handle double-click action on a treeview item
+
 				
 			}
 		};
@@ -439,12 +407,6 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				doubleClickAction.run();
 			}
 		});
-	}
-	private void showMessage(String message) {
-		MessageDialog.openInformation(
-			viewer.getControl().getShell(),
-			"File List",
-			message);
 	}
 
 	/**
