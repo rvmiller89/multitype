@@ -10,7 +10,9 @@ import multitype.Activator;
 import multitype.FrontEndUpdate;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.jface.text.BadLocationException;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -69,21 +71,29 @@ public class EditorManager
 		map.get(fileID).setText(content);
 	}
 	
-	public void newDocument(int fileID, String content)
+	public void newDocument(final int fileID, final String content)
 	{
-		try {
-			Activator.getDefault().
-			getWorkbench().
-			getActiveWorkbenchWindow().
-			getActivePage().
-			openEditor(
-					new StringEditorInput(content), 
-					"org.eclipse.ui.DefaultTextEditor");
-			map.put(fileID, new Document(getReferences()[count++], fileID));
-			map.get(fileID).setText(content);
-		} catch (PartInitException e) {
-			System.err.println("*********************************PART INIT EXCEPTION: " + e.getMessage());
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Activator
+							.getDefault()
+							.getWorkbench()
+							.getActiveWorkbenchWindow()
+							.getActivePage()
+							.openEditor(new StringEditorInput(content),
+									"org.eclipse.ui.DefaultTextEditor");
+					map.put(fileID, new Document(getReferences()[count++],
+							fileID));
+					map.get(fileID).setText(content);
+				} catch (PartInitException e) {
+					System.err
+							.println("*********************************PART INIT EXCEPTION: "
+									+ e.getMessage());
+				}
+			}
+		});
 	}
 	
 	public void removeDocument(int fileID)
