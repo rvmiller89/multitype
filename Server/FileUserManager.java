@@ -122,7 +122,7 @@ public class FileUserManager {
 	}
 	
 	/**
-	 * Sends a Markup FEU to all clients associated with that file
+	 * Deprecated use sendFEUToAll
 	 * @param feu The FEU to send.
 	 */
 	public void sendFEU(MarkupProcessor m, FrontEndUpdate feu) {
