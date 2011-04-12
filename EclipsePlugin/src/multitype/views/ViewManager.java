@@ -82,8 +82,6 @@ public class ViewManager extends ViewPart{
 				// Host receives this
 				// userid of requester, fileid
 				// immediately send out Send_File FEU to requesting non_host client with content from Editor
-
-				// TODO Azfar - have this grab the content from the associated <<Document>> with feu.getFileId()
 				
 				String content = FEUManager.getInstance().editorManager.getTextOfFile(feu.getFileId());
 				
