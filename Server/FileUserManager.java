@@ -63,6 +63,14 @@ public class FileUserManager {
 	}
 	
 	/**
+	 * Called when a non-host client closes a shared file
+	 * @param feu
+	 */
+	public void clientClosedFile(FrontEndUpdate feu) {
+		fileusermap.get(feu.getFileId()).remove(feu.getUserId());
+	}
+	
+	/**
 	 * Adds a new user
 	 * @param uid UserID for the client to be added (from the FEU with username)
 	 * @param username Username to associate with this username

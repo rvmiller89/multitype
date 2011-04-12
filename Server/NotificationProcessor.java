@@ -70,6 +70,9 @@ public class NotificationProcessor implements Runnable {
 			fileUserManager.sendFEUToAll(feu);
 			fileUserManager.removeFile(feu.getFileId());
 			break;
+		case Close_Client_File:
+			fileUserManager.clientClosedFile(feu);
+			break;
 		case Get_Shared_File:
 			fileUserManager.sendFEUToClient(fileUserManager.getHost(), feu);
 			break;
