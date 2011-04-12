@@ -113,7 +113,9 @@ public class Document
 	
 	public void setText(String text)
 	{
+		doc.removeDocumentListener(DOCUMENT_LISTENER);
 		doc.set(text);
+		doc.addDocumentListener(DOCUMENT_LISTENER);
 	}
 	
 	public void delete(final FrontEndUpdate feu)
