@@ -7,6 +7,7 @@ import java.util.*;
 import java.net.*;
 
 import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.NotificationType;
 
 public class FileUserManager {
 
@@ -83,6 +84,19 @@ public class FileUserManager {
 			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 					FrontEndUpdate.NotificationType.User_Connected, -1, i,
 					usermap.get(i));
+			this.sendFEUToClient(uid, feu);
+		}
+	}
+	
+	/**
+	 * Sends all the currently shared files to the specified client
+	 * @param uid userid of the client to send to
+	 */
+	public void sendSharedFilesToClient(int uid) {
+		for(Integer i : filemap.keySet()) {
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					FrontEndUpdate.NotificationType.New_Shared_File, 
+					i, -1, filemap.get(i));
 			this.sendFEUToClient(uid, feu);
 		}
 	}
@@ -257,5 +271,4 @@ public class FileUserManager {
 		
 		return sb.toString();
 	}
-
 }
