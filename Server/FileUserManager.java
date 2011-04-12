@@ -84,6 +84,7 @@ public class FileUserManager {
 	 * @param uid userid of the client to send to
 	 */
 	public void sendUsersToClient(int uid) {
+		Server.dprint("Sending " + usermap.size() + " users to client " + uid);
 		for(Integer i : usermap.keySet()) {
 			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 					FrontEndUpdate.NotificationType.User_Connected, -1, i,
@@ -224,6 +225,7 @@ public class FileUserManager {
 	public void removeHost() {
 		if(this.hostid != -1) {
 			//remove host status
+			Server.dprint("Removing host: " + this.hostid);
 			
 			this.hostid = -1;
 			
