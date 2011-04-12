@@ -80,7 +80,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private Action disconnect_action;
 	private Action doubleClickAction;
 	private IWorkbenchWindow window;
-	private Button hostRequestButton;
+	//private Button hostRequestButton;
 	public int hostId = -1;
 
 	/*
@@ -280,7 +280,6 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-		    	hostRequestButton.setEnabled(bool);
 		    	hostRequest_action.setEnabled(bool);
 		    	viewer.refresh();
 		    }
@@ -312,6 +311,10 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	
 	public void disconnect() {
 		if (Activator.getDefault().isConnected == true) {
+			if (Activator.getDefault().isHost == true) {
+				hostId = -1;
+				Activator.getDefault().isHost = false;
+			}
 			Activator.getDefault().isConnected = false;
 			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
@@ -340,30 +343,10 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		parent.setLayout(new FormLayout());
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		Tree tree = viewer.getTree();
-		FormData fd_tree = new FormData();
-		fd_tree.top = new FormAttachment(0, 3);
-		fd_tree.right = new FormAttachment(0, 594);
-		fd_tree.left = new FormAttachment(0, 3);
-		tree.setLayoutData(fd_tree);
-		drillDownAdapter = new DrillDownAdapter(viewer);
 		
-		hostRequestButton = new Button(parent, SWT.NONE);
-		hostRequestButton.setEnabled(false);
-		fd_tree.bottom = new FormAttachment(100, -36);
-		hostRequestButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				requestToBeHost();
-			}
-		});
-		FormData fd_btnNewButton = new FormData();
-		fd_btnNewButton.bottom = new FormAttachment(100);
-		fd_btnNewButton.left = new FormAttachment(tree, 0, SWT.LEFT);
-		hostRequestButton.setLayoutData(fd_btnNewButton);
-		hostRequestButton.setText("Request to be Host");
+		drillDownAdapter = new DrillDownAdapter(viewer);
+	
 		
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
@@ -405,18 +388,19 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(hostRequest_action);
-		manager.add(disconnect_action);
 		manager.add(new Separator());
-		drillDownAdapter.addNavigationActions(manager);
+		manager.add(disconnect_action);
+		//manager.add(new Separator());
+		//drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		//manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(hostRequest_action);
 		manager.add(disconnect_action);
-		manager.add(new Separator());
-		drillDownAdapter.addNavigationActions(manager);
+		//manager.add(new Separator());
+		//drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
@@ -427,7 +411,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		};
 		hostRequest_action.setText("Request to be Host");
 		hostRequest_action.setToolTipText("Request to be Host");
-		hostRequest_action.setImageDescriptor(Activator.getImageDescriptor("res/host_text.png"));
+		hostRequest_action.setImageDescriptor(Activator.getImageDescriptor("res/host_b.png"));
 		hostRequest_action.setEnabled(false);
 		//action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 		//	getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
@@ -440,7 +424,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		};
 		disconnect_action.setText("Disconnect");
 		disconnect_action.setToolTipText("Disconnect");
-		disconnect_action.setImageDescriptor(Activator.getImageDescriptor("res/exit.png"));
+		disconnect_action.setImageDescriptor(Activator.getImageDescriptor("res/exit_b.png"));
+		//disconnect_action.set
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
