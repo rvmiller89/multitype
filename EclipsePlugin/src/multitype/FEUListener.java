@@ -40,6 +40,8 @@ public class FEUListener {
 						}
 					}
 					
+					bc.FEUProcessed(fu);
+					
 				}
 			}			
 		});
