@@ -111,6 +111,11 @@ public class Document
 		});
 	}
 	
+	public void setText(String text)
+	{
+		doc.set(text);
+	}
+	
 	public void delete(final FrontEndUpdate feu)
 	{
 		Display.getDefault().asyncExec(new Runnable() {

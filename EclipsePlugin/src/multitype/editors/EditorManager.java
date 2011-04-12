@@ -1,10 +1,20 @@
 package multitype.editors;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import multitype.Activator;
 import multitype.FrontEndUpdate;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
 
 /**
  * 
@@ -15,21 +25,59 @@ import multitype.FrontEndUpdate;
 public class EditorManager
 {
 	private Map<Integer, Document> map;
+	private int count = 0;
 	
 	public EditorManager()
 	{
 	    map = new HashMap<Integer, Document>();
-	    map.put(0, new Document(Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences()[0], 0));
 	}
 	
 	public void openDocument(int fileID, String filePath)
 	{
-		//use I/O
+		Scanner scanner = null;
+		
+		try
+		{
+			scanner = new Scanner(new File(filePath));
+		}
+		catch (FileNotFoundException e)
+		{
+			System.err.println("*********************************FILE NOT FOUND: " + filePath);
+			
+			return;
+		}
+		
+		String content = "";
+		while (scanner.hasNext())
+		{
+			content += scanner.nextLine() + '\n';
+		}
+		
+		scanner.close();
+		
+		IWorkbenchPage page = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IFileStore fs = EFS.getLocalFileSystem().getStore(new File(filePath).toURI());
+		
+		try {
+			IDE.openEditorOnFileStore(page, fs);
+		} catch (PartInitException e) {
+			System.err.println("*********************************PART INIT EXCEPTION: " + e.getMessage());
+			return;
+		}
+		
+		map.put(fileID, new Document(getReferences()[count++], fileID));
+		map.get(fileID).setText(content);
 	}
 	
 	public void newDocument(int fileID, String content)
-	{	
-		//TODO
+	{
+		try {
+			Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content), "org.eclipse.ui.DefaultTextEditor");
+			map.put(fileID, new Document(getReferences()[count++], fileID));
+			map.get(fileID).setText(content);
+		} catch (PartInitException e) {
+			System.err.println("*********************************PART INIT EXCEPTION: " + e.getMessage());
+		}
 	}
 	
 	public void removeDocument(int fileID)
@@ -58,5 +106,10 @@ public class EditorManager
 			default:
 				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());
 		}
+	}
+	
+	private IEditorReference[] getReferences()
+	{
+		return Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
 	}
 }
