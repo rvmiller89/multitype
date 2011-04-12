@@ -75,12 +75,12 @@ public class Document
 	private final ISelectionChangedListener SELECTION_LISTENER = new ISelectionChangedListener() {
 		public void selectionChanged(SelectionChangedEvent event) 
 		{
-			FEUSender.send(
-					FrontEndUpdate.createHighlightFEU(
-							getFileID(), 
-							Activator.getDefault().userInfo.getUserid(),
-							((ITextSelection)event.getSelection()).getOffset(),
-							((ITextSelection)event.getSelection()).getLength()));
+//			FEUSender.send(
+//					FrontEndUpdate.createHighlightFEU(
+//							getFileID(), 
+//							Activator.getDefault().userInfo.getUserid(),
+//							((ITextSelection)event.getSelection()).getOffset(),
+//							((ITextSelection)event.getSelection()).getLength()));
 		}
 	};
 	
@@ -99,14 +99,14 @@ public class Document
 		Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(new ISelectionListener() {
 			public void selectionChanged(IWorkbenchPart part, ISelection selection)
 			{
-				if (part.getSite().getId().equals(editor.getSite().getId()))
-				{
-					FEUSender.send(
-							FrontEndUpdate.createCursorPosFEU(
-									getFileID(), 
-									Activator.getDefault().userInfo.getUserid(), 
-									((ITextSelection)selection).getOffset()));
-				}
+//				if (part.getSite().getId().equals(editor.getSite().getId()))
+//				{
+//					FEUSender.send(
+//							FrontEndUpdate.createCursorPosFEU(
+//									getFileID(), 
+//									Activator.getDefault().userInfo.getUserid(), 
+//									((ITextSelection)selection).getOffset()));
+//				}
 			}
 		});
 	}
