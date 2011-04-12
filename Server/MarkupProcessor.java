@@ -157,6 +157,13 @@ public class MarkupProcessor implements Runnable{
 							+sizeOfInsert);
 				}				
 			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
+			}
+		
 		}
 		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
 			int insertAt = given.getStartLocation();
@@ -175,6 +182,12 @@ public class MarkupProcessor implements Runnable{
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
 							-sizeOfInsert);
 				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
 			}
 		}
 		else { 
