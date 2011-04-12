@@ -133,7 +133,7 @@ public class BackendClient {
 											feu.getFileId()).intValue()+1)
 												%Integer.MAX_VALUE);
 								}
-								
+								System.err.println("Sent: " + feu.toLine());
 								out.writeObject(feu);
 							}
 							break;
@@ -156,7 +156,7 @@ public class BackendClient {
 										feu.getFileId()).intValue()+1)
 											%Integer.MAX_VALUE);
 							}
-							
+							System.err.println("Sent: " + feu.toLine());
 							out.writeObject(feu);
 						}
 					} catch (Exception e) {
