@@ -36,7 +36,8 @@ public class FrontEndUpdate implements Serializable {
 		Host_Disconnect,
 		Server_Disconnect,
 		Console_Message,			// RM: added
-		Chat_Message				// RM: added
+		Chat_Message,				// RM: added
+		Keep_Alive
 	}
 	private int startLocation, endLocation;
 	private int fileId, userId;

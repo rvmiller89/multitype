@@ -1,7 +1,10 @@
 package multitype;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -19,16 +22,19 @@ public class BackendClient {
 	private ObjectInputStream in;
 	private Thread receiveUpdateThread;
 	private Thread sendUpdateThread;
+	private Thread keepAliveThread;
 	private Vector<FrontEndUpdate> fromServerQueue;
 	private BlockingQueue<FrontEndUpdate> toServerQueue;
 	private ConcurrentLinkedQueue<FrontEndUpdate> screenHistory;
 	private boolean done = false;
-	private int revisionNumber = 0;
+	//private int revisionNumber = 0;
 	private String url;
 	private int port;
 	private int nextSentToFrontEndIndex = -1;
 	private int userId = -1;
-	private int curFEUid = 0;
+	//private int curFEUid = 0;
+	private Map<Integer, Integer> revisionHistoryMap; // File id -> revision #
+	private Map<Integer, Integer> FEUidMap; // Fild id -> FEU id
 	
 	/**
 	 * Constructor for BackendClient
@@ -41,6 +47,8 @@ public class BackendClient {
 		fromServerQueue = new Vector<FrontEndUpdate>();
 		toServerQueue = new ArrayBlockingQueue<FrontEndUpdate>(5000);
 		screenHistory = new ConcurrentLinkedQueue<FrontEndUpdate>();
+		revisionHistoryMap = new HashMap<Integer, Integer>();
+		FEUidMap = new HashMap<Integer, Integer>();
 	}
 	
 	/**
@@ -77,6 +85,7 @@ public class BackendClient {
 						}
 						feu = updateIncomingFEUWithScreenHistory(feu);
 						addFEUToBegOfFromServerQueue(feu);
+						parseForFileListUpdateOnReceive(feu);
 						nextSentToFrontEndIndex++;
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -102,18 +111,46 @@ public class BackendClient {
 						if(done) {
 							while(toServerQueue.size() > 0) {
 								FrontEndUpdate feu = toServerQueue.take();
-								feu.setRevision(revisionNumber);	
-								feu.setFEUid(curFEUid);
-								curFEUid++;
+
+								if(feu.getUpdateType() == 
+									FrontEndUpdate.UpdateType.Markup) {
+									//old feu.setRevision(revisionNumber);	
+									feu.setRevision(
+											revisionHistoryMap.get(
+													feu.getFileId()));
+									//old feu.setFEUid(curFEUid);
+									feu.setFEUid(
+											FEUidMap.get(feu.getFileId()));
+									//old curFEUid++;
+									FEUidMap.put(feu.getFileId(), 
+										(FEUidMap.get(
+											feu.getFileId()).intValue()+1)
+												%Integer.MAX_VALUE);
+								}
+								
 								out.writeObject(feu);
 							}
 							break;
 						} 
 						else {
 							FrontEndUpdate feu = toServerQueue.take();
-							feu.setRevision(revisionNumber);	
-							feu.setFEUid(curFEUid);
-							curFEUid++;
+							
+							if(feu.getUpdateType() == 
+								FrontEndUpdate.UpdateType.Markup) {
+								//old feu.setRevision(revisionNumber);	
+								feu.setRevision(
+										revisionHistoryMap.get(
+												feu.getFileId()));
+								//old feu.setFEUid(curFEUid);
+								feu.setFEUid(
+										FEUidMap.get(feu.getFileId()));
+								//old curFEUid++;
+								FEUidMap.put(feu.getFileId(), 
+									(FEUidMap.get(
+										feu.getFileId()).intValue()+1)
+											%Integer.MAX_VALUE);
+							}
+							
 							out.writeObject(feu);
 						}
 					} catch (Exception e) {
@@ -131,6 +168,35 @@ public class BackendClient {
 			}			
 		});
 		sendUpdateThread.start();
+		
+		keepAliveThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(!done) {
+					try {
+						FrontEndUpdate feu = 
+							FrontEndUpdate.createNotificationFEU(
+									FrontEndUpdate.NotificationType.Keep_Alive, 
+									-1, -1, "");
+						out.writeObject(feu);
+						this.wait(15*1000);
+					} catch(InterruptedException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+						done = true;
+						String error = e.toString()+"\n";
+						for(StackTraceElement se : e.getStackTrace())
+							error = error+se.toString()+"\n";
+						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+							FrontEndUpdate.NotificationType.Server_Disconnect, 
+							-1, -1, error);
+						fromServerQueue.add(f);
+					}			
+				}
+			}	
+		});
+		keepAliveThread.start();
 	}
 	
 	/**
@@ -146,8 +212,10 @@ public class BackendClient {
 	 * @param feu Pre-constructed FrontEndUpdate to be sent
 	 */
 	public void sendUpdate(FrontEndUpdate feu) {
+		parseForFileListUpdateOnSend(feu);
 		updateFromServerQueueWithSent(feu);
-		screenHistory.add(feu); // Concurrent-safe
+		if(feu.getUpdateType() == FrontEndUpdate.UpdateType.Markup)
+			screenHistory.add(feu); // Concurrent-safe
 		toServerQueue.add(feu); // Concurrent-safe
 	}
 
@@ -180,7 +248,8 @@ public class BackendClient {
 	public void FEUProcessed(FrontEndUpdate feu) {
 		this.fromServerQueue.remove(feu);
 		updateScreenHistoryWithProcessed(feu);
-		this.revisionNumber = feu.getRevision();
+		//old this.revisionNumber = feu.getRevision();
+		revisionHistoryMap.put(feu.getFileId(), feu.getRevision());
 		System.out.print("Processed "+feu.toLine());
 	}
 	
@@ -218,12 +287,12 @@ public class BackendClient {
 		FrontEndUpdate newFEU = feu;
 		
 		// DEBUG
-		System.out.println("Screen History Before update");
+		/*System.out.println("Screen History Before update");
 		System.out.print("Received "+newFEU.toLine());
 		System.out.println("Screen History");
 		for(FrontEndUpdate screenFEU : screenHistory) {
 			System.out.print(screenFEU.toLine());
-		}
+		}*/
 		
 		// END DEBUG
 		
@@ -235,12 +304,12 @@ public class BackendClient {
 		
 		
 		// DEBUG
-		System.out.println("Screen History After update");
+		/*System.out.println("Screen History After update");
 		System.out.print("Received "+newFEU.toLine());
 		System.out.println("Screen History");
 		for(FrontEndUpdate screenFEU : screenHistory) {
 			System.out.print(screenFEU.toLine());
-		}
+		}*/
 		
 		// END DEBUG
 		return newFEU;
@@ -257,6 +326,10 @@ public class BackendClient {
 		}
 	}
 	
+	/**
+	 * Adding to a Vector needs to be synchronized, sole purpose of this func
+	 * @param feu FEU to be added
+	 */
 	private synchronized void addFEUToBegOfFromServerQueue(FrontEndUpdate feu) {
 		fromServerQueue.add(0, feu); // adding at the left
 	}
@@ -273,75 +346,54 @@ public class BackendClient {
 	}
 	
 	/**
-	 * Used 
-	 * @param update
+	 * We need to make adjustments to map if a user is requesting for file, 
+	 * or if as a host, they are sharing a new file, or for closing a file
+	 * as a client, or for closing a shared file as a host
+	 * @param feu
 	 */
-	/*private void checkLocalHistory(FrontEndUpdate update) {
-		for(FrontEndUpdate top : markupHistory) {
-			if(update.getUpdateType() == FrontEndUpdate.UpdateType.Markup) {
-				if(update.getMarkupType() == top.getMarkupType()) {
-					if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-						if(update.getUserId() == top.getUserId() &&
-								update.getStartLocation() == top.getStartLocation() &&
-								update.getInsertString().equals(top.getInsertString()))
-							markupHistory.remove(top);
-						else {
-							FrontEndUpdate updateClone = 
-								FrontEndUpdate.createInsertFEU(
-										update.getFileId(), 
-										update.getUserId(), 
-										update.getStartLocation(), 
-										update.getInsertString());
-							updateClone.setRevision(update.getRevision());
-							updateFEUgivenFEU(update, top, false);
-							updateFEUgivenFEU(top, updateClone, true);
-						}
-					}
-					else { // its a delete
-						if(update.getUserId() == top.getUserId() &&
-								update.getStartLocation() == top.getStartLocation() &&
-								update.getEndLocation() == top.getEndLocation())
-							markupHistory.remove(top);
-						else {
-							FrontEndUpdate updateClone = 
-								FrontEndUpdate.createDeleteFEU(
-										update.getFileId(), 
-										update.getUserId(), 
-										update.getStartLocation(), 
-										update.getEndLocation());
-							updateClone.setRevision(update.getRevision());
-							updateFEUgivenFEU(update, top, false);
-							updateFEUgivenFEU(top, updateClone, true);
-						}
-					}
-				}
-				else {
-					if(update.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-						FrontEndUpdate updateClone = 
-							FrontEndUpdate.createInsertFEU(
-									update.getFileId(), 
-									update.getUserId(), 
-									update.getStartLocation(), 
-									update.getInsertString());
-						updateClone.setRevision(update.getRevision());
-						updateFEUgivenFEU(update, top, false);
-						updateFEUgivenFEU(top, updateClone, true);
-					}
-					else { // It is a delete type
-						FrontEndUpdate updateClone = 
-							FrontEndUpdate.createDeleteFEU(
-									update.getFileId(), 
-									update.getUserId(), 
-									update.getStartLocation(), 
-									update.getEndLocation());
-						updateClone.setRevision(update.getRevision());
-						updateFEUgivenFEU(update, top, false);
-						updateFEUgivenFEU(top, updateClone, true);
-					}
-				}
-			}
+	private void parseForFileListUpdateOnSend(FrontEndUpdate feu) {
+		if(feu.getUpdateType() != FrontEndUpdate.UpdateType.Notification)
+			return;
+		switch(feu.getNotificationType()) {
+		case Close_Client_File: // Client does this, remove mapping
+			FEUidMap.remove(feu.getFileId());
+			revisionHistoryMap.remove(feu.getFileId());
+			break;
+		case Close_Shared_File: // Host does this, remove mapping
+			FEUidMap.remove(feu.getFileId());
+			revisionHistoryMap.remove(feu.getFileId());
+			break;
+		case New_Shared_File: // Host does this, create mapping
+			FEUidMap.put(feu.getFileId(), 0);
+			revisionHistoryMap.put(feu.getFileId(), 0);
+			break;
+		case Send_File: 
+			// Host is sending new file to someone, attach rev #
+			feu.setRevision(revisionHistoryMap.get(feu.getFileId()));
+			break;
 		}
-	}*/
+	}
+	
+	/**
+	 * We need to make adjustments to maps if a new file is received by the 
+	 * client, or if the client receives that a host has closed a shared
+	 * file
+	 * @param feu
+	 */
+	private void parseForFileListUpdateOnReceive(FrontEndUpdate feu) {
+		if(feu.getUpdateType() != FrontEndUpdate.UpdateType.Notification)
+			return;
+		switch(feu.getNotificationType()) {
+		case Send_File: // Client does this, create mapping
+			FEUidMap.put(feu.getFileId(), 0); //FEUids are local
+			revisionHistoryMap.put(feu.getFileId(), feu.getRevision());
+			break;
+		case Close_Shared_File: // client side, remove a mapping
+			FEUidMap.remove(feu.getFileId());
+			revisionHistoryMap.remove(feu.getFileId());
+			break;
+		}
+	}
 	
 	/**
 	 * Updates an FEU given an FEU
@@ -354,6 +406,8 @@ public class BackendClient {
 			return;
 		if(updateRevision)
 			toUpdate.setRevision(given.getRevision());
+		if(toUpdate.getFileId() != given.getFileId())
+			return;
 		// don't update if the user is the same
 		if(toUpdate.getUserId() == given.getUserId()) 
 			return;
@@ -408,34 +462,11 @@ public class BackendClient {
 	 * kill them
 	 */
 	public void finish() {
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		done = true;
 	}
-	
-	/*private void dumpMarkupHistory() {
-		System.out.println("muh----------");
-		int i=0; 
-		for(FrontEndUpdate feu : markupHistory) {
-			System.out.print(i + feu.toLine());
-			i++;
-		}
-	}
-	
-	private void dumpFromFE() {
-		System.out.println("from FE----------");
-		int i=0; 
-		for(FrontEndUpdate feu : fromFrontEndQueue) {
-			System.out.print(i + feu.toLine());
-			i++;
-		}
-	}
-	
-	private void dumpFromServer() {
-		System.out.println("from Server----------");
-		int i=0; 
-		for(FrontEndUpdate feu : fromServerQueue) {
-			System.out.print(i + feu.toLine());
-			i++;
-		}
-	}*/
-
 }
