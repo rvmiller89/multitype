@@ -10,8 +10,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import multitype.FrontEndUpdate.UpdateType;
-
 /**
  * The BackendClient is used as means of communication with the 
  * BackendServer. 
@@ -240,12 +238,7 @@ public class BackendClient {
 			FrontEndUpdate update = this.fromServerQueue.get(
 					this.nextSentToFrontEndIndex);
 			System.err.print("GetUpdate: " + update.toLine());
-			if(update.getUpdateType() == UpdateType.Notification) {
-				fromServerQueue.remove(update);
-			}
-			else {
-				this.nextSentToFrontEndIndex--; // getting added from the left
-			}
+			this.nextSentToFrontEndIndex--; // getting added from the left
 			return update;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
