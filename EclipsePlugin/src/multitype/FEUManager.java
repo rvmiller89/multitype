@@ -37,6 +37,8 @@ public class FEUManager {
 			editorManager.receive(feu);
 		else if (feu.getUpdateType() == FrontEndUpdate.UpdateType.Notification)
 			viewManager.receive(feu);
+		
+		
 	}
 	
 

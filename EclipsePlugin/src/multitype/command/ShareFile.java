@@ -75,9 +75,8 @@ public class ShareFile extends AbstractHandler {
 					
 					Activator.getDefault().showDialogAsync("Filename", filename + " with ID: " + fileid);
 				
-					// TODO
 					// Tell EditorManager to open a document
-					//FEUManager.getInstance().editorManager.openDocument(fileid, filepath);
+					FEUManager.getInstance().editorManager.openDocument(fileid, filepath);
 					
 					// Send FEU to notify all non-clients about a new shared file
 					FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.New_Shared_File,
