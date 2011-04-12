@@ -86,7 +86,6 @@ public class NotificationProcessor implements Runnable {
 			fileUserManager.sendFEUToClient(uid, FrontEndUpdate.createNotificationFEU(
 						FrontEndUpdate.NotificationType.New_Host, -1, 
 						fileUserManager.getHost(),""));
-			//TODO need to send shared files to this client
 			fileUserManager.sendSharedFilesToClient(uid);
 			break;
 		case User_Disconnected:
