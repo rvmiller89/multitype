@@ -4,10 +4,11 @@
 
 package multitype.command;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import multitype.Activator;
+import multitype.FEUManager;
+import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.NotificationType;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -22,19 +23,21 @@ public class ShareFile extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 	    
-
-		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
-		.getActiveMenuSelection(event);
-		
-		filesToOpen(selection);
+		if (Activator.getDefault().isHost)
+		{
+			IStructuredSelection selection = (IStructuredSelection) HandlerUtil
+			.getActiveMenuSelection(event);
+			
+			filesToOpen(selection);
+		}
+		else
+			Activator.getDefault().showDialogAsync("Error", "You must be host to use this feature.");
 
 		return null;
 	}
 	
 	public void filesToOpen(IStructuredSelection selectionList)
 	{
-		List<String> filePaths = new ArrayList<String>();
-
 		Iterator<Object> iterator = selectionList.iterator();
 		while (iterator.hasNext())
 		{
@@ -58,16 +61,24 @@ public class ShareFile extends AbstractHandler {
 				{
 					IPath path = resource.getLocation();
 					String filepath = path.toOSString();
-					filePaths.add(filepath);
+					
+					// Get Filename
+					String filename = path.lastSegment();
+					
+					// Assign fileid / filename map (for host)
+					int fileid = Activator.getDefault().sharedFiles.size();
+					
+					Activator.getDefault().sharedFiles.put(fileid, filename);
 				
-					// Debug
-					Activator.getDefault().showDialogAsync("Debug", "Filepath: " + filepath);
+					// Tell EditorManager to open a document
+					FEUManager.getInstance().editorManager.openDocument(fileid, filepath);
+					
+					// Send FEU to notify all non-clients about a new shared file
+					FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.New_Shared_File,
+							fileid, Activator.getDefault().userInfo.getUserid(), filename);
 				}
 			}
 		}
-		
-		// TODO
-		// Now call EditorManager foreach filepath in list to open
 		
 	}
 }
