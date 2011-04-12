@@ -25,7 +25,7 @@ public class Server {
 		
 		new Thread(np).start();
 		
-		fum.addFile(0, "test.java");
+		//fum.addFile(0, "test.java");
 		
 		try {
 			ssocket = new ServerSocket(port);
