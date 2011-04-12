@@ -103,6 +103,11 @@ public class EditorManager
 		//TODO
 	}
 	
+	public String getTextOfFile(int fileID)
+	{
+		return map.get(fileID).getText();
+	}
+	
 	public void receive(FrontEndUpdate feu)
 	{
 		switch(feu.getMarkupType())

@@ -118,6 +118,11 @@ public class Document
 		doc.addDocumentListener(DOCUMENT_LISTENER);
 	}
 	
+	public String getText()
+	{
+		return doc.get();
+	}
+	
 	public void delete(final FrontEndUpdate feu)
 	{
 		Display.getDefault().asyncExec(new Runnable() {

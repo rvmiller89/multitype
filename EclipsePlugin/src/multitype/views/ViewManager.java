@@ -85,7 +85,7 @@ public class ViewManager extends ViewPart{
 
 				// TODO Azfar - have this grab the content from the associated <<Document>> with feu.getFileId()
 				
-				String content = "Hello world.";
+				String content = FEUManager.getInstance().editorManager.getTextOfFile(feu.getFileId());
 				
 				FrontEndUpdate sentFeu = FrontEndUpdate.createNotificationFEU(NotificationType.Send_File, 
 						feu.getFileId(),
