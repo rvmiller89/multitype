@@ -234,6 +234,10 @@ public class BackendClient {
 	 */
 	public FrontEndUpdate getUpdate() {
 		try {
+			while(fromServerNotificationQueue.size() == 0 
+					&& fromServerQueue.size() ==0) {
+				Thread.sleep(1);
+			}
 			if(fromServerNotificationQueue.size() > 0) {
 				FrontEndUpdate update = fromServerNotificationQueue.remove(0);
 				System.err.print("GetUpdate: " + update.toLine());
@@ -241,9 +245,9 @@ public class BackendClient {
 			}
 			else {
 				assert(this.nextSentToFrontEndIndex >= -1);
-				while(this.nextSentToFrontEndIndex == -1) {
+				/*while(this.nextSentToFrontEndIndex == -1) {
 					Thread.sleep(1);				
-				}
+				}*/
 				FrontEndUpdate update = this.fromServerQueue.get(
 						this.nextSentToFrontEndIndex);
 				System.err.print("GetUpdate: " + update.toLine());
