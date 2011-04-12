@@ -72,7 +72,13 @@ public class EditorManager
 	public void newDocument(int fileID, String content)
 	{
 		try {
-			Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new StringEditorInput(content), "org.eclipse.ui.DefaultTextEditor");
+			Activator.getDefault().
+			getWorkbench().
+			getActiveWorkbenchWindow().
+			getActivePage().
+			openEditor(
+					new StringEditorInput(content), 
+					"org.eclipse.ui.DefaultTextEditor");
 			map.put(fileID, new Document(getReferences()[count++], fileID));
 			map.get(fileID).setText(content);
 		} catch (PartInitException e) {
