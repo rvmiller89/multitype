@@ -83,6 +83,12 @@ public class BackendClient {
 						if(deleteFromScreenHistoryIfOwn(feu)) {
 							continue;
 						}
+						if(feu.getUpdateType() == 
+							FrontEndUpdate.UpdateType.Notification
+							&& feu.getNotificationType() ==
+								FrontEndUpdate.NotificationType.Keep_Alive) {
+							continue;
+						}
 						feu = updateIncomingFEUWithScreenHistory(feu);
 						addFEUToBegOfFromServerQueue(feu);
 						parseForFileListUpdateOnReceive(feu);
