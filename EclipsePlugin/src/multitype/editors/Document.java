@@ -175,6 +175,7 @@ public class Document
 				} catch (BadLocationException e1) {
 					e1.printStackTrace();
 				}
+				System.out.println("**** INSERTING CURSOR ON LINE " + lineNumber);
 				
 				MarkerUtilities.setLineNumber(cursorMap, lineNumber+1); //1-based line numbering
 				MarkerUtilities.setMessage(cursorMap, "This is some sample warning.");
@@ -184,6 +185,7 @@ public class Document
 				    MarkerUtilities.createMarker(resource, cursorMap, "myproblem");//.createMarker(f, map, "myproblem");
 				} catch (CoreException e) {
 				    //something went terribly wrong
+					e.printStackTrace();
 				}
 			}
 		});		
