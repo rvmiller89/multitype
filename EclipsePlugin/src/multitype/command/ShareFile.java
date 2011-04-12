@@ -7,6 +7,7 @@ package multitype.command;
 import java.util.Iterator;
 import multitype.Activator;
 import multitype.FEUManager;
+import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.NotificationType;
 
@@ -61,21 +62,27 @@ public class ShareFile extends AbstractHandler {
 				{
 					IPath path = resource.getLocation();
 					String filepath = path.toOSString();
-					
+
 					// Get Filename
 					String filename = path.lastSegment();
+
 					
 					// Assign fileid / filename map (for host)
 					int fileid = Activator.getDefault().sharedFiles.size();
 					
 					Activator.getDefault().sharedFiles.put(fileid, filename);
+					
+					
+					Activator.getDefault().showDialogAsync("Filename", filename + " with ID: " + fileid);
 				
+					// TODO
 					// Tell EditorManager to open a document
-					FEUManager.getInstance().editorManager.openDocument(fileid, filepath);
+					//FEUManager.getInstance().editorManager.openDocument(fileid, filepath);
 					
 					// Send FEU to notify all non-clients about a new shared file
 					FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.New_Shared_File,
 							fileid, Activator.getDefault().userInfo.getUserid(), filename);
+					FEUSender.send(feu);
 				}
 			}
 		}
