@@ -170,11 +170,11 @@ public class Document
 			{
 				int offset = feu.getStartLocation();
 				int lineNumber = 0;
-				try {
+				/*try {
 					lineNumber = doc.getLineOfOffset(offset);
 				} catch (BadLocationException e1) {
 					e1.printStackTrace();
-				}
+				}*/
 				System.out.println("**** INSERTING CURSOR ON LINE " + lineNumber);
 				
 				MarkerUtilities.setLineNumber(cursorMap, lineNumber+1); //1-based line numbering
