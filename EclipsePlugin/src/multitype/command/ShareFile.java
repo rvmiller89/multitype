@@ -73,7 +73,7 @@ public class ShareFile extends AbstractHandler {
 					Activator.getDefault().sharedFiles.put(fileid, filename);
 					
 					
-					Activator.getDefault().showDialogAsync("Filename", filename + " with ID: " + fileid);
+					//Activator.getDefault().showDialogAsync("Filename", filename + " with ID: " + fileid);
 				
 					// Tell EditorManager to open a document
 					FEUManager.getInstance().editorManager.openDocument(fileid, filepath);
