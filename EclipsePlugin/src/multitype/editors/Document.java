@@ -168,16 +168,19 @@ public class Document
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run()
 			{
-				int lineNumber = 0;	// DEBUG, eventually turn to cursor position
+				int offset = feu.getStartLocation();
+				int lineNumber = 0;
+				try {
+					lineNumber = doc.getLineOfOffset(offset);
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
+				}
 				
 				MarkerUtilities.setLineNumber(cursorMap, lineNumber+1); //1-based line numbering
 				MarkerUtilities.setMessage(cursorMap, "This is some sample warning.");
 				cursorMap.put(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 				try {
-					IResource resource =
-		            (IResource) ((IAdaptable) editor)
-		                .getAdapter(IResource.class);
-					
+					IResource resource = (IResource)editor.getEditorInput().getAdapter(IResource.class);
 				    MarkerUtilities.createMarker(resource, cursorMap, "myproblem");//.createMarker(f, map, "myproblem");
 				} catch (CoreException e) {
 				    //something went terribly wrong
