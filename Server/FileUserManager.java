@@ -118,21 +118,21 @@ public class FileUserManager {
 	}
 	
 	/**
-	 * Deprecated use sendFEUToAll
+	 * Sends an FEU to the clients with the passed markupprocessor's file open
+	 * @param m The markup processor who's file to send to
 	 * @param feu The FEU to send.
 	 */
 	public void sendFEU(MarkupProcessor m, FrontEndUpdate feu) {
 		
 		sendFEUToAll(feu);
 		
-		//NEEDS USER LIST!!!
-		/* int fileid = -1;
+		int fileid = -1;
 		for(Integer i : markupprocs.keySet()) {
 			if(markupprocs.get(i) == m) {
 				fileid = i;
 				sendFEUToFile(fileid, feu);
 			}
-		}*/
+		}
 	}
 
 	/**
