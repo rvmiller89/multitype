@@ -135,6 +135,8 @@ public class NotificationProcessor implements Runnable {
 		case Chat_Message:
 			fileUserManager.sendFEUToAll(feu);
 			break;
+		case Keep_Alive:
+			break;
 		}
 	}
 }
