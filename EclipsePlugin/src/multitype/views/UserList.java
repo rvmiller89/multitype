@@ -276,11 +276,21 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		});	
 	}
 	
-	public void setButton(final boolean bool) {
+	public void setHostButton(final boolean bool) {
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
 		    	hostRequest_action.setEnabled(bool);
+		    	viewer.refresh();
+		    }
+		});	
+	}
+	
+	public void setDisconnectButton(final boolean bool) {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	disconnect_action.setEnabled(bool);
 		    	viewer.refresh();
 		    }
 		});	
@@ -305,7 +315,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		if (Activator.getDefault().isConnected) {
 			FEUSender.send(feu);
 			//hostRequestButton.setEnabled(false);
-			setButton(false);
+			setHostButton(false);
 		}
 	}
 	
@@ -320,7 +330,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
 					Activator.getDefault().userInfo.getUsername());
 			FEUSender.send(feu);
-			Activator.getDefault().userList.setButton(false);
+			Activator.getDefault().userList.setHostButton(false);
+			Activator.getDefault().userList.setDisconnectButton(false);
 			Activator.getDefault().userList.clearList();
 			Activator.getDefault().disconnect();
 		}
@@ -425,7 +436,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		disconnect_action.setText("Disconnect");
 		disconnect_action.setToolTipText("Disconnect");
 		disconnect_action.setImageDescriptor(Activator.getImageDescriptor("res/exit_b.png"));
-		//disconnect_action.set
+		disconnect_action.setEnabled(false);
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
