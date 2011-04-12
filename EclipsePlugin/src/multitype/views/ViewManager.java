@@ -106,7 +106,7 @@ public class ViewManager extends ViewPart{
 				
 				// Add a document for the file with this fileid
 				// TODO Azfar, check this
-				FEUManager.getInstance().editorManager.newDocument(feu.getFileId(), "");
+				FEUManager.getInstance().editorManager.newDocument(feu.getFileId(), feu.getContent());
 
 				
 				
