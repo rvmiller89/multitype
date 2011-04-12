@@ -96,7 +96,6 @@ public class BackendClient {
 						feu = updateIncomingFEUWithScreenHistory(feu);
 						addFEUToBegOfFromServerQueue(feu);
 						parseForFileListUpdateOnReceive(feu);
-						nextSentToFrontEndIndex++;
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
@@ -236,7 +235,7 @@ public class BackendClient {
 	public FrontEndUpdate getUpdate() {
 		try {
 			if(fromServerNotificationQueue.size() > 0) {
-				FrontEndUpdate update = fromServerNotificationQueue.get(0);
+				FrontEndUpdate update = fromServerNotificationQueue.remove(0);
 				System.err.print("GetUpdate: " + update.toLine());
 				return update;
 			}
@@ -348,8 +347,10 @@ public class BackendClient {
 	 * @param feu FEU to be added
 	 */
 	private synchronized void addFEUToBegOfFromServerQueue(FrontEndUpdate feu) {
-		if(feu.getUpdateType() == UpdateType.Markup)
+		if(feu.getUpdateType() == UpdateType.Markup) {
 			fromServerQueue.add(0, feu); // adding at the left
+			nextSentToFrontEndIndex++;
+		}
 		else
 			fromServerNotificationQueue.add(0, feu);
 	}
