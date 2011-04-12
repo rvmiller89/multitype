@@ -22,19 +22,14 @@ public class EditorManager
 	    map.put(0, new Document(Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences()[0], 0));
 	}
 	
-	public void newDocument(int fileID)
+	public void openDocument(int fileID, String filePath)
 	{
-		if (Activator.getDefault().isHost)
-		{
-			/*
-			 * use file i/o to open
-			 */
-		}
-		
-		else
-		{
-			//something else
-		}
+		//use I/O
+	}
+	
+	public void newDocument(int fileID, String content)
+	{	
+		//TODO
 	}
 	
 	public void removeDocument(int fileID)
