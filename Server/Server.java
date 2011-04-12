@@ -6,9 +6,12 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import multitype.FrontEndUpdate;
+
 public class Server {
 	private final int port;
 	private ServerSocket ssocket;
+	private Thread keepAliveThread;
 	private boolean done;
 	Vector<InputProcessor> inputProcs;
 	//Vector<OutputProcessor> outputProcs;
@@ -24,6 +27,38 @@ public class Server {
 		inputProcs = new Vector<InputProcessor>();
 		
 		new Thread(np).start();
+		
+		keepAliveThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(!done) {
+					if(fum.getHost() != -1) {
+						try {
+							FrontEndUpdate feu = 
+								FrontEndUpdate.createNotificationFEU(
+										FrontEndUpdate.NotificationType.Keep_Alive, 
+										-1, -1, "");
+							fum.sendFEUToClient(fum.getHost(), feu);
+							Thread.sleep(15*1000);
+						} catch(InterruptedException e) {
+							e.printStackTrace();
+						} catch (Exception e) {
+							e.printStackTrace();
+							done = true;
+							String error = e.toString()+"\n";
+							for(StackTraceElement se : e.getStackTrace())
+								error = error+se.toString()+"\n";
+							FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+								FrontEndUpdate.NotificationType.Host_Disconnect, 
+								-1, -1, error);
+							//fromServerQueue.add(f)
+							fum.sendFEUToAll(f);
+						}	
+					}
+				}
+			}	
+		});
+		keepAliveThread.start();
 		
 		//fum.addFile(0, "test.java");
 		
@@ -74,10 +109,6 @@ public class Server {
 				new Thread(thisInputProc).start();
 				
 				dprint("Client Added");
-				
-				
-				//TODO Detect disconnect and kill the appropriate procs
-				
 				
 			}
 			catch (IOException ioe) {

@@ -41,7 +41,6 @@ public class FileUserManager {
 	 * @param filename Filename to associate with this file.
 	 */
 	public void addFile(int fileid, String filename) {
-		//TODO
 		//spawn a new MarkupProcessor and add to Vector
 	 	MarkupProcessor thisMarkupProc = new MarkupProcessor(this);
 		markupprocs.put(fileid, thisMarkupProc);
@@ -76,11 +75,8 @@ public class FileUserManager {
 	 * @param username Username to associate with this username
 	 */
 	public void addUser(int uid, String username) {
-		//TODO
 		//associate username with userid
 		usermap.put(uid,username);
-		
-		//TODO Will need to send this as a notification to the other users
 	}
 
 	/**
@@ -176,7 +172,6 @@ public class FileUserManager {
 	 * @param s Socket to communicate with the client on
 	 */
 	public int addClient(Socket s) {
-		//TODO
 		//spawn an OutputProcessor and associate it with userid
 	 	OutputProcessor thisOutputProc = new OutputProcessor(s);
 		outprocs.put(nextUID, thisOutputProc);

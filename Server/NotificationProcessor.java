@@ -120,8 +120,6 @@ public class NotificationProcessor implements Runnable {
 		case New_Host: // Sent only from server to clients I believe
 			break;
 		case Host_Disconnect:
-			// TODO no function
-			// JSL - need to clear out the FUM info here?
 			// all files will close
 			fileUserManager.removeHost();
 			fileUserManager.sendFEUToAll(feu);

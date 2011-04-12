@@ -93,12 +93,10 @@ public class InputProcessor implements Runnable {
 			
 			switch(in_feu.getUpdateType()) {
 			case Markup:
-				//TODO
 				//call MarkupProcessor
 				fum.addFEUToMarkup(in_feu);
 				break;
 			case Notification:
-				//TODO
 				//call NotificationProcessor
 				np.addFEU(in_feu);
 				break;
