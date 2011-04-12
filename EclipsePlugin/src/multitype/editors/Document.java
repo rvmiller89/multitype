@@ -168,13 +168,11 @@ public class Document
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run()
 			{
-				int offset = feu.getStartLocation();
+				/*int offset = feu.getStartLocation();
+				
+				// TODO get line number from offset
 				int lineNumber = 0;
-				/*try {
-					lineNumber = doc.getLineOfOffset(offset);
-				} catch (BadLocationException e1) {
-					e1.printStackTrace();
-				}*/
+
 				System.out.println("**** INSERTING CURSOR ON LINE " + lineNumber);
 				
 				MarkerUtilities.setLineNumber(cursorMap, lineNumber+1); //1-based line numbering
@@ -186,7 +184,7 @@ public class Document
 				} catch (CoreException e) {
 				    //something went terribly wrong
 					e.printStackTrace();
-				}
+				}*/
 			}
 		});		
 		
