@@ -82,6 +82,11 @@ public class ShareFile extends AbstractHandler {
 					FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.New_Shared_File,
 							fileid, Activator.getDefault().userInfo.getUserid(), filename);
 					FEUSender.send(feu);
+					
+					// Add the file to "Open Files"
+					// Grab filename from fileid mapping before adding to Open Files
+					Activator.getDefault().fileList.addOpenFile(fileid, filename);
+							
 				}
 			}
 		}
