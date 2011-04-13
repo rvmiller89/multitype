@@ -235,7 +235,7 @@ public class BackendClient {
 	public FrontEndUpdate getUpdate() {
 		try {
 			while(fromServerNotificationQueue.size() == 0 
-					&& fromServerQueue.size() ==0) {
+					&& nextSentToFrontEndIndex == -1) {
 				Thread.sleep(1);
 			}
 			if(fromServerNotificationQueue.size() > 0) {
