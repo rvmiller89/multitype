@@ -99,14 +99,14 @@ public class Document
 		Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(new ISelectionListener() {
 			public void selectionChanged(IWorkbenchPart part, ISelection selection)
 			{
-//				if (part.getSite().getId().equals(editor.getSite().getId()))
-//				{
-//					FEUSender.send(
-//							FrontEndUpdate.createCursorPosFEU(
-//									getFileID(), 
-//									Activator.getDefault().userInfo.getUserid(), 
-//									((ITextSelection)selection).getOffset()));
-//				}
+				if (part.getSite().getId().equals(editor.getSite().getId()))
+				{
+					FEUSender.send(
+							FrontEndUpdate.createCursorPosFEU(
+									getFileID(), 
+									Activator.getDefault().userInfo.getUserid(), 
+									((ITextSelection)selection).getOffset()));
+				}
 			}
 		});
 	}

@@ -112,9 +112,9 @@ public class EditorManager
 	{
 		switch(feu.getMarkupType())
 		{
-//			case Cursor:
-//				map.get(feu.getFileId()).cursorPos(feu);
-//				break;
+			case Cursor:
+				map.get(feu.getFileId()).cursorPos(feu);
+				break;
 			case Delete:
 				map.get(feu.getFileId()).delete(feu);
 				break;

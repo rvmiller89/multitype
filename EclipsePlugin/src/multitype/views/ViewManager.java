@@ -73,7 +73,6 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().sharedFiles.remove(feu.getFileId());
 				
 				// Add a document for the file with this fileid
-				// TODO Azfar, check this
 				FEUManager.getInstance().editorManager.removeDocument(feu.getFileId());
 				
 				break;
@@ -104,7 +103,6 @@ public class ViewManager extends ViewPart{
 						Activator.getDefault().sharedFiles.get(feu.getFileId()));
 				
 				// Add a document for the file with this fileid
-				// TODO Azfar, check this
 				FEUManager.getInstance().editorManager.newDocument(feu.getFileId(), feu.getContent());
 
 				
