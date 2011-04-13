@@ -177,9 +177,9 @@ public class EditorManager
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
+				Activator.getDefault().showDialogAsync("Tab Closed", map.remove(fileID).getTitle());
 				getPage().saveEditor(map.get(fileID).getEditor(), true);
 				getPage().closeEditor(map.get(fileID).getEditor(), false);
-				Activator.getDefault().showDialogAsync("Tab Closed", map.remove(fileID).getTitle());
 			}
 		});		
 	}
