@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.MarkupType;
 /**
  * The MarkupProcessor has a list of FEUs received from the server and will
  * on it's own get the top item, update the rest of the vector with that item
@@ -16,7 +17,7 @@ public class MarkupProcessor implements Runnable{
 
 	private BlockingQueue<FrontEndUpdate> markupQueue;
 	private Queue<FrontEndUpdate> markupHistory;
-	private int currentRevision = 0; // TODO this assumes one file
+	private int currentRevision = 0;
 	private boolean done = false;
 	private FileUserManager fileUserManager;
 	
@@ -106,6 +107,8 @@ public class MarkupProcessor implements Runnable{
 	}
 	
 	private synchronized void addToMarkupHistory(FrontEndUpdate feu) {
+		if(feu.getMarkupType() == MarkupType.Cursor)
+			return;
 		if(markupHistory.size() == 100) {
 			markupHistory.remove();
 			markupHistory.add(feu);
