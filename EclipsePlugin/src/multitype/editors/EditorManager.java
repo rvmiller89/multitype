@@ -109,7 +109,7 @@ public class EditorManager
 						}
 					}
 					
-					/*//TODO disable default partlistener
+					/*
 					ITextEditor editor = (ITextEditor)part;					
 					Iterator<Integer> iter = Activator.getDefault().sharedFiles.keySet().iterator();
 					int id;
@@ -225,8 +225,18 @@ public class EditorManager
 	                map.get(fileID).disableListeners();
 	                
 	                // Prompt to save and close tab
-					getPage().saveEditor( map.get(fileID).getEditor(), true);
-	                getPage().closeEditor( map.get(fileID).getEditor(), false);
+					//getPage().saveEditor( map.get(fileID).getEditor(), true);
+	                
+	                // TODO
+	                /*
+	                 * PROPOSED CHANGE:
+	                 * 
+	                 * Rather than prompting to save, go ahead and close tab, but save content and filename before hand. (For non-hosts)
+	                 * Then set up your own way to save this data...
+	                 * 
+	                 * 
+	                 */
+	                getPage().closeEditor( map.get(fileID).getEditor(), true);
 	
 					map.remove(fileID);
 				}
@@ -279,8 +289,21 @@ public class EditorManager
                 // Prompt to save and close tab
                 if (!isTabClose)
                 {
+                	// TODO
+	                /*
+	                 * PROPOSED CHANGE:
+	                 * 
+	                 * (only if Non-host)
+	                 * Rather than prompting to save, go ahead and close tab, but save content and filename before hand.
+	                 * Then set up your own way to save this data...
+	                 * 
+	                 * 
+	                 */
+                	
                 	getPage().closeEditor( map.get(fileID).getEditor(), true);
 
+
+                	
                     map.get(fileID).disableListeners();
                 }
                 //getPage().closeEditor( map.get(fileID).getEditor(), false);
