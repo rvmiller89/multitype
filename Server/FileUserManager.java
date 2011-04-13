@@ -176,7 +176,7 @@ public class FileUserManager {
 	 */
 	public int addClient(Socket s) {
 		//spawn an OutputProcessor and associate it with userid
-	 	OutputProcessor thisOutputProc = new OutputProcessor(s);
+	 	OutputProcessor thisOutputProc = new OutputProcessor(s, this, nextUID);
 		outprocs.put(nextUID, thisOutputProc);
 		new Thread(thisOutputProc).start();
 		

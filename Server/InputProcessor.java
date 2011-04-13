@@ -57,20 +57,44 @@ public class InputProcessor implements Runnable {
 		catch (EOFException eofe) {
 			//System.err.println("buildFEU(): " + eofe.toString());
 			setDone(); //Kills this instance
-			Server.dprint("This InputProcessor no longer as the will to live." +
+			/*Server.dprint("This InputProcessor no longer as the will to live." +
 					" Dropping client " + uid);
 			if( uid >= 0 ) {
 				fum.removeClient(uid);
+			}*/
+			if(uid == fum.getHost()) {
+				fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.Host_Disconnect,-1,
+						uid, ""));
+				fum.removeHost();
 			}
+			else {
+				fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.User_Disconnected,-1,
+						uid, ""));
+			}
+			fum.removeClient(uid);
 		}
 		catch (SocketException se) {
 			//System.err.println("buildFEU(): " + eofe.toString());
 			setDone(); //Kills this instance
-			Server.dprint("This InputProcessor no longer as the will to live." +
+			/*Server.dprint("This InputProcessor no longer as the will to live." +
 					" Dropping client " + uid);
 			if( uid >= 0 ) {
 				fum.removeClient(uid);
+			}*/
+			if(uid == fum.getHost()) {
+				fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.Host_Disconnect,-1,
+						uid, ""));
+				fum.removeHost();
 			}
+			else {
+				fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.User_Disconnected,-1,
+						uid, ""));
+			}
+			fum.removeClient(uid);
 		}
 		catch (IOException ioe) {
 			System.err.println("builfFEU(): " + ioe.toString());

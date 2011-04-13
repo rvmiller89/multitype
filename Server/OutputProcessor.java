@@ -21,15 +21,23 @@ public class OutputProcessor implements Runnable {
 	//flag to allow thread to exit
 	boolean done;
 	
+	//FUM for alerting everyone if a write to socket fails
+	FileUserManager fum;
+	
+	//ID needed for above
+	int uid;
+	
 	/**
 	 * Constructor for OutputProcessor
 	 * @param client A socket connection to the client who will receive
 	 * the updates
 	 */
-	public OutputProcessor(Socket client) {
+	public OutputProcessor(Socket client, FileUserManager f, int i) {
 		sclient = client;
 		outQueue = new LinkedBlockingQueue<FrontEndUpdate>();
 		done = false;
+		fum = f;
+		uid = i;
 	}
 	
 	/**
@@ -66,6 +74,19 @@ public class OutputProcessor implements Runnable {
 				catch (IOException ioe) {
 					System.err.println("OutputProcessor: writeObject failed: "
 							+ ioe.toString());
+
+					if(uid == fum.getHost()) {
+						fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+								FrontEndUpdate.NotificationType.Host_Disconnect,-1,
+								uid, ""));
+						fum.removeHost();
+					}
+					else {
+						fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+								FrontEndUpdate.NotificationType.User_Disconnected,-1,
+								uid, ""));
+					}
+					fum.removeClient(uid);
 				}
 			}
 			
