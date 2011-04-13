@@ -351,16 +351,19 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 						// If host, only show delete menu (Action 2)
 						if (isHost)
 						{
+							action2.setText("Stop Sharing");
 							FileList.this.displayAction2(manager);
 						}
 						else // If non-host, only show open menu (Action 1)
 						{
+							action1.setText("Start Updates");
 							FileList.this.displayAction1(manager);
 						}
 					}
 					else if (item.parent.getName().equals("Open Files"))
 					{
 						// Only non-hosts will have this
+						action2.setText("Stop Updates");
 						FileList.this.displayAction2(manager);
 					}
 				}
@@ -463,7 +466,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 					{
 						if (isHost) // if host and selection parent is "Shared Files"
 						{
-							// Send out Close_Shared_File FEU
+							// send out Close_Shared_File feu to server to stop sending updates
 							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 									NotificationType.Close_Shared_File, 
 									item.getFileID(),
@@ -473,9 +476,6 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 							
 							// Tell editor manager to close file
 							FEUManager.getInstance().editorManager.removeDocumentDueToUserInput(item.getFileID());
-							
-							// Remove file mapping
-							Activator.getDefault().sharedFiles.remove(item.getFileID());
 							
 							// Remove from shared file list
 							Activator.getDefault().fileList.removeSharedFile(item.getFileID());

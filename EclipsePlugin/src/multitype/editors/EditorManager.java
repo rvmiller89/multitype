@@ -162,11 +162,14 @@ public class EditorManager
 				
 				map.get(fileID).disableListeners();
 				map.remove(fileID);
+				
+				// Remove from fileid/filename mapping
+				Activator.getDefault().sharedFiles.remove(fileID);
 			}
 		});		
 	}
 	
-	private void saveTab(String content, String filePath)
+	/*private void saveTab(String content, String filePath)
 	{
 		PrintWriter writer = null;
 		
@@ -183,31 +186,41 @@ public class EditorManager
 		
 		writer.flush();
 		writer.close();
-	}
+	}*/
 	
+	/**
+	 * When a host or non host right-clicks an item from their file list and
+	 * clicks "Close File".
+	 * 
+	 * Hosts will send out a Close_Shared_File FEU.
+	 * 
+	 * Both host and non-hosts remove the file mapping locally
+	 * 
+	 * @param fileID the id of the file to close
+	 */
 	public void removeDocumentDueToUserInput(final int fileID)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				if (Activator.getDefault().isHost)
-				{
-					FEUSender.send(
-							FrontEndUpdate.createNotificationFEU(
-									FrontEndUpdate.NotificationType.Close_Shared_File,
-									fileID,
-									Activator.getDefault().userInfo.getUserid(),
-									map.get(fileID).getTitle()));
-				}
 				
-				Document docToClose = map.get(fileID);
-				
+				// NOTE: FileList sends out the FEU for hosts (Close_Shared_File)
+
                 map.get(fileID).disableListeners();
 				
+                // Don't close tab, just prompt that changes will no longer be sent...
+                Shell shell = new Shell(Display.getCurrent());
+				Dialog dialog = new Dialog(shell, "Host Closed Shared File", "Changes made to " + 
+						Activator.getDefault().sharedFiles.get(fileID) + " will no longer be sent.");
+                
+                
 				//getPage().saveEditor(docToClose.getEditor(), true);
-                getPage().closeEditor(docToClose.getEditor(), true);//false);
+                //getPage().closeEditor(docToClose.getEditor(), true);//false);
 
 				map.remove(fileID);
+				
+				// Remove file mapping
+				Activator.getDefault().sharedFiles.remove(fileID);
 			}
 		});
 	}
