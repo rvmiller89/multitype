@@ -95,12 +95,17 @@ public class EditorManager
 		});
 	}
 	
-	public void removeDocument(int fileID)
+	public void removeDocument(final int fileID)
 	{
-		if (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(map.get(fileID).getEditor(), true))
-		{
-			System.err.println("*********************************EDITOR TAB SHOULD HAVE BEEN CLOSED");
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				if (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(map.get(fileID).getEditor(), true))
+				{
+					System.err.println("*********************************EDITOR TAB SHOULD HAVE BEEN CLOSED");
+				}
+			}
+		});		
 	}
 	
 	public String getTextOfFile(int fileID)
