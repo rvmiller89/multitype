@@ -157,13 +157,17 @@ public class EditorManager
 			@Override
 			public void run() {
 				Shell shell = new Shell(Display.getCurrent());
-				Dialog dialog = new Dialog(shell, "Host Closed Shared File", "Changes made to " + 
-						filename + " will no longer be sent.");
+				Dialog dialog = new Dialog(shell, "Server Notification", "Host closed shared file: " + filename);
 				
-				map.get(fileID).disableListeners();
+                map.get(fileID).disableListeners();
+                
+                // Prompt to save and close tab
+				getPage().saveEditor( map.get(fileID).getEditor(), true);
+                getPage().closeEditor( map.get(fileID).getEditor(), false);
+
 				map.remove(fileID);
 				
-				// Remove from fileid/filename mapping
+				// Remove file mapping
 				Activator.getDefault().sharedFiles.remove(fileID);
 			}
 		});		
@@ -207,15 +211,10 @@ public class EditorManager
 				// NOTE: FileList sends out the FEU for hosts (Close_Shared_File)
 
                 map.get(fileID).disableListeners();
-				
-                // Don't close tab, just prompt that changes will no longer be sent...
-                Shell shell = new Shell(Display.getCurrent());
-				Dialog dialog = new Dialog(shell, "Host Closed Shared File", "Changes made to " + 
-						Activator.getDefault().sharedFiles.get(fileID) + " will no longer be sent.");
                 
-                
-				//getPage().saveEditor(docToClose.getEditor(), true);
-                //getPage().closeEditor(docToClose.getEditor(), true);//false);
+                // Prompt to save and close tab
+				getPage().saveEditor( map.get(fileID).getEditor(), true);
+                getPage().closeEditor( map.get(fileID).getEditor(), false);
 
 				map.remove(fileID);
 				
