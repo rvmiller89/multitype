@@ -325,6 +325,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			if (Activator.getDefault().isHost == true) {
 				hostId = -1;
 				Activator.getDefault().isHost = false;
+				Activator.getDefault().fileList.showOpenFilesList();
+
 			}
 			Activator.getDefault().isConnected = false;
 			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
@@ -335,7 +337,6 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			Activator.getDefault().userList.setDisconnectButton(false);
 			Activator.getDefault().userList.clearList();
 			Activator.getDefault().fileList.clearList();
-			Activator.getDefault().fileList.showOpenFilesList();
 			Activator.getDefault().disconnect();
 		}
 		else {

@@ -160,7 +160,8 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
 				Activator.getDefault().userList.clearList();
 				Activator.getDefault().fileList.clearList();
-				Activator.getDefault().fileList.showOpenFilesList();
+				if (Activator.getDefault().isHost)
+					Activator.getDefault().fileList.showOpenFilesList();
 				Activator.getDefault().isConnected = false;
 				
 				// Clear all fileid/filename mappings
