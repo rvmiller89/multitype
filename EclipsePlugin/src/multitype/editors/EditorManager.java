@@ -82,7 +82,7 @@ public class EditorManager
 							.getWorkbench()
 							.getActiveWorkbenchWindow()
 							.getActivePage()
-							.openEditor(new StringEditorInput(content),
+							.openEditor(new StringEditorInput(content, fileID),
 									"org.eclipse.ui.DefaultTextEditor");
 					map.put(fileID, new Document(getReferences()[count++],
 							fileID));

@@ -3,6 +3,8 @@ package multitype.editors;
 import java.io.InputStream;
 import java.io.StringBufferInputStream;
 
+import multitype.Activator;
+
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -13,9 +15,11 @@ import org.eclipse.ui.IStorageEditorInput;
 public class StringEditorInput implements IStorageEditorInput {
 
 	private final String inputString;
+	private int fileID;
 
-	public StringEditorInput(String inputString) {
+	public StringEditorInput(String inputString, int fileID) {
 		this.inputString = inputString;
+		this.fileID = fileID;
 	}
 
 	public boolean exists() {
@@ -35,7 +39,7 @@ public class StringEditorInput implements IStorageEditorInput {
 	}
 
 	public String getName() {
-		return "input name";
+		return Activator.getDefault().sharedFiles.get(fileID);
 	}
 
 	public String getToolTipText() {
