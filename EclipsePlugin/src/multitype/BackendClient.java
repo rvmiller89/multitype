@@ -243,8 +243,8 @@ public class BackendClient {
 				System.err.print("GetUpdate: " + update.toLine());
 				return update;
 			}
-			else if (nextSentToFrontEndIndex >= -1){
-				assert(this.nextSentToFrontEndIndex >= -1);
+			else if (nextSentToFrontEndIndex > -1){
+				assert(this.nextSentToFrontEndIndex > -1);
 				/*while(this.nextSentToFrontEndIndex == -1) {
 					Thread.sleep(1);				
 				}*/
