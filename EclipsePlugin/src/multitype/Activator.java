@@ -99,6 +99,7 @@ public class Activator extends AbstractUIPlugin {
 	
 	public void disconnect() {
 		client.finish();
+		feuListener.finish();
 	}
 	
 	public void showDialogAsync(final String title, final String message)
