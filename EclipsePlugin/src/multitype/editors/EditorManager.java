@@ -100,10 +100,8 @@ public class EditorManager
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				if (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(map.get(fileID).getEditor(), true))
-				{
-					System.err.println("*********************************EDITOR TAB SHOULD HAVE BEEN CLOSED");
-				}
+				while (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(map.get(fileID).getEditor(), true))
+					;
 			}
 		});		
 	}
