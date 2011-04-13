@@ -125,7 +125,7 @@ public class FileUserManager {
 	 */
 	public void sendFEU(MarkupProcessor m, FrontEndUpdate feu) {
 		
-		sendFEUToAll(feu);
+		//sendFEUToAll(feu);
 		
 		int fileid = -1;
 		for(Integer i : markupprocs.keySet()) {
