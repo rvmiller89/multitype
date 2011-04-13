@@ -202,10 +202,11 @@ public class EditorManager
 				
 				Document docToClose = map.get(fileID);
 				
+                map.get(fileID).disableListeners();
+				
 				//getPage().saveEditor(docToClose.getEditor(), true);
                 getPage().closeEditor(docToClose.getEditor(), true);//false);
 
-                map.get(fileID).disableListeners();
 				map.remove(fileID);
 			}
 		});
