@@ -245,9 +245,9 @@ public class BackendClient {
 			}
 			else if (nextSentToFrontEndIndex > -1){
 				assert(this.nextSentToFrontEndIndex > -1);
-				/*while(this.nextSentToFrontEndIndex == -1) {
+				while(this.nextSentToFrontEndIndex == -1) {
 					Thread.sleep(1);				
-				}*/
+				}
 				FrontEndUpdate update = this.fromServerQueue.get(
 						this.nextSentToFrontEndIndex);
 				System.err.print("GetUpdate: " + update.toLine());
