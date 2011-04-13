@@ -12,6 +12,7 @@ import java.util.Set;
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
+import multitype.views.Dialog;
 import multitype.views.SaveDialog;
 
 import org.eclipse.core.filesystem.EFS;
@@ -150,23 +151,14 @@ public class EditorManager
 		});
 	}
 	
-	public void removeDocumentDueToHostAction(final int fileID)
+	public void removeDocumentDueToHostAction(final int fileID, final String filename)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				Shell shell = new Shell(Display.getCurrent());
-				SaveDialog dialog = new SaveDialog(shell, "Host Closed Shared File", "Would you like to save?", Activator.getDefault().sharedFiles.get(fileID));
-				String filePath = dialog.getFilepath();
-				
-				if (filePath != null)
-				{
-					ITextEditor editor = (ITextEditor)map.get(fileID).getEditor();
-					
-					saveTab(editor.getDocumentProvider().getDocument(editor.getEditorInput()).get(), filePath);
-				}
-				
-				getPage().closeEditor(map.get(fileID).getEditor(), false);
+				Dialog dialog = new Dialog(shell, "Host Closed Shared File", "Changes made to " + 
+						filename + " will no longer be sent.");
 				
 				map.remove(fileID);
 			}
@@ -207,19 +199,10 @@ public class EditorManager
 									map.get(fileID).getTitle()));
 				}
 				
-				Shell shell = new Shell(Display.getCurrent());
-				SaveDialog dialog = new SaveDialog(shell, "Closing Shared File", "Would you like to save?", Activator.getDefault().sharedFiles.get(fileID));
-				String filePath = dialog.getFilepath();
+				Document docToClose = map.get(fileID);
 				
-				if (filePath != null)
-				{
-					ITextEditor editor = (ITextEditor)map.get(fileID).getEditor();
-					
-					saveTab(editor.getDocumentProvider().getDocument(editor.getEditorInput()).get(), filePath);
-				}
-				
-				getPage().closeEditor(map.get(fileID).getEditor(), false);
-				
+				//getPage().saveEditor(docToClose.getEditor(), true);
+                getPage().closeEditor(docToClose.getEditor(), true);//false);
 
 				map.remove(fileID);
 			}

@@ -69,11 +69,12 @@ public class ViewManager extends ViewPart{
 				// fileid
 				Activator.getDefault().fileList.removeOpenFile(feu.getFileId());
 				
+				// Tell editor manager to remove Document for the file with this fileid
+				FEUManager.getInstance().editorManager.removeDocumentDueToHostAction(feu.getFileId(),
+						Activator.getDefault().sharedFiles.get(feu.getFileId()));
+				
 				// Remove from fileid/filename mapping
 				Activator.getDefault().sharedFiles.remove(feu.getFileId());
-				
-				// Add a document for the file with this fileid
-				FEUManager.getInstance().editorManager.removeDocumentDueToHostAction(feu.getFileId());
 				
 				break;
 				
@@ -150,10 +151,11 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().userList.setHostButton(true); //no host anymore
 				Activator.getDefault().fileList.clearList();
 				
-				// Clear all fileid/filename mappings
-				Activator.getDefault().sharedFiles.clear();
 				
 				// TODO Prompt to save files? (and close tabs)
+				
+				// Clear all fileid/filename mappings
+				Activator.getDefault().sharedFiles.clear();
 				
 				break;
 			case Server_Disconnect:
@@ -164,6 +166,10 @@ public class ViewManager extends ViewPart{
 					Activator.getDefault().fileList.showOpenFilesList();
 				Activator.getDefault().isConnected = false;
 				
+				
+				// TODO Prompt to save files?
+				
+				
 				// Clear all fileid/filename mappings
 				Activator.getDefault().sharedFiles.clear();
 				
@@ -171,9 +177,6 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().connectedUsers.clear();
 				
 				Activator.getDefault().userList.hostId = -1;
-
-				
-				// TODO Prompt to save files?
 				break;
 			default:
 				Activator.getDefault().showDialogAsync("FrontEndUpdate Error", "Unknown FrontEndUpdate receieved.");
