@@ -376,29 +376,55 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				if (item != null)
 				{
-					// if non_host and selection parent is "Open Files",
+					
 					boolean isHost = Activator.getDefault().isHost;
 
-					if (!isHost && item.parent.getName().equals("Open Files"))
+					if (item.parent.getName().equals("Open Files"))
 					{
-						// send out Close_Client_File feu to server to stop receiving updates
-						FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-								NotificationType.Close_Client_File, 
-								item.getFileID(),
-								Activator.getDefault().userInfo.getUserid(),
-								item.getName());
-						FEUSender.send(feu);
-						
-						// Tell editor manager to close tab with file with fileid (item.getFileid())
-						FEUManager.getInstance().editorManager.removeDocument(item.getFileID());
-
-						// add to Shared Files list
-						Activator.getDefault().fileList.addSharedFile(item.getFileID(),
-								Activator.getDefault().sharedFiles.get(item.getFileID()));
-						
-						// remove from Open files list
-						Activator.getDefault().fileList.removeOpenFile(item.getFileID());
-
+						if (!isHost)	// if non_host and selection parent is "Open Files",
+						{
+							// send out Close_Client_File feu to server to stop receiving updates
+							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+									NotificationType.Close_Client_File, 
+									item.getFileID(),
+									Activator.getDefault().userInfo.getUserid(),
+									item.getName());
+							FEUSender.send(feu);
+							
+							// Tell editor manager to close tab with file with fileid (item.getFileid())
+							FEUManager.getInstance().editorManager.removeDocument(item.getFileID());
+	
+							// add to Shared Files list
+							Activator.getDefault().fileList.addSharedFile(item.getFileID(),
+									Activator.getDefault().sharedFiles.get(item.getFileID()));
+							
+							// remove from Open files list
+							Activator.getDefault().fileList.removeOpenFile(item.getFileID());
+						}
+					}
+					else if (item.parent.getName().equals("Shared Files"))
+					{
+						if (isHost) // if host and selection parent is "Shared Files"
+						{
+							// Send out Close_Shared_File FEU
+							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+									NotificationType.Close_Shared_File, 
+									item.getFileID(),
+									Activator.getDefault().userInfo.getUserid(),
+									item.getName());
+							FEUSender.send(feu);
+							
+							// Tell editor manager to close file
+							FEUManager.getInstance().editorManager.removeDocument(item.getFileID());
+							
+							// Remove file mapping
+							Activator.getDefault().sharedFiles.remove(item.getFileID());
+							
+							// Remove from shared file list
+							Activator.getDefault().fileList.removeSharedFile(item.getFileID());
+							
+							
+						}
 					}
 				}
 				

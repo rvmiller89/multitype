@@ -83,9 +83,9 @@ public class ShareFile extends AbstractHandler {
 							fileid, Activator.getDefault().userInfo.getUserid(), filename);
 					FEUSender.send(feu);
 					
-					// Add the file to "Open Files"
-					// Grab filename from fileid mapping before adding to Open Files
-					Activator.getDefault().fileList.addOpenFile(fileid, filename);
+					// Add the file to "Shared Files"
+					// Grab filename from fileid mapping before adding to Shared Files
+					Activator.getDefault().fileList.addSharedFile(fileid, filename);
 							
 				}
 			}
