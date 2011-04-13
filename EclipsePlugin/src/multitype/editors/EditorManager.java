@@ -50,6 +50,26 @@ public class EditorManager
 	    	public void partClosed(IWorkbenchPart part) {
 				if (part instanceof IEditorPart)
 				{
+					
+					/*
+					 * PROPOSED SOLUTION:
+					 * 
+					 * Iterate through <Integer, Document> hashmap
+					 * 
+					 * Grab editor object for the Document (and store Document's fileid)
+					 * 
+					 * Compare that object with editor object below (Use =='s to compare references)
+					 * 
+					 * If a match, this is the tab that is closing
+					 * 
+					 * Call removeDocumentDueToUserInput() on this fileid (with true for tabClose)
+					 * 
+					 * 
+					 * 
+					 * 
+					 */
+					
+					
 					ITextEditor editor = (ITextEditor)part;	
 					
 					// TODO this only works for tabs generated with StringEditorInput
