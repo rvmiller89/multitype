@@ -388,10 +388,10 @@ public class BackendClient {
 			FEUidMap.remove(feu.getFileId());
 			revisionHistoryMap.remove(feu.getFileId());
 			break;
-		case Close_Shared_File: // Host does this, remove mapping
+		/*case Close_Shared_File: // Host does this, remove mapping
 			FEUidMap.remove(feu.getFileId());
 			revisionHistoryMap.remove(feu.getFileId());
-			break;
+			break;*/
 		case New_Shared_File: // Host does this, create mapping
 			FEUidMap.put(feu.getFileId(), 0);
 			revisionHistoryMap.put(feu.getFileId(), 0);
@@ -417,7 +417,7 @@ public class BackendClient {
 			FEUidMap.put(feu.getFileId(), 0); //FEUids are local
 			revisionHistoryMap.put(feu.getFileId(), feu.getRevision());
 			break;
-		case Close_Shared_File: // client side, remove a mapping
+		case Close_Shared_File: // client side and host side, remove a mapping
 			FEUidMap.remove(feu.getFileId());
 			revisionHistoryMap.remove(feu.getFileId());
 			break;
