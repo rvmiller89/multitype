@@ -3,6 +3,7 @@ package multitype.views;
 import java.util.ArrayList;
 
 import multitype.Activator;
+import multitype.FEUManager;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate.NotificationType;
 
@@ -368,12 +369,6 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 
 				// Action 2
 				
-				// TODO
-				// if parent.getName() is "Shared Files" and _host_, signal EditorManager
-				// to Close_Shared_file and remove file from "Shared Files"
-				
-				// TODO remove file from "Shared Files" when _non_host_ and user closes editor tab
-
 				// Grab item
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
@@ -381,9 +376,30 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				if (item != null)
 				{
-					
-					
-					
+					// if non_host and selection parent is "Open Files",
+					boolean isHost = Activator.getDefault().isHost;
+
+					if (!isHost && item.parent.getName().equals("Open Files"))
+					{
+						// send out Close_Client_File feu to server to stop receiving updates
+						FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+								NotificationType.Close_Client_File, 
+								item.getFileID(),
+								Activator.getDefault().userInfo.getUserid(),
+								item.getName());
+						FEUSender.send(feu);
+						
+						// Tell editor manager to close tab with file with fileid (item.getFileid())
+						FEUManager.getInstance().editorManager.removeDocument(item.getFileID());
+
+						// add to Shared Files list
+						Activator.getDefault().fileList.addSharedFile(item.getFileID(),
+								Activator.getDefault().sharedFiles.get(item.getFileID()));
+						
+						// remove from Open files list
+						Activator.getDefault().fileList.removeOpenFile(item.getFileID());
+
+					}
 				}
 				
 			}

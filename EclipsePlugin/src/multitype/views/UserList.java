@@ -333,6 +333,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			Activator.getDefault().userList.setHostButton(false);
 			Activator.getDefault().userList.setDisconnectButton(false);
 			Activator.getDefault().userList.clearList();
+			Activator.getDefault().fileList.clearList();
 			Activator.getDefault().disconnect();
 		}
 		else {
