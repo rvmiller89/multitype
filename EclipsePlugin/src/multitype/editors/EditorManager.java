@@ -20,6 +20,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener;
@@ -48,7 +49,29 @@ public class EditorManager
 	    	public void partClosed(IWorkbenchPart part) {
 				if (part instanceof IEditorPart)
 				{
-					//TODO disable default partlistener
+					ITextEditor editor = (ITextEditor)part;	
+					
+					// TODO this only works for tabs generated with StringEditorInput
+					// ie. does not work for host-generated tabs
+					
+					IEditorInput input = editor.getEditorInput();
+					if (input instanceof StringEditorInput)
+					{
+						StringEditorInput strInput = (StringEditorInput)input;
+						
+						Iterator<Integer> iter = map.keySet().iterator();
+						int id;
+						while (iter.hasNext())
+						{
+							id = iter.next();
+							if (strInput.getFileID() == id)
+							{
+								removeDocumentDueToUserInput(id, true);
+							}
+						}
+					}
+					
+					/*//TODO disable default partlistener
 					ITextEditor editor = (ITextEditor)part;					
 					Iterator<Integer> iter = Activator.getDefault().sharedFiles.keySet().iterator();
 					int id;
@@ -57,11 +80,11 @@ public class EditorManager
 						id = iter.next();
 						if (Activator.getDefault().sharedFiles.get(id).equals(editor.getTitle()))
 						{
-							removeDocumentDueToUserInput(id);
+							//removeDocumentDueToUserInput(id);
 							
 							return;
 						}
-					}
+					}*/
 				}	
 			}
 			
@@ -205,8 +228,9 @@ public class EditorManager
 	 * Both host and non-hosts remove the file mapping locally
 	 * 
 	 * @param fileID the id of the file to close
+	 * @param isTabClose whether or not a tab close is what's causing this remove document
 	 */
-	public void removeDocumentDueToUserInput(final int fileID)
+	public void removeDocumentDueToUserInput(final int fileID, final boolean isTabClose)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
@@ -217,7 +241,8 @@ public class EditorManager
                 map.get(fileID).disableListeners();
                 
                 // Prompt to save and close tab
-                getPage().closeEditor( map.get(fileID).getEditor(), true);
+                if (!isTabClose)
+                	getPage().closeEditor( map.get(fileID).getEditor(), true);
                 //getPage().closeEditor( map.get(fileID).getEditor(), false);
 
 				map.remove(fileID);
