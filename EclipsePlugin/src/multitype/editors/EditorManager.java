@@ -100,8 +100,8 @@ public class EditorManager
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				while (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(map.get(fileID).getEditor(), true))
-					;
+				getPage().saveEditor(map.get(fileID).getEditor(), true);
+				getPage().closeEditor(map.get(fileID).getEditor(), false);
 			}
 		});		
 	}
@@ -131,6 +131,11 @@ public class EditorManager
 			default:
 				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());
 		}
+	}
+	
+	private IWorkbenchPage getPage()
+	{
+		return Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 	}
 	
 	private IEditorReference[] getReferences()
