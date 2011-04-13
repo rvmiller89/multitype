@@ -279,6 +279,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    @Override
 		    public void run() {
 		    	invisibleRoot.removeChild(openFiles);
+		    	viewer.refresh();
 		    }
 		  });
 	}
@@ -289,6 +290,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		    @Override
 		    public void run() {
 		    	invisibleRoot.addChild(openFiles);
+		    	viewer.refresh();
 		    }
 		  });
 	}
@@ -333,7 +335,35 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				FileList.this.fillContextMenu(manager);
+				// Listener for menu going to show... only show if selection is a descendant of
+				// "Shared Files" or "Open Files"
+				
+				// Grab item (if there is one)
+				ISelection selection = viewer.getSelection();
+				Object obj = ((IStructuredSelection)selection).getFirstElement();
+				TreeObject item = (TreeObject)obj;
+				
+				if (item != null)
+				{
+					boolean isHost = Activator.getDefault().isHost;
+					if (item.parent.getName().equals("Shared Files"))
+					{
+						// If host, only show delete menu (Action 2)
+						if (isHost)
+						{
+							FileList.this.displayAction2(manager);
+						}
+						else // If non-host, only show open menu (Action 1)
+						{
+							FileList.this.displayAction1(manager);
+						}
+					}
+					else if (item.parent.getName().equals("Open Files"))
+					{
+						// Only non-hosts will have this
+						FileList.this.displayAction2(manager);
+					}
+				}
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -341,6 +371,13 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
+	private void displayAction1(IMenuManager manager) {
+		manager.add(action1);
+	}
+	
+	private void displayAction2(IMenuManager manager) {
+		manager.add(action2);
+	}
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
 		manager.add(action2);
