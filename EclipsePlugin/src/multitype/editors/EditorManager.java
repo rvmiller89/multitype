@@ -220,7 +220,7 @@ public class EditorManager
 				
 				// Remove file mapping (only for hosts... they will have to re-share to start it up again
 				// Non-hosts can still start receiving updates again though
-				if (!Activator.getDefault().isHost)
+				if (Activator.getDefault().isHost)
 					Activator.getDefault().sharedFiles.remove(fileID);
 			}
 		});
