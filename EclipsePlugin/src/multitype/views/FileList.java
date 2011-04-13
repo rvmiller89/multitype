@@ -449,7 +449,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 							FEUSender.send(feu);
 							
 							// Tell editor manager to close tab with file with fileid (item.getFileid())
-							FEUManager.getInstance().editorManager.removeDocument(item.getFileID());
+							FEUManager.getInstance().editorManager.removeDocumentDueToUserInput(item.getFileID());
 	
 							// add to Shared Files list
 							Activator.getDefault().fileList.addSharedFile(item.getFileID(),
@@ -472,7 +472,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 							FEUSender.send(feu);
 							
 							// Tell editor manager to close file
-							FEUManager.getInstance().editorManager.removeDocument(item.getFileID());
+							FEUManager.getInstance().editorManager.removeDocumentDueToUserInput(item.getFileID());
 							
 							// Remove file mapping
 							Activator.getDefault().sharedFiles.remove(item.getFileID());

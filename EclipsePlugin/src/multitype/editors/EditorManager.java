@@ -2,23 +2,26 @@ package multitype.editors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import multitype.Activator;
+import multitype.FEUSender;
 import multitype.FrontEndUpdate;
+import multitype.views.SaveDialog;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.jface.text.BadLocationException;
-
+import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -41,68 +44,48 @@ public class EditorManager
 	    map = new HashMap<Integer, Document>();
 	    
 	    getPage().addPartListener(new IPartListener() {
-			
-			@Override
-			public void partOpened(IWorkbenchPart part) {
-				System.out.println(part.getTitle() + "opened");
-				
+	    	public void partClosed(IWorkbenchPart part) {
+				if (part instanceof IEditorPart)
+				{
+					ITextEditor editor = (ITextEditor)part;					
+					Iterator<Integer> iter = Activator.getDefault().sharedFiles.keySet().iterator();
+					int id;
+					while (iter.hasNext())
+					{
+						id = iter.next();
+						if (Activator.getDefault().sharedFiles.get(id).equals(editor.getTitle()))
+						{
+							removeDocumentDueToUserInput(id);
+							
+							return;
+						}
+					}
+				}	
 			}
 			
-			@Override
-			public void partDeactivated(IWorkbenchPart part) {
-				System.out.println(part.getTitle() + "deactivated");
-				
-			}
+			public void partOpened(IWorkbenchPart part) {}
 			
-			@Override
-			public void partClosed(IWorkbenchPart part) {
-				System.out.println(part.getTitle() + "closed");
-				
-			}
+			public void partDeactivated(IWorkbenchPart part) {}
 			
-			@Override
-			public void partBroughtToTop(IWorkbenchPart part) {
-				System.out.println(part.getTitle() + "brought to top");
-				
-			}
+			public void partBroughtToTop(IWorkbenchPart part) {}
 			
-			@Override
-			public void partActivated(IWorkbenchPart part) {
-				System.out.println(part.getTitle() + "activated");
-				
-			}
-		});
-	    
-	    Activator.getDefault().getWorkbench().addWindowListener(new IWindowListener() {
-			
-			@Override
-			public void windowOpened(IWorkbenchWindow window) {
-				System.out.println("window opened");
-				
-			}
-			
-			@Override
-			public void windowDeactivated(IWorkbenchWindow window) {
-				System.out.println("window deactivated");
-				
-			}
-			
-			@Override
-			public void windowClosed(IWorkbenchWindow window) {
-				System.out.println("window closed");
-				
-			}
-			
-			@Override
-			public void windowActivated(IWorkbenchWindow window) {
-				System.out.println("window activated");
-				
-			}
+			public void partActivated(IWorkbenchPart part) {}
 		});
 	}
 	
 	public void openDocument(int fileID, String filePath)
 	{
+		IEditorPart[] editors = getPage().getDirtyEditors();
+		for (int i = 0 ; i < editors.length ; i++)
+		{
+			if (((IResource)editors[i].getEditorInput().getAdapter(IResource.class)).getFullPath().toOSString().equals(filePath))
+			{
+				map.put(fileID, new Document((ITextEditor)editors[i], fileID));
+				
+				return;
+			}
+		}
+		
 		Scanner scanner = null;
 		
 		try
@@ -124,8 +107,6 @@ public class EditorManager
 		
 		scanner.close();
 		
-		//TODO CHECK IF TAB IS OPEN ALREADY
-		
 		IWorkbenchPage page = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IFileStore fs = EFS.getLocalFileSystem().getStore(new File(filePath).toURI());
 		
@@ -138,8 +119,6 @@ public class EditorManager
 		}
 		
 		map.put(fileID, new Document((ITextEditor)editor, fileID));
-		
-		//TODO sync refs
 		
 		map.get(fileID).setText(content);
 	}
@@ -159,9 +138,6 @@ public class EditorManager
 									"org.eclipse.ui.DefaultTextEditor");
 					
 					map.put(fileID, new Document((ITextEditor)editor, fileID));
-										
-					//TODO sync refs
-					
 					map.get(fileID).setText(content);
 				} catch (PartInitException e) {
 					System.err
@@ -172,16 +148,79 @@ public class EditorManager
 		});
 	}
 	
-	public void removeDocument(final int fileID)
+	public void removeDocumentDueToHostAction(final int fileID)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				Activator.getDefault().showDialogAsync("Tab Closed", map.remove(fileID).getTitle());
-				getPage().saveEditor(map.get(fileID).getEditor(), true);
+				Shell shell = new Shell(Display.getCurrent());
+				SaveDialog dialog = new SaveDialog(shell, "Host Closed Shared File", "Would you like to save?", Activator.getDefault().sharedFiles.get(fileID));
+				String filePath = dialog.getFilepath();
+				
+				if (filePath != null)
+				{
+					ITextEditor editor = (ITextEditor)map.get(fileID).getEditor();
+					
+					saveTab(editor.getDocumentProvider().getDocument(editor.getEditorInput()).get(), filePath);
+				}
+				
+				map.remove(fileID).getTitle();
+				
 				getPage().closeEditor(map.get(fileID).getEditor(), false);
 			}
 		});		
+	}
+	
+	private void saveTab(String content, String filePath)
+	{
+		PrintWriter writer = null;
+		
+		try {
+			writer = new PrintWriter(new File(filePath));
+		} catch (FileNotFoundException e) {
+			System.err.println("*********************************FILE NOT FOUND EXCEPTION: " + e.getMessage());
+			e.printStackTrace();
+			
+			return;
+		}
+		
+		writer.print(content);
+		
+		writer.flush();
+		writer.close();
+	}
+	
+	public void removeDocumentDueToUserInput(final int fileID)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				if (Activator.getDefault().isHost)
+				{
+					FEUSender.send(
+							FrontEndUpdate.createNotificationFEU(
+									FrontEndUpdate.NotificationType.Close_Shared_File,
+									fileID,
+									Activator.getDefault().userInfo.getUserid(),
+									map.get(fileID).getTitle()));
+				}
+				
+				Shell shell = new Shell(Display.getCurrent());
+				SaveDialog dialog = new SaveDialog(shell, "Closing Shared File", "Would you like to save?", Activator.getDefault().sharedFiles.get(fileID));
+				String filePath = dialog.getFilepath();
+				
+				if (filePath != null)
+				{
+					ITextEditor editor = (ITextEditor)map.get(fileID).getEditor();
+					
+					saveTab(editor.getDocumentProvider().getDocument(editor.getEditorInput()).get(), filePath);
+				}
+
+				map.remove(fileID).getTitle();
+				
+				getPage().closeEditor(map.get(fileID).getEditor(), false);
+			}
+		});
 	}
 	
 	public String getTextOfFile(int fileID)
@@ -207,21 +246,6 @@ public class EditorManager
 				break;
 			default:
 				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());
-		}
-	}
-	
-	private void syncRefs()
-	{
-		Collection<Document> editors = new ArrayList<Document>(map.values());
-		IEditorReference[] refs = getReferences();
-		int size = editors.size();
-		
-		for (int i = 0 ; i < refs.length ; i++)
-		{
-			for (int j = 0 ; j < size ; j++)
-			{
-				
-			}
 		}
 	}
 	

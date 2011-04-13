@@ -73,7 +73,7 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().sharedFiles.remove(feu.getFileId());
 				
 				// Add a document for the file with this fileid
-				FEUManager.getInstance().editorManager.removeDocument(feu.getFileId());
+				FEUManager.getInstance().editorManager.removeDocumentDueToHostAction(feu.getFileId());
 				
 				break;
 				
