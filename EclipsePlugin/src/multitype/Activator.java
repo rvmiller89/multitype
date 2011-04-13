@@ -34,6 +34,8 @@ public class Activator extends AbstractUIPlugin {
 	public FileList fileList;
 	public ChatView chatView;
 	
+	public int fileIDMapping;
+	
 	public Map<Integer, String> connectedUsers;
 	public Map<Integer, String> sharedFiles;
 	
@@ -53,6 +55,7 @@ public class Activator extends AbstractUIPlugin {
 		isHost = false;
 		connectedUsers = new HashMap<Integer, String>();
 		sharedFiles = new HashMap<Integer, String>();
+		fileIDMapping = 0;
 	}
 
 	public void stop(BundleContext context) throws Exception {

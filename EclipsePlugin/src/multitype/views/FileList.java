@@ -273,6 +273,16 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		  });
 	}
 	
+	public void hideOpenFilesList()
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		    	invisibleRoot.removeChild(openFiles);
+		    }
+		  });
+	}
+	
 	/**
 	 * Removes all Open Files and Shared Files from the FileList view
 	 */

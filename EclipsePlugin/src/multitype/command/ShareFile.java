@@ -68,9 +68,12 @@ public class ShareFile extends AbstractHandler {
 
 					
 					// Assign fileid / filename map (for host)
-					int fileid = Activator.getDefault().sharedFiles.size();
+					int fileid = Activator.getDefault().fileIDMapping;
 					
 					Activator.getDefault().sharedFiles.put(fileid, filename);
+					
+					// Add one to fileIDMapping
+					Activator.getDefault().fileIDMapping++;
 					
 					
 					//Activator.getDefault().showDialogAsync("Filename", filename + " with ID: " + fileid);
