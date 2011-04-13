@@ -443,6 +443,9 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 					{
 						if (!isHost)	// if non_host and selection parent is "Open Files",
 						{
+							// debug
+							Activator.getDefault().showDialogAsync("DEBUG", "Closing client file");
+							
 							// send out Close_Client_File feu to server to stop receiving updates
 							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 									NotificationType.Close_Client_File, 
