@@ -213,8 +213,8 @@ public class EditorManager
                 map.get(fileID).disableListeners();
                 
                 // Prompt to save and close tab
-				getPage().saveEditor( map.get(fileID).getEditor(), true);
-                getPage().closeEditor( map.get(fileID).getEditor(), false);
+                getPage().closeEditor( map.get(fileID).getEditor(), true);
+                //getPage().closeEditor( map.get(fileID).getEditor(), false);
 
 				map.remove(fileID);
 				
