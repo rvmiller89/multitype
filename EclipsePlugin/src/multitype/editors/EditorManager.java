@@ -167,7 +167,7 @@ public class EditorManager
 
 				map.remove(fileID);
 				
-				// Remove file mapping
+				// Remove file mapping (this file is no longer needed)
 				Activator.getDefault().sharedFiles.remove(fileID);
 			}
 		});		
@@ -218,8 +218,10 @@ public class EditorManager
 
 				map.remove(fileID);
 				
-				// Remove file mapping
-				Activator.getDefault().sharedFiles.remove(fileID);
+				// Remove file mapping (only for hosts... they will have to re-share to start it up again
+				// Non-hosts can still start receiving updates again though
+				if (!Activator.getDefault().isHost)
+					Activator.getDefault().sharedFiles.remove(fileID);
 			}
 		});
 	}

@@ -73,6 +73,8 @@ public class ViewManager extends ViewPart{
 				FEUManager.getInstance().editorManager.removeDocumentDueToHostAction(feu.getFileId(),
 						Activator.getDefault().sharedFiles.get(feu.getFileId()));
 				
+				// Editor manager removes from "sharedFiles" map, too
+				
 				break;
 				
 			case Get_Shared_File:
