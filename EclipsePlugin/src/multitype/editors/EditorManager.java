@@ -47,6 +47,7 @@ public class EditorManager
 	    	public void partClosed(IWorkbenchPart part) {
 				if (part instanceof IEditorPart)
 				{
+					//TODO disable default partlistener
 					ITextEditor editor = (ITextEditor)part;					
 					Iterator<Integer> iter = Activator.getDefault().sharedFiles.keySet().iterator();
 					int id;
@@ -78,6 +79,7 @@ public class EditorManager
 		IEditorPart[] editors = getPage().getDirtyEditors();
 		for (int i = 0 ; i < editors.length ; i++)
 		{
+			//TODO if tab is edited, but not written to disk, tab is replaced with disk content....
 			if (((IResource)editors[i].getEditorInput().getAdapter(IResource.class)).getFullPath().toOSString().equals(filePath))
 			{
 				map.put(fileID, new Document((ITextEditor)editors[i], fileID));
