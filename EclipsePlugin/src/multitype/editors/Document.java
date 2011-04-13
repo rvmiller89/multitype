@@ -96,7 +96,10 @@ public class Document
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		doc.addDocumentListener(DOCUMENT_LISTENER);
 		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
-		Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(new ISelectionListener() {
+		
+		// TODO This seems to be breaking things after closing a document...
+		
+		/*Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(new ISelectionListener() {
 			public void selectionChanged(IWorkbenchPart part, ISelection selection)
 			{
 				if (part.getSite().getId().equals(editor.getSite().getId()))
@@ -108,7 +111,14 @@ public class Document
 									((ITextSelection)selection).getOffset()));
 				}
 			}
-		});
+		});*/
+	}
+	
+	public void disableListeners()
+	{
+		doc.removeDocumentListener(DOCUMENT_LISTENER);
+		editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
+		
 	}
 	
 	public String getTitle()

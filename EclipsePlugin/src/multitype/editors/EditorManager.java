@@ -160,6 +160,7 @@ public class EditorManager
 				Dialog dialog = new Dialog(shell, "Host Closed Shared File", "Changes made to " + 
 						filename + " will no longer be sent.");
 				
+				map.get(fileID).disableListeners();
 				map.remove(fileID);
 			}
 		});		
@@ -204,6 +205,7 @@ public class EditorManager
 				//getPage().saveEditor(docToClose.getEditor(), true);
                 getPage().closeEditor(docToClose.getEditor(), true);//false);
 
+                map.get(fileID).disableListeners();
 				map.remove(fileID);
 			}
 		});
