@@ -237,12 +237,14 @@ public class EditorManager
 			public void run() {
 				
 				// NOTE: FileList sends out the FEU for hosts (Close_Shared_File)
-
-                map.get(fileID).disableListeners();
                 
                 // Prompt to save and close tab
                 if (!isTabClose)
+                {
                 	getPage().closeEditor( map.get(fileID).getEditor(), true);
+
+                    map.get(fileID).disableListeners();
+                }
                 //getPage().closeEditor( map.get(fileID).getEditor(), false);
 
 				map.remove(fileID);
