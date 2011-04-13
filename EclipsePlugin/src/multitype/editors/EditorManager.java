@@ -27,7 +27,6 @@ import org.eclipse.ui.ide.IDE;
 public class EditorManager
 {
 	private Map<Integer, Document> map;
-	private int count = 0;
 	
 	public EditorManager()
 	{
@@ -67,7 +66,7 @@ public class EditorManager
 			return;
 		}
 		
-		map.put(fileID, new Document(getReferences()[count++], fileID));
+		map.put(fileID, new Document(getReferences()[map.size()], fileID));
 		map.get(fileID).setText(content);
 	}
 	
@@ -84,7 +83,7 @@ public class EditorManager
 							.getActivePage()
 							.openEditor(new StringEditorInput(content, fileID),
 									"org.eclipse.ui.DefaultTextEditor");
-					map.put(fileID, new Document(getReferences()[count++],
+					map.put(fileID, new Document(getReferences()[map.size()],
 							fileID));
 					map.get(fileID).setText(content);
 				} catch (PartInitException e) {
@@ -98,9 +97,10 @@ public class EditorManager
 	
 	public void removeDocument(int fileID)
 	{
-		// TODO maybe prompt to save files here?
-		
-		//TODO
+		if (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(map.get(fileID).getEditor(), true))
+		{
+			System.err.println("*********************************EDITOR TAB SHOULD HAVE BEEN CLOSED");
+		}
 	}
 	
 	public String getTextOfFile(int fileID)
@@ -122,7 +122,8 @@ public class EditorManager
 //				map.get(feu.getFileId()).highlight(feu);
 //				break;
 			case Insert:
-				map.get(feu.getFileId()).insert(feu);
+//				map.get(feu.getFileId()).insert(feu);
+				removeDocument(feu.getFileId());
 				break;
 			default:
 				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());

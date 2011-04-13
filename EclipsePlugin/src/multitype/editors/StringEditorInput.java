@@ -39,7 +39,7 @@ public class StringEditorInput implements IStorageEditorInput {
 	}
 
 	public String getName() {
-		return Activator.getDefault().sharedFiles.get(fileID);
+		return Activator.getDefault().sharedFiles.get(fileID) + " (shared)";
 	}
 
 	public String getToolTipText() {
