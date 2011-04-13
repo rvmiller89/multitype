@@ -316,7 +316,7 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 					case '1':
 						Display display = Display.getCurrent();
 						Shell shell = new Shell(display);
-						SaveDialog dialog = new SaveDialog(shell, "TestTitle", "TestMessage");
+						SaveDialog dialog = new SaveDialog(shell, "TestTitle", "TestMessage", "Test.txt");
 						if (dialog.getFilepath() != null)
 							Activator.getDefault().showDialogAsync("Filepath", dialog.getFilepath());
 						break;

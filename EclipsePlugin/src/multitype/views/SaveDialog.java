@@ -31,17 +31,19 @@ public class SaveDialog extends TitleAreaDialog {
 	
 	private String title;
 	private String message;
+	private String filename;
 
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public SaveDialog(Shell parentShell, String title, String message) {
+	public SaveDialog(Shell parentShell, String title, String message, String filename) {
 		super(parentShell);
 		this.title = title;
 		this.message = message;
 		setBlockOnOpen(true);
 		filepath = null;
+		this.filename = filename;
 		open();
 		// Don't dispose display (which would kill the instance of Eclipse)
 	}
@@ -100,6 +102,7 @@ public class SaveDialog extends TitleAreaDialog {
 		        dlg.setFilterNames(new String[]{"All Files (*.*)"});
 		        dlg.setFilterExtensions(new String[]{"*.*"});
 		        dlg.setOverwrite(true);
+		        dlg.setFileName(filename);
 		        String path = dlg.open();
 		        //Activator.getDefault().showDialogAsync("Filepath chosen", path);
 		        filepath = path;
