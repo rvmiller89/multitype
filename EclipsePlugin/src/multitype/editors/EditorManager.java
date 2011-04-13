@@ -166,9 +166,9 @@ public class EditorManager
 					saveTab(editor.getDocumentProvider().getDocument(editor.getEditorInput()).get(), filePath);
 				}
 				
-				map.remove(fileID).getTitle();
-				
 				getPage().closeEditor(map.get(fileID).getEditor(), false);
+				
+				map.remove(fileID);
 			}
 		});		
 	}
