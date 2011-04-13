@@ -72,7 +72,7 @@ public class BackendClient {
 			FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 				FrontEndUpdate.NotificationType.Connection_Error, -1, -1, 
 				error);
-			fromServerQueue.add(f);
+			fromServerNotificationQueue.add(f);
 			return;
 		} 
 		
@@ -105,7 +105,7 @@ public class BackendClient {
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 							FrontEndUpdate.NotificationType.Server_Disconnect, 
 							-1, -1, error);
-						fromServerQueue.add(f);
+						fromServerNotificationQueue.add(f);
 					}			
 				}
 			}	
@@ -171,7 +171,7 @@ public class BackendClient {
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 							FrontEndUpdate.NotificationType.Server_Disconnect, 
 							-1, -1, error);
-						fromServerQueue.add(f);
+						fromServerNotificationQueue.add(f);
 					}
 				}
 			}			
@@ -200,7 +200,7 @@ public class BackendClient {
 						FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
 							FrontEndUpdate.NotificationType.Server_Disconnect, 
 							-1, -1, error);
-						fromServerQueue.add(f);
+						fromServerNotificationQueue.add(f);
 					}			
 				}
 			}	
