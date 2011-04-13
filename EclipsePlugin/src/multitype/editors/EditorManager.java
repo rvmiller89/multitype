@@ -14,7 +14,11 @@ import org.eclipse.jface.text.BadLocationException;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 
@@ -31,6 +35,65 @@ public class EditorManager
 	public EditorManager()
 	{
 	    map = new HashMap<Integer, Document>();
+	    getPage().addPartListener(new IPartListener() {
+			
+			@Override
+			public void partOpened(IWorkbenchPart part) {
+				System.out.println(part.getTitle() + "opened");
+				
+			}
+			
+			@Override
+			public void partDeactivated(IWorkbenchPart part) {
+				System.out.println(part.getTitle() + "deactivated");
+				
+			}
+			
+			@Override
+			public void partClosed(IWorkbenchPart part) {
+				System.out.println(part.getTitle() + "closed");
+				
+			}
+			
+			@Override
+			public void partBroughtToTop(IWorkbenchPart part) {
+				System.out.println(part.getTitle() + "brought to top");
+				
+			}
+			
+			@Override
+			public void partActivated(IWorkbenchPart part) {
+				System.out.println(part.getTitle() + "activated");
+				
+			}
+		});
+	    
+	    Activator.getDefault().getWorkbench().addWindowListener(new IWindowListener() {
+			
+			@Override
+			public void windowOpened(IWorkbenchWindow window) {
+				System.out.println("window opened");
+				
+			}
+			
+			@Override
+			public void windowDeactivated(IWorkbenchWindow window) {
+				System.out.println("window deactivated");
+				
+			}
+			
+			@Override
+			public void windowClosed(IWorkbenchWindow window) {
+				System.out.println("window closed");
+				
+			}
+			
+			@Override
+			public void windowActivated(IWorkbenchWindow window) {
+				System.out.println("window activated");
+				
+			}
+		});
 	}
 	
 	public void openDocument(int fileID, String filePath)
@@ -125,12 +188,16 @@ public class EditorManager
 //				map.get(feu.getFileId()).highlight(feu);
 //				break;
 			case Insert:
-//				map.get(feu.getFileId()).insert(feu);
-				removeDocument(feu.getFileId());
+				map.get(feu.getFileId()).insert(feu);
 				break;
 			default:
 				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());
 		}
+	}
+	
+	private IWorkbenchWindow getWindow()
+	{
+		return Activator.getDefault().getWorkbench().getActiveWorkbenchWindow();
 	}
 	
 	private IWorkbenchPage getPage()
