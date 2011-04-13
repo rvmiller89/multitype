@@ -34,7 +34,9 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ISharedImages;
@@ -176,10 +178,11 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 		private void initialize() {
 			// TODO this is where you add things to the view
 			TreeObject test1 = new TreeObject("0_add file 'Test.txt' w/ fileid = 1 to Shared Files");
-			
+			TreeObject test2 = new TreeObject("1_display SaveFile dialog");
 			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(test1);
+			invisibleRoot.addChild(test2);
 
 		}
 	}
@@ -309,6 +312,13 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 
 						Activator.getDefault().fileList.addSharedFile(1, "Test.txt");
 					
+						break;
+					case '1':
+						Display display = Display.getCurrent();
+						Shell shell = new Shell(display);
+						SaveDialog dialog = new SaveDialog(shell, "TestTitle", "TestMessage");
+						if (dialog.getFilepath() != null)
+							Activator.getDefault().showDialogAsync("Filepath", dialog.getFilepath());
 						break;
 					default:
 						showMessage("Not implemented...");
