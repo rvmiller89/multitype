@@ -89,10 +89,10 @@ public class Document
 		return editor;
 	}
 	
-	public Document(IEditorReference ref, int fileID)
+	public Document(final ITextEditor editor, int fileID)
 	{
 		this.fileID = fileID;
-		editor = (ITextEditor)ref.getEditor(true);
+		this.editor = editor;
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		doc.addDocumentListener(DOCUMENT_LISTENER);
 		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);

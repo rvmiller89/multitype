@@ -2,6 +2,8 @@ package multitype.editors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -13,6 +15,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.jface.text.BadLocationException;
 
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWindowListener;
@@ -21,6 +24,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * 
@@ -35,6 +39,7 @@ public class EditorManager
 	public EditorManager()
 	{
 	    map = new HashMap<Integer, Document>();
+	    
 	    getPage().addPartListener(new IPartListener() {
 			
 			@Override
@@ -119,17 +124,23 @@ public class EditorManager
 		
 		scanner.close();
 		
+		//TODO CHECK IF TAB IS OPEN ALREADY
+		
 		IWorkbenchPage page = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IFileStore fs = EFS.getLocalFileSystem().getStore(new File(filePath).toURI());
 		
+		IEditorPart editor = null;
 		try {
-			IDE.openEditorOnFileStore(page, fs);
+			editor = IDE.openEditorOnFileStore(page, fs);
 		} catch (PartInitException e) {
 			System.err.println("*********************************PART INIT EXCEPTION: " + e.getMessage());
 			return;
 		}
 		
-		map.put(fileID, new Document(getReferences()[map.size()], fileID));
+		map.put(fileID, new Document((ITextEditor)editor, fileID));
+		
+		//TODO sync refs
+		
 		map.get(fileID).setText(content);
 	}
 	
@@ -139,15 +150,18 @@ public class EditorManager
 			@Override
 			public void run() {
 				try {
-					Activator
+					IEditorPart editor = Activator
 							.getDefault()
 							.getWorkbench()
 							.getActiveWorkbenchWindow()
 							.getActivePage()
 							.openEditor(new StringEditorInput(content, fileID),
 									"org.eclipse.ui.DefaultTextEditor");
-					map.put(fileID, new Document(getReferences()[map.size()],
-							fileID));
+					
+					map.put(fileID, new Document((ITextEditor)editor, fileID));
+										
+					//TODO sync refs
+					
 					map.get(fileID).setText(content);
 				} catch (PartInitException e) {
 					System.err
@@ -192,6 +206,21 @@ public class EditorManager
 				break;
 			default:
 				throw new IllegalArgumentException("BAD FEU MARKUP TYPE: " + feu.getMarkupType());
+		}
+	}
+	
+	private void syncRefs()
+	{
+		Collection<Document> editors = new ArrayList<Document>(map.values());
+		IEditorReference[] refs = getReferences();
+		int size = editors.size();
+		
+		for (int i = 0 ; i < refs.length ; i++)
+		{
+			for (int j = 0 ; j < size ; j++)
+			{
+				
+			}
 		}
 	}
 	
