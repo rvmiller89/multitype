@@ -120,7 +120,11 @@ public class ViewManager extends ViewPart{
 				if (feu.getUserId() != -1) {
 					Activator.getDefault().userList.hostId = feu.getUserId();
 					if (Activator.getDefault().userInfo.getUserid() == feu.getUserId())
+					{
 						Activator.getDefault().isHost = true;
+						// Hide "Open Files" icon for hosts
+						Activator.getDefault().fileList.hideOpenFilesList();
+					}
 
 					Activator.getDefault().userList.setHostButton(false); //host already exists
 				}
@@ -156,6 +160,7 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
 				Activator.getDefault().userList.clearList();
 				Activator.getDefault().fileList.clearList();
+				Activator.getDefault().fileList.showOpenFilesList();
 				Activator.getDefault().isConnected = false;
 				
 				// Clear all fileid/filename mappings

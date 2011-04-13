@@ -315,6 +315,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 		if (Activator.getDefault().isConnected) {
 			FEUSender.send(feu);
 			//hostRequestButton.setEnabled(false);
+			
 			setHostButton(false);
 		}
 	}
@@ -334,6 +335,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 			Activator.getDefault().userList.setDisconnectButton(false);
 			Activator.getDefault().userList.clearList();
 			Activator.getDefault().fileList.clearList();
+			Activator.getDefault().fileList.showOpenFilesList();
 			Activator.getDefault().disconnect();
 		}
 		else {
