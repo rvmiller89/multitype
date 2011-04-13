@@ -159,16 +159,20 @@ public class EditorManager
 				Shell shell = new Shell(Display.getCurrent());
 				Dialog dialog = new Dialog(shell, "Server Notification", "Host closed shared file: " + filename);
 				
-                map.get(fileID).disableListeners();
-                
-                // Prompt to save and close tab
-				getPage().saveEditor( map.get(fileID).getEditor(), true);
-                getPage().closeEditor( map.get(fileID).getEditor(), false);
-
-				map.remove(fileID);
+				if (map.get(fileID) != null)
+				{
+	                map.get(fileID).disableListeners();
+	                
+	                // Prompt to save and close tab
+					getPage().saveEditor( map.get(fileID).getEditor(), true);
+	                getPage().closeEditor( map.get(fileID).getEditor(), false);
+	
+					map.remove(fileID);
+				}
 				
 				// Remove file mapping (this file is no longer needed)
 				Activator.getDefault().sharedFiles.remove(fileID);
+				
 			}
 		});		
 	}

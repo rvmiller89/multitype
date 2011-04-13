@@ -68,6 +68,7 @@ public class ViewManager extends ViewPart{
 				// Non-hosts receive this to indicate that the host has stopped sharing a file
 				// fileid
 				Activator.getDefault().fileList.removeOpenFile(feu.getFileId());
+				Activator.getDefault().fileList.removeSharedFile(feu.getFileId());
 				
 				// Tell editor manager to remove Document for the file with this fileid
 				FEUManager.getInstance().editorManager.removeDocumentDueToHostAction(feu.getFileId(),
