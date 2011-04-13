@@ -12,6 +12,7 @@ import java.util.Set;
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
+import multitype.FrontEndUpdate.NotificationType;
 import multitype.views.Dialog;
 import multitype.views.SaveDialog;
 
@@ -66,7 +67,24 @@ public class EditorManager
 							id = iter.next();
 							if (strInput.getFileID() == id)
 							{
+								// send out Close_Client_File feu to server to stop receiving updates
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+										NotificationType.Close_Client_File, 
+										id,
+										Activator.getDefault().userInfo.getUserid(),
+										null);
+								FEUSender.send(feu);
+								
+								// Tell editor manager to close tab with file with fileid (item.getFileid())
 								removeDocumentDueToUserInput(id, true);
+		
+								// add to Shared Files list
+								Activator.getDefault().fileList.addSharedFile(id,
+										Activator.getDefault().sharedFiles.get(id));
+								
+								// remove from Open files list
+								Activator.getDefault().fileList.removeOpenFile(id);
+								
 							}
 						}
 					}
