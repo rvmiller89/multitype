@@ -111,6 +111,11 @@ public class Document
 		});
 	}
 	
+	public String getTitle()
+	{
+		return editor.getTitle();
+	}
+	
 	public void setText(String text)
 	{
 		doc.removeDocumentListener(DOCUMENT_LISTENER);

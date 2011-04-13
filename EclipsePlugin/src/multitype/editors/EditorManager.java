@@ -179,6 +179,7 @@ public class EditorManager
 			public void run() {
 				getPage().saveEditor(map.get(fileID).getEditor(), true);
 				getPage().closeEditor(map.get(fileID).getEditor(), false);
+				Activator.getDefault().showDialogAsync("Tab Closed", map.remove(fileID).getTitle());
 			}
 		});		
 	}
