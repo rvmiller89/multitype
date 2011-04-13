@@ -46,6 +46,8 @@ public class FileUserManager {
 		markupprocs.put(fileid, thisMarkupProc);
 		filemap.put(fileid, filename);
 		fileusermap.put(fileid, new Vector<Integer>());
+		//add host to this usermap
+		fileusermap.get(fileid).add(this.getHost());
 		new Thread(thisMarkupProc).start();
 		
 		Server.dprint("Added a new file. FID: " + fileid);
