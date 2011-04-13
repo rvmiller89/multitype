@@ -170,6 +170,9 @@ public class ViewManager extends ViewPart{
 				// Clear all userid/username mappings
 				Activator.getDefault().connectedUsers.clear();
 				
+				Activator.getDefault().userList.hostId = -1;
+
+				
 				// TODO Prompt to save files?
 				break;
 			default:
