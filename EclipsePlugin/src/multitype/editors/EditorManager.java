@@ -194,6 +194,7 @@ public class EditorManager
 			@Override
 			public void run() {
 				try {
+					
 					IEditorPart editor = Activator
 							.getDefault()
 							.getWorkbench()
@@ -307,6 +308,7 @@ public class EditorManager
 	                 * 
 	                 * 
 	                 */
+                	map.get(fileID).getEditor().doSaveAs();
                 	
                     map.get(fileID).disableListeners();
                 	

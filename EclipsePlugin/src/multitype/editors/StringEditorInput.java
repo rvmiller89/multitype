@@ -36,6 +36,9 @@ public class StringEditorInput implements IStorageEditorInput {
 	}
 
 	public IPersistableElement getPersistable() {
+		// Handles saving the file
+		// Return an instance of IPersistableElement
+		//IPersistableElement element = 
 		return null;
 	}
 
