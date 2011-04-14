@@ -19,14 +19,20 @@ import multitype.views.SaveDialog;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -194,7 +200,6 @@ public class EditorManager
 			@Override
 			public void run() {
 				try {
-					
 					IEditorPart editor = Activator
 							.getDefault()
 							.getWorkbench()
@@ -202,7 +207,6 @@ public class EditorManager
 							.getActivePage()
 							.openEditor(new StringEditorInput(content, fileID),
 									"org.eclipse.ui.DefaultTextEditor");
-					
 					map.put(fileID, new Document((ITextEditor)editor, fileID));
 					map.get(fileID).setText(content);
 				} catch (PartInitException e) {
@@ -229,21 +233,13 @@ public class EditorManager
 	                // Prompt to save and close tab
 					//getPage().saveEditor( map.get(fileID).getEditor(), true);
 	                
-	                // TODO
-	                /*
-	                 * PROPOSED CHANGE:
-	                 * 
-	                 * Rather than prompting to save, go ahead and close tab, but save content and filename before hand. (For non-hosts)
-	                 * Then set up your own way to save this data...
-	                 * 
-	                 * 
-	                 */
+	                map.get(fileID).getEditor().doSaveAs();
 
                 	// Remove part listener so that removing from the FileList doesnt trigger the same
                 	// action as removing by X-ing out the tab
             	    getPage().removePartListener(PART_LISTENER);
 
-                	getPage().closeEditor( map.get(fileID).getEditor(), true);
+                	getPage().closeEditor( map.get(fileID).getEditor(), false);
 
             	    getPage().addPartListener(PART_LISTENER);
 	
@@ -298,17 +294,9 @@ public class EditorManager
                 // Prompt to save and close tab
                 if (!isTabClose)
                 {
-                	// TODO
-	                /*
-	                 * PROPOSED CHANGE:
-	                 * 
-	                 * (only if Non-host)
-	                 * Rather than prompting to save, go ahead and close tab, but save content and filename before hand.
-	                 * Then set up your own way to save this data...
-	                 * 
-	                 * 
-	                 */
-                	map.get(fileID).getEditor().doSaveAs();
+
+                	if (!Activator.getDefault().isHost)
+                		map.get(fileID).getEditor().doSaveAs();
                 	
                     map.get(fileID).disableListeners();
                 	
@@ -316,7 +304,10 @@ public class EditorManager
                 	// action as removing by X-ing out the tab
             	    getPage().removePartListener(PART_LISTENER);
 
-                	getPage().closeEditor( map.get(fileID).getEditor(), true);
+            	    if (Activator.getDefault().isHost)
+            	    	getPage().closeEditor( map.get(fileID).getEditor(), true);
+            	    else
+            	    	getPage().closeEditor( map.get(fileID).getEditor(), false);
 
             	    getPage().addPartListener(PART_LISTENER);
 
