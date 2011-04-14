@@ -87,6 +87,7 @@ public class EditorManager
 							}
 							else
 							{
+								Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
 								// send out Close_Client_File feu to server to stop receiving updates
 								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 										NotificationType.Close_Client_File, 
