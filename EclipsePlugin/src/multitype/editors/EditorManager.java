@@ -42,135 +42,105 @@ public class EditorManager
 {
 	private Map<Integer, Document> map;
 	
+	private final IPartListener PART_LISTENER = new IPartListener()
+	{
+
+		@Override
+		public void partActivated(IWorkbenchPart part) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void partBroughtToTop(IWorkbenchPart part) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void partClosed(IWorkbenchPart part) {
+			if (part instanceof IEditorPart)
+			{
+				IEditorPart closingEditor = (IEditorPart)part;	
+				
+				Iterator<Integer> iter = map.keySet().iterator();
+				int id;
+				while (iter.hasNext())
+				{
+					id = iter.next();
+					IEditorPart openEditor = map.get(id).getEditor();
+					if (closingEditor == openEditor)	// Object comparison, if equal then this is the tab thats closing
+					{
+						if (Activator.getDefault().isHost)
+						{
+							// Host closes a file
+							Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
+							
+							// send out Close_Shared_File feu to server to stop sending updates
+							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+									NotificationType.Close_Shared_File, 
+									id,
+									Activator.getDefault().userInfo.getUserid(),
+									Activator.getDefault().sharedFiles.get(id));
+							FEUSender.send(feu);
+
+							// Tell editor manager to close tab with file with fileid (item.getFileid())
+							removeDocumentDueToUserInput(id, true);
+							
+							// Remove from shared file list
+							Activator.getDefault().fileList.removeSharedFile(id);
+						}
+						else
+						{
+							// Non-host closes a tab
+							Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
+							// send out Close_Client_File feu to server to stop receiving updates
+							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+									NotificationType.Close_Client_File, 
+									id,
+									Activator.getDefault().userInfo.getUserid(),
+									null);
+							FEUSender.send(feu);
+							
+							// Tell editor manager to close tab with file with fileid (item.getFileid())
+							removeDocumentDueToUserInput(id, true);
+	
+							// add to Shared Files list
+							Activator.getDefault().fileList.addSharedFile(id,
+									Activator.getDefault().sharedFiles.get(id));
+							
+							// remove from Open files list
+							Activator.getDefault().fileList.removeOpenFile(id);
+							
+						} // else
+						
+						break;
+						
+					} // if objects are equal
+				} // while
+			} // if part is instanceof IEditorPart
+			
+		}
+
+		@Override
+		public void partDeactivated(IWorkbenchPart part) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void partOpened(IWorkbenchPart part) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
+	
 	public EditorManager()
 	{
 	    map = new HashMap<Integer, Document>();
 	    
-	    getPage().addPartListener(new IPartListener() {
-	    	public void partClosed(IWorkbenchPart part) {
-				if (part instanceof IEditorPart)
-				{
-					IEditorPart closingEditor = (IEditorPart)part;	
-					
-					Iterator<Integer> iter = map.keySet().iterator();
-					int id;
-					while (iter.hasNext())
-					{
-						id = iter.next();
-						IEditorPart openEditor = map.get(id).getEditor();
-						if (closingEditor == openEditor)	// Object comparison, if equal then this is the tab thats closing
-						{
-							if (Activator.getDefault().isHost)
-							{
-								// Host closes a file
-								Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
-								
-								// send out Close_Shared_File feu to server to stop sending updates
-								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-										NotificationType.Close_Shared_File, 
-										id,
-										Activator.getDefault().userInfo.getUserid(),
-										Activator.getDefault().sharedFiles.get(id));
-								FEUSender.send(feu);
-
-								// Tell editor manager to close tab with file with fileid (item.getFileid())
-								removeDocumentDueToUserInput(id, true);
-								
-								// Remove from shared file list
-								Activator.getDefault().fileList.removeSharedFile(id);
-							}
-							else
-							{
-								// Non-host closes a tab
-								Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
-								// send out Close_Client_File feu to server to stop receiving updates
-								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-										NotificationType.Close_Client_File, 
-										id,
-										Activator.getDefault().userInfo.getUserid(),
-										null);
-								FEUSender.send(feu);
-								
-								// Tell editor manager to close tab with file with fileid (item.getFileid())
-								removeDocumentDueToUserInput(id, true);
-		
-								// add to Shared Files list
-								Activator.getDefault().fileList.addSharedFile(id,
-										Activator.getDefault().sharedFiles.get(id));
-								
-								// remove from Open files list
-								Activator.getDefault().fileList.removeOpenFile(id);
-								
-							} // else
-							
-							break;
-							
-						} // if objects are equal
-					} // if part is instanceof IEditorPart
-					
-					
-					// TODO this only works for tabs generated with StringEditorInput
-					// ie. does not work for host-generated tabs
-					
-					/*IEditorInput input = editor.getEditorInput();
-					if (input instanceof StringEditorInput)
-					{
-						StringEditorInput strInput = (StringEditorInput)input;
-						
-						Iterator<Integer> iter = map.keySet().iterator();
-						int id;
-						while (iter.hasNext())
-						{
-							id = iter.next();
-							if (strInput.getFileID() == id)
-							{
-								// send out Close_Client_File feu to server to stop receiving updates
-								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-										NotificationType.Close_Client_File, 
-										id,
-										Activator.getDefault().userInfo.getUserid(),
-										null);
-								FEUSender.send(feu);
-								
-								// Tell editor manager to close tab with file with fileid (item.getFileid())
-								removeDocumentDueToUserInput(id, true);
-		
-								// add to Shared Files list
-								Activator.getDefault().fileList.addSharedFile(id,
-										Activator.getDefault().sharedFiles.get(id));
-								
-								// remove from Open files list
-								Activator.getDefault().fileList.removeOpenFile(id);
-								
-							}
-						}
-					}*/
-					
-					/*
-					Iterator<Integer> iter = Activator.getDefault().sharedFiles.keySet().iterator();
-					int id;
-					while (iter.hasNext())
-					{
-						id = iter.next();
-					ITextEditor editor = (ITextEditor)part;					
-						if (Activator.getDefault().sharedFiles.get(id).equals(editor.getTitle()))
-						{
-							//removeDocumentDueToUserInput(id);
-							
-							return;
-						}
-					}*/
-				}	
-			}
-			
-			public void partOpened(IWorkbenchPart part) {}
-			
-			public void partDeactivated(IWorkbenchPart part) {}
-			
-			public void partBroughtToTop(IWorkbenchPart part) {}
-			
-			public void partActivated(IWorkbenchPart part) {}
-		});
+	    getPage().addPartListener(PART_LISTENER);
 	}
 	
 	public void openDocument(int fileID, String filePath)
@@ -273,7 +243,14 @@ public class EditorManager
 	                 * 
 	                 * 
 	                 */
-	                getPage().closeEditor( map.get(fileID).getEditor(), true);
+
+                	// Remove part listener so that removing from the FileList doesnt trigger the same
+                	// action as removing by X-ing out the tab
+            	    getPage().removePartListener(PART_LISTENER);
+
+                	getPage().closeEditor( map.get(fileID).getEditor(), true);
+
+            	    getPage().addPartListener(PART_LISTENER);
 	
 					map.remove(fileID);
 				}
@@ -337,8 +314,13 @@ public class EditorManager
 	                 * 
 	                 */
                 	
+                	// Remove part listener so that removing from the FileList doesnt trigger the same
+                	// action as removing by X-ing out the tab
+            	    getPage().removePartListener(PART_LISTENER);
+
                 	getPage().closeEditor( map.get(fileID).getEditor(), true);
 
+            	    getPage().addPartListener(PART_LISTENER);
 
                 	
                     map.get(fileID).disableListeners();
