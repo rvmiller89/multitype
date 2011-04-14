@@ -50,26 +50,6 @@ public class EditorManager
 	    	public void partClosed(IWorkbenchPart part) {
 				if (part instanceof IEditorPart)
 				{
-					
-					/*
-					 * PROPOSED SOLUTION:
-					 * 
-					 * Iterate through <Integer, Document> hashmap
-					 * 
-					 * Grab editor object for the Document (and store Document's fileid)
-					 * 
-					 * Compare that object with editor object below (Use =='s to compare references)
-					 * 
-					 * If a match, this is the tab that is closing
-					 * 
-					 * Call removeDocumentDueToUserInput() on this fileid (with true for tabClose)
-					 * 
-					 * 
-					 * 
-					 * 
-					 */
-					
-					
 					IEditorPart closingEditor = (IEditorPart)part;	
 					
 					Iterator<Integer> iter = map.keySet().iterator();
@@ -82,11 +62,26 @@ public class EditorManager
 						{
 							if (Activator.getDefault().isHost)
 							{
+								// Host closes a file
+								Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
+								
+								// send out Close_Shared_File feu to server to stop sending updates
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+										NotificationType.Close_Shared_File, 
+										id,
+										Activator.getDefault().userInfo.getUserid(),
+										Activator.getDefault().sharedFiles.get(id));
+								FEUSender.send(feu);
+
 								// Tell editor manager to close tab with file with fileid (item.getFileid())
 								removeDocumentDueToUserInput(id, true);
+								
+								// Remove from shared file list
+								Activator.getDefault().fileList.removeSharedFile(id);
 							}
 							else
 							{
+								// Non-host closes a tab
 								Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
 								// send out Close_Client_File feu to server to stop receiving updates
 								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
@@ -106,10 +101,12 @@ public class EditorManager
 								// remove from Open files list
 								Activator.getDefault().fileList.removeOpenFile(id);
 								
-							}
+							} // else
 							
-						}
-					}
+							break;
+							
+						} // if objects are equal
+					} // if part is instanceof IEditorPart
 					
 					
 					// TODO this only works for tabs generated with StringEditorInput
