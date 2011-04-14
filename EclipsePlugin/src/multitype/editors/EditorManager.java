@@ -34,7 +34,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * 
- * @author Azfar Khandoker
+ * @author Azfar Khandoker & Ryan Miller
  *
  */
  
@@ -47,13 +47,11 @@ public class EditorManager
 
 		@Override
 		public void partActivated(IWorkbenchPart part) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void partBroughtToTop(IWorkbenchPart part) {
-			// TODO Auto-generated method stub
 			
 		}
 
@@ -74,7 +72,6 @@ public class EditorManager
 						if (Activator.getDefault().isHost)
 						{
 							// Host closes a file
-							Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
 							
 							// send out Close_Shared_File feu to server to stop sending updates
 							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
@@ -93,7 +90,7 @@ public class EditorManager
 						else
 						{
 							// Non-host closes a tab
-							Activator.getDefault().showDialogAsync("Debug", "Closing file with id: " + id);
+							
 							// send out Close_Client_File feu to server to stop receiving updates
 							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
 									NotificationType.Close_Client_File, 
@@ -124,13 +121,11 @@ public class EditorManager
 
 		@Override
 		public void partDeactivated(IWorkbenchPart part) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void partOpened(IWorkbenchPart part) {
-			// TODO Auto-generated method stub
 			
 		}
 		
@@ -148,7 +143,6 @@ public class EditorManager
 		IEditorPart[] editors = getPage().getDirtyEditors();
 		for (int i = 0 ; i < editors.length ; i++)
 		{
-			//TODO if tab is edited, but not written to disk, tab is replaced with disk content....
 			if (((IResource)editors[i].getEditorInput().getAdapter(IResource.class)).getFullPath().toOSString().equals(filePath))
 			{
 				map.put(fileID, new Document((ITextEditor)editors[i], fileID));
