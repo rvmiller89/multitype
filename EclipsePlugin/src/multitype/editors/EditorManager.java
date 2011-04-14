@@ -70,12 +70,51 @@ public class EditorManager
 					 */
 					
 					
-					ITextEditor editor = (ITextEditor)part;	
+					IEditorPart closingEditor = (IEditorPart)part;	
+					
+					Iterator<Integer> iter = map.keySet().iterator();
+					int id;
+					while (iter.hasNext())
+					{
+						id = iter.next();
+						IEditorPart openEditor = map.get(id).getEditor();
+						if (closingEditor == openEditor)	// Object comparison, if equal then this is the tab thats closing
+						{
+							if (Activator.getDefault().isHost)
+							{
+								// Tell editor manager to close tab with file with fileid (item.getFileid())
+								removeDocumentDueToUserInput(id, true);
+							}
+							else
+							{
+								// send out Close_Client_File feu to server to stop receiving updates
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+										NotificationType.Close_Client_File, 
+										id,
+										Activator.getDefault().userInfo.getUserid(),
+										null);
+								FEUSender.send(feu);
+								
+								// Tell editor manager to close tab with file with fileid (item.getFileid())
+								removeDocumentDueToUserInput(id, true);
+		
+								// add to Shared Files list
+								Activator.getDefault().fileList.addSharedFile(id,
+										Activator.getDefault().sharedFiles.get(id));
+								
+								// remove from Open files list
+								Activator.getDefault().fileList.removeOpenFile(id);
+								
+							}
+							
+						}
+					}
+					
 					
 					// TODO this only works for tabs generated with StringEditorInput
 					// ie. does not work for host-generated tabs
 					
-					IEditorInput input = editor.getEditorInput();
+					/*IEditorInput input = editor.getEditorInput();
 					if (input instanceof StringEditorInput)
 					{
 						StringEditorInput strInput = (StringEditorInput)input;
@@ -107,7 +146,7 @@ public class EditorManager
 								
 							}
 						}
-					}
+					}*/
 					
 					/*
 					Iterator<Integer> iter = Activator.getDefault().sharedFiles.keySet().iterator();
