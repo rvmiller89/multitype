@@ -314,6 +314,8 @@ public class EditorManager
 	                 * 
 	                 */
                 	
+                    map.get(fileID).disableListeners();
+                	
                 	// Remove part listener so that removing from the FileList doesnt trigger the same
                 	// action as removing by X-ing out the tab
             	    getPage().removePartListener(PART_LISTENER);
@@ -322,8 +324,6 @@ public class EditorManager
 
             	    getPage().addPartListener(PART_LISTENER);
 
-                	
-                    map.get(fileID).disableListeners();
                 }
                 //getPage().closeEditor( map.get(fileID).getEditor(), false);
 
