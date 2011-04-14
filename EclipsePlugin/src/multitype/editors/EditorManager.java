@@ -86,7 +86,7 @@ public class EditorManager
 									Activator.getDefault().userInfo.getUserid(),
 									Activator.getDefault().sharedFiles.get(id));
 							FEUSender.send(feu);
-
+							
 							// Tell editor manager to close tab with file with fileid (item.getFileid())
 							removeDocumentDueToUserInput(id, true);
 							
@@ -104,6 +104,12 @@ public class EditorManager
 									Activator.getDefault().userInfo.getUserid(),
 									null);
 							FEUSender.send(feu);
+							
+							Activator.getDefault().showDialogAsync("Debug", "Sending Close_Client_File with fileid: " + 
+									id + " and filename: " + Activator.getDefault().sharedFiles.get(id) + " from user: "
+									+ Activator.getDefault().userInfo.getUserid() + ": " 
+									+ Activator.getDefault().userInfo.getUsername());
+
 							
 							// Tell editor manager to close tab with file with fileid (item.getFileid())
 							removeDocumentDueToUserInput(id, true);
