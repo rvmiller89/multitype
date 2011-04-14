@@ -150,12 +150,9 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().userList.hostId = -1;
 				Activator.getDefault().userList.setHostButton(true); //no host anymore
 				Activator.getDefault().fileList.clearList();
-				
-				
-				// TODO Prompt to save files? (and close tabs)
-				
-				// Clear all fileid/filename mappings
-				Activator.getDefault().sharedFiles.clear();
+
+				// No need to clear mappings because we will receive a Close_Shared_file foreach file
+				// and editor manager removes them individually
 				
 				break;
 			case Server_Disconnect:

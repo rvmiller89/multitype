@@ -110,12 +110,12 @@ public class EditorManager
 					}
 					
 					/*
-					ITextEditor editor = (ITextEditor)part;					
 					Iterator<Integer> iter = Activator.getDefault().sharedFiles.keySet().iterator();
 					int id;
 					while (iter.hasNext())
 					{
 						id = iter.next();
+					ITextEditor editor = (ITextEditor)part;					
 						if (Activator.getDefault().sharedFiles.get(id).equals(editor.getTitle()))
 						{
 							//removeDocumentDueToUserInput(id);
