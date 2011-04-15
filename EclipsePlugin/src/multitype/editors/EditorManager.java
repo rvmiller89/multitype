@@ -176,7 +176,8 @@ public class EditorManager
 		IEditorPart[] editors = getPage().getDirtyEditors();
 		for (int i = 0 ; i < editors.length ; i++)
 		{
-			if (filePath.endsWith(((IResource)editors[i].getEditorInput().getAdapter(IResource.class)).getFullPath().toOSString()))
+			if (editors[i].getEditorInput().getAdapter(IResource.class) != null &&
+				filePath.endsWith(((IResource)editors[i].getEditorInput().getAdapter(IResource.class)).getFullPath().toOSString()))
 			{
 				map.put(fileID, new Document((ITextEditor)editors[i], fileID));
 				
