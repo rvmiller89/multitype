@@ -31,6 +31,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -66,7 +68,7 @@ public class EditorManager
 
 		@Override
 		public void partClosed(IWorkbenchPart part) {
-			/*if (!isClosing)
+			if (!isClosing)
 			{
 				if (part instanceof IEditorPart)
 				{
@@ -128,7 +130,7 @@ public class EditorManager
 						} // if objects are equal
 					} // while
 				} // if part is instanceof IEditorPart
-			}*/
+			}
 			
 		}
 
@@ -151,8 +153,24 @@ public class EditorManager
 	    map = new HashMap<Integer, Document>();
 	    
 	    getPage().addPartListener(PART_LISTENER);
-	    
-	    Activator.getDefault().getWorkbench().addWindowListener(new IWindowListener()	{
+	    Activator.getDefault().getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
+			
+			@Override
+			public boolean preShutdown(IWorkbench workbench, boolean forced) {
+				
+				System.out.println("***** CLOSING THE WINDOW *******");
+				
+				// Setting isClosing to true to indicate Eclipse is closing
+				isClosing = true;
+				return true;
+			}
+			
+			@Override
+			public void postShutdown(IWorkbench workbench) {
+				
+			}
+		});
+	    /*Activator.getDefault().getWorkbench().addWindowListener(new IWindowListener()	{
 
 			@Override
 			public void windowActivated(IWorkbenchWindow window) {
@@ -168,6 +186,8 @@ public class EditorManager
 			public void windowClosed(IWorkbenchWindow window) {
 				// Disable the sending out of Close_Shared_File for hosts
 				// or Close_Client_file 
+				System.out.println("*** IS CLOSING IS NOW TRUE ***");
+
 				isClosing = true;
 				
 			}
@@ -177,7 +197,7 @@ public class EditorManager
 				
 			}
 	    	
-	    });
+	    });*/
 	    
 	}
 	
