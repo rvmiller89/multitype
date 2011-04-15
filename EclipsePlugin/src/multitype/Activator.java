@@ -33,6 +33,11 @@ public class Activator extends AbstractUIPlugin {
 
 	public UserList userList;
 	public FileList fileList;
+	
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
 	public ChatView chatView;
 	
 	public int fileIDMapping;
