@@ -172,57 +172,57 @@ public class MarkupProcessor implements Runnable{
 			int insertAt = given.getStartLocation();
 			int sizeOfInsert = given.getEndLocation() - insertAt;
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-				if(given.getEndLocation() <= toUpdate.getStartLocation()) {
+//				if(given.getEndLocation() <= toUpdate.getStartLocation()) {
+//					toUpdate.setStartLocation(toUpdate.getStartLocation()
+//							-sizeOfInsert);
+//					/*
+//					 * Does this:
+//					 * |----|
+//					 *      |----|
+//					 * or
+//					 * |----|
+//					 *       |----|
+//					 */
+//				}
+//				else if (given.getEndLocation()>toUpdate.getStartLocation()
+//							&& given.getStartLocation()<toUpdate.getStartLocation()){
+//					toUpdate.setStartLocation(given.getStartLocation());
+//					
+//					/*
+//					 * Does this:
+//					 * |----|
+//					 *    |----|
+//					 */
+//				}
+//				else if (given.getStartLocation()<toUpdate.getStartLocation() &&
+//						given.getEndLocation()>toUpdate.getEndLocation()) {
+//					toUpdate.setStartLocation(given.getStartLocation());
+//					/*
+//					 * Does this:
+//					 * |--------|
+//					 *   |----|
+//					 */
+//				}
+//				//The following do not change the Insert:
+//				/*
+//				 * |----| both start and ends are the same
+//				 * |----|
+//				 * 
+//				 *   |-|  deletion is inside insert
+//				 * |----|
+//				 * 
+//				 *    |---| deletion start is inside insert end
+//				 * |----|
+//				 * 
+//				 *      |---|  deletion start = insert end
+//				 * |----|
+//				 * 
+//				 */
+//				
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
-					/*
-					 * Does this:
-					 * |----|
-					 *      |----|
-					 * or
-					 * |----|
-					 *       |----|
-					 */
 				}
-				else if (given.getEndLocation()>toUpdate.getStartLocation()
-							&& given.getStartLocation()<toUpdate.getStartLocation()){
-					toUpdate.setStartLocation(given.getStartLocation());
-					
-					/*
-					 * Does this:
-					 * |----|
-					 *    |----|
-					 */
-				}
-				else if (given.getStartLocation()<toUpdate.getStartLocation() &&
-						given.getEndLocation()>toUpdate.getEndLocation()) {
-					toUpdate.setStartLocation(given.getStartLocation());
-					/*
-					 * Does this:
-					 * |--------|
-					 *   |----|
-					 */
-				}
-				//The following do not change the Insert:
-				/*
-				 * |----| both start and ends are the same
-				 * |----|
-				 * 
-				 *   |-|  deletion is inside insert
-				 * |----|
-				 * 
-				 *    |---| deletion start is inside insert end
-				 * |----|
-				 * 
-				 *      |---|  deletion start = insert end
-				 * |----|
-				 * 
-				 */
-				
-				/*if(toUpdate.getStartLocation() >= insertAt) {
-					toUpdate.setStartLocation(toUpdate.getStartLocation()
-							-sizeOfInsert);
-				}*/
 			}
 			else if (toUpdate.getMarkupType() == 
 				FrontEndUpdate.MarkupType.Delete){
