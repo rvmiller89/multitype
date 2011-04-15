@@ -206,13 +206,32 @@ public class EditorManager
 			@Override
 			public void run() {
 				try {
-					IEditorPart editor = Activator
-							.getDefault()
-							.getWorkbench()
-							.getActiveWorkbenchWindow()
-							.getActivePage()
-							.openEditor(new StringEditorInput(content, fileID),
-									"org.eclipse.ui.DefaultTextEditor");
+					IEditorPart editor = null;
+					
+					if (Activator.getDefault().sharedFiles.get(fileID).endsWith(".java"))
+					{
+						editor = Activator
+								.getDefault()
+								.getWorkbench()
+								.getActiveWorkbenchWindow()
+								.getActivePage()
+								.openEditor(
+										new StringEditorInput(content, fileID),
+										"org.eclipse.jdt.ui.CompilationUnitEditor");
+					}
+					
+					else
+					{
+						editor = Activator
+								.getDefault()
+								.getWorkbench()
+								.getActiveWorkbenchWindow()
+								.getActivePage()
+								.openEditor(
+										new StringEditorInput(content, fileID),
+										"org.eclipse.ui.DefaultTextEditor");
+					}
+					
 					map.put(fileID, new Document((ITextEditor)editor, fileID));
 					map.get(fileID).setText(content);
 				} catch (PartInitException e) {
