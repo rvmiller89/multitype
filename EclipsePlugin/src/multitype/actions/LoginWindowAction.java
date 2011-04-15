@@ -43,18 +43,28 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void run(IAction action) {
 
-		Display display = Display.getCurrent();
-		Shell shell = new Shell(display);
-		LoginView login = new LoginView(shell);
-		
-		if (login.getReturnCode() == 1)
+		if (Activator.getDefault().isConnected)
 		{
-			// Cancel pressed, do nothing
+			// Already connected to a server
+			Activator.getDefault().showDialogAsync("Server Status", "You are already connected to server " +
+					Activator.getDefault().userInfo.getHost() + ":" + Activator.getDefault().userInfo.getPort());
+			
 		}
 		else
 		{
-			// Instantiate a FEUListener, which will also set up a BackendConnection
-			Activator.getDefault().connect();
+			Display display = Display.getCurrent();
+			Shell shell = new Shell(display);
+			LoginView login = new LoginView(shell);
+			
+			if (login.getReturnCode() == 1)
+			{
+				// Cancel pressed, do nothing
+			}
+			else
+			{
+				// Instantiate a FEUListener, which will also set up a BackendConnection
+				Activator.getDefault().connect();
+			}
 		}
 	}
 
