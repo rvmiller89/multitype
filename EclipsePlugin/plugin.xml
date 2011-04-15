@@ -24,7 +24,7 @@
       </view>
       <view
             name="MultiType Chat"
-            icon="res/file.png"
+            icon="res/balloon.png"
             category="MultiType"
             class="multitype.views.ChatView"
             id="multitype.views.ChatView">
