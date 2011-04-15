@@ -102,6 +102,22 @@ public class InputProcessor implements Runnable {
 		catch (ClassNotFoundException cnfe) {
 			System.err.println("buildFEU(): " + cnfe.toString());
 		}
+		catch (Exception e) {
+			System.err.println("buildFEU(): Unknown exception: " + e.toString() + "\n Killing this client");
+			setDone(); //Kills this instance
+			if(uid == fum.getHost()) {
+				fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.Host_Disconnect,-1,
+						uid, ""));
+				fum.removeHost();
+			}
+			else {
+				fum.sendFEUToAll(FrontEndUpdate.createNotificationFEU(
+						FrontEndUpdate.NotificationType.User_Disconnected,-1,
+						uid, ""));
+			}
+			fum.removeClient(uid);
+		}
 		return null;
 	}
 	
