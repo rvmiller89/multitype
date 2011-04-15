@@ -30,6 +30,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -48,6 +49,8 @@ public class EditorManager
 {
 	private Map<Integer, Document> map;
 	
+	private boolean isClosing;
+	
 	private final IPartListener PART_LISTENER = new IPartListener()
 	{
 
@@ -63,71 +66,74 @@ public class EditorManager
 
 		@Override
 		public void partClosed(IWorkbenchPart part) {
-			if (part instanceof IEditorPart)
+			if (!isClosing)
 			{
-				IEditorPart closingEditor = (IEditorPart)part;	
-				
-				Iterator<Integer> iter = map.keySet().iterator();
-				int id;
-				while (iter.hasNext())
+				if (part instanceof IEditorPart)
 				{
-					id = iter.next();
-					IEditorPart openEditor = map.get(id).getEditor();
-					if (closingEditor == openEditor)	// Object comparison, if equal then this is the tab thats closing
+					IEditorPart closingEditor = (IEditorPart)part;	
+					
+					Iterator<Integer> iter = map.keySet().iterator();
+					int id;
+					while (iter.hasNext())
 					{
-						if (Activator.getDefault().isHost)
+						id = iter.next();
+						IEditorPart openEditor = map.get(id).getEditor();
+						if (closingEditor == openEditor)	// Object comparison, if equal then this is the tab thats closing
 						{
-							// Host closes a file
-							
-							// send out Close_Shared_File feu to server to stop sending updates
-							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-									NotificationType.Close_Shared_File, 
-									id,
-									Activator.getDefault().userInfo.getUserid(),
-									Activator.getDefault().sharedFiles.get(id));
-							FEUSender.send(feu);
-							
-							// Tell editor manager to close tab with file with fileid (item.getFileid())
-							removeDocumentDueToUserInput(id, true);
-							
-							// Remove from shared file list
-							Activator.getDefault().fileList.removeSharedFile(id);
-						}
-						else
-						{
-							// Non-host closes a tab
-							
-							// send out Close_Client_File feu to server to stop receiving updates
-							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-									NotificationType.Close_Client_File, 
-									id,
-									Activator.getDefault().userInfo.getUserid(),
-									null);
-							FEUSender.send(feu);
-							
-							/*Activator.getDefault().showDialogAsync("Debug", "Sending Close_Client_File with fileid: " + 
-									id + " and filename: " + Activator.getDefault().sharedFiles.get(id) + " from user: "
-									+ Activator.getDefault().userInfo.getUserid() + ": " 
-									+ Activator.getDefault().userInfo.getUsername());*/
-
-							
-							// Tell editor manager to close tab with file with fileid (item.getFileid())
-							removeDocumentDueToUserInput(id, true);
+							if (Activator.getDefault().isHost)
+							{
+								// Host closes a file
+								
+								// send out Close_Shared_File feu to server to stop sending updates
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+										NotificationType.Close_Shared_File, 
+										id,
+										Activator.getDefault().userInfo.getUserid(),
+										Activator.getDefault().sharedFiles.get(id));
+								FEUSender.send(feu);
+								
+								// Tell editor manager to close tab with file with fileid (item.getFileid())
+								removeDocumentDueToUserInput(id, true);
+								
+								// Remove from shared file list
+								Activator.getDefault().fileList.removeSharedFile(id);
+							}
+							else
+							{
+								// Non-host closes a tab
+								
+								// send out Close_Client_File feu to server to stop receiving updates
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+										NotificationType.Close_Client_File, 
+										id,
+										Activator.getDefault().userInfo.getUserid(),
+										null);
+								FEUSender.send(feu);
+								
+								/*Activator.getDefault().showDialogAsync("Debug", "Sending Close_Client_File with fileid: " + 
+										id + " and filename: " + Activator.getDefault().sharedFiles.get(id) + " from user: "
+										+ Activator.getDefault().userInfo.getUserid() + ": " 
+										+ Activator.getDefault().userInfo.getUsername());*/
 	
-							// add to Shared Files list
-							Activator.getDefault().fileList.addSharedFile(id,
-									Activator.getDefault().sharedFiles.get(id));
+								
+								// Tell editor manager to close tab with file with fileid (item.getFileid())
+								removeDocumentDueToUserInput(id, true);
+		
+								// add to Shared Files list
+								Activator.getDefault().fileList.addSharedFile(id,
+										Activator.getDefault().sharedFiles.get(id));
+								
+								// remove from Open files list
+								Activator.getDefault().fileList.removeOpenFile(id);
+								
+							} // else
 							
-							// remove from Open files list
-							Activator.getDefault().fileList.removeOpenFile(id);
+							break;
 							
-						} // else
-						
-						break;
-						
-					} // if objects are equal
-				} // while
-			} // if part is instanceof IEditorPart
+						} // if objects are equal
+					} // while
+				} // if part is instanceof IEditorPart
+			}
 			
 		}
 
@@ -145,9 +151,39 @@ public class EditorManager
 	
 	public EditorManager()
 	{
+		isClosing = false;
+		
 	    map = new HashMap<Integer, Document>();
 	    
 	    getPage().addPartListener(PART_LISTENER);
+	    
+	    Activator.getDefault().getWorkbench().addWindowListener(new IWindowListener()	{
+
+			@Override
+			public void windowActivated(IWorkbenchWindow window) {
+				
+			}
+
+			@Override
+			public void windowDeactivated(IWorkbenchWindow window) {
+				
+			}
+
+			@Override
+			public void windowClosed(IWorkbenchWindow window) {
+				// Disable the sending out of Close_Shared_File for hosts
+				// or Close_Client_file 
+				isClosing = true;
+				
+			}
+
+			@Override
+			public void windowOpened(IWorkbenchWindow window) {
+				
+			}
+	    	
+	    });
+	    
 	}
 	
 	public void openDocument(int fileID, String filePath)
