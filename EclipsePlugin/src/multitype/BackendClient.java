@@ -205,7 +205,7 @@ public class BackendClient {
 				}
 			}	
 		});
-		//keepAliveThread.start();
+		keepAliveThread.start();
 	}
 	
 	/**
