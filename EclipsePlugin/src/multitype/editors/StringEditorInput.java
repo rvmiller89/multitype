@@ -8,6 +8,7 @@ import multitype.Activator;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
@@ -43,7 +44,8 @@ public class StringEditorInput implements IStorageEditorInput {
 	}
 
 	public Object getAdapter(Class adapter) {
-		return null;
+		return Platform.getAdapterManager().getAdapter(this, adapter);
+
 	}
 
 	public String getName() {
@@ -51,7 +53,7 @@ public class StringEditorInput implements IStorageEditorInput {
 	}
 
 	public String getToolTipText() {
-		return "tool tip";
+		return "";
 	}
 
 	public IStorage getStorage() {
