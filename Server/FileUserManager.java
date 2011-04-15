@@ -68,7 +68,9 @@ public class FileUserManager {
 	 * @param feu
 	 */
 	public void clientClosedFile(FrontEndUpdate feu) {
-		fileusermap.get(feu.getFileId()).remove(feu.getUserId());
+		Server.dprint("User " + feu.getUserId() + " has closed file " + feu.getFileId());
+		Vector<Integer> ulist = fileusermap.get(feu.getFileId());
+		ulist.removeElement(feu.getUserId());
 	}
 	
 	/**
