@@ -43,27 +43,25 @@ public class Document
 		
 		public void documentChanged(DocumentEvent event) 
 		{
-			FrontEndUpdate feu;
-			
-			if (event.fText.equals(""))
+			if (event.getLength() > 0)
 			{
-				feu = FrontEndUpdate.createDeleteFEU(
-						getFileID(), 
-						Activator.getDefault().userInfo.getUserid(), 
-						event.fOffset, 
-						event.fLength + event.fOffset);
+				FEUSender.send(
+						FrontEndUpdate.createDeleteFEU(
+								getFileID(), 
+								Activator.getDefault().getUserInfo().getUserid(), 
+								event.getOffset(), 
+								event.getLength() + event.getOffset()));
 			}
 			
-			else
+			if (!event.getText().equals(""))
 			{
-				feu = FrontEndUpdate.createInsertFEU(
-						getFileID(), 
-						Activator.getDefault().userInfo.getUserid(),
-						event.fOffset,
-						event.fText);
+				FEUSender.send(
+						FrontEndUpdate.createInsertFEU(
+								getFileID(), 
+								Activator.getDefault().getUserInfo().getUserid(), 
+								event.getOffset(), 
+								event.getText()));
 			}
-			
-			FEUSender.send(feu);
 		}
 	};
 	
