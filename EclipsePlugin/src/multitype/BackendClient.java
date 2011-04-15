@@ -239,7 +239,8 @@ public class BackendClient {
 				Thread.sleep(1);
 			}
 			if(fromServerNotificationQueue.size() > 0) {
-				FrontEndUpdate update = fromServerNotificationQueue.remove(0);
+				FrontEndUpdate update = fromServerNotificationQueue.firstElement();
+				fromServerNotificationQueue.remove(update);
 				System.err.print("GetUpdate: " + update.toLine());
 				return update;
 			}
@@ -360,7 +361,7 @@ public class BackendClient {
 			nextSentToFrontEndIndex++;
 		}
 		else
-			fromServerNotificationQueue.add(0, feu);
+			fromServerNotificationQueue.add(feu);
 	}
 	
 	/**
