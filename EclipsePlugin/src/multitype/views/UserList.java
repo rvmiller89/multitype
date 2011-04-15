@@ -326,6 +326,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 				hostId = -1;
 				Activator.getDefault().isHost = false;
 				Activator.getDefault().fileList.showOpenFilesList();
+				
+				// TODO call EditorManager clear documents
 
 			}
 			Activator.getDefault().isConnected = false;
@@ -333,6 +335,8 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
 					Activator.getDefault().userInfo.getUsername());
 			FEUSender.send(feu);
+			Activator.getDefault().showDialogAsync("Disconnected", "Your files are no longer being shared.");
+
 			Activator.getDefault().userList.setHostButton(false);
 			Activator.getDefault().userList.setDisconnectButton(false);
 			Activator.getDefault().userList.clearList();

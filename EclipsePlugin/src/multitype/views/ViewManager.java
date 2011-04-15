@@ -146,31 +146,27 @@ public class ViewManager extends ViewPart{
 				}
 				break;
 			case Host_Disconnect:
-				Activator.getDefault().showDialogAsync("Server Notification", "Host disconnected.");
+				Activator.getDefault().showDialogAsync("Host Disconnected", "Your files are no longer being shared.");
 				Activator.getDefault().userList.deleteUserFromList(feu.getUserId());
 				Activator.getDefault().userList.hostId = -1;
 				Activator.getDefault().userList.setHostButton(true); //no host anymore
 				Activator.getDefault().fileList.clearList();
 
-				// No need to clear mappings because we will receive a Close_Shared_file foreach file
-				// and editor manager removes them individually
+				// TODO Tell John to stop sending Closed_Shared_file on host_disconnect
+				FEUManager.getInstance().editorManager.clearSharedFiles();
 				
 				break;
 			case Server_Disconnect:
-				Activator.getDefault().showDialogAsync("Connection Error", "Server disconnected.");
+				Activator.getDefault().showDialogAsync("Server Disconnected", "Your files are no longer being shared.");
 				Activator.getDefault().userList.clearList();
 				Activator.getDefault().fileList.clearList();
 				if (Activator.getDefault().isHost)
 					Activator.getDefault().fileList.showOpenFilesList();
 				Activator.getDefault().isConnected = false;
 				
+				// Clear editor manager documents
 				FEUManager.getInstance().editorManager.clearSharedFiles();
-				 
-				
-				
-				// TODO Prompt to save files?
-				
-				
+
 				// Clear all fileid/filename mappings
 				Activator.getDefault().sharedFiles.clear();
 				
@@ -178,6 +174,11 @@ public class ViewManager extends ViewPart{
 				Activator.getDefault().connectedUsers.clear();
 				
 				Activator.getDefault().userList.hostId = -1;
+				
+				Activator.getDefault().isHost = false;
+				
+				Activator.getDefault().userList.setHostButton(false);
+				Activator.getDefault().userList.setDisconnectButton(false);
 				break;
 			default:
 				Activator.getDefault().showDialogAsync("FrontEndUpdate Error", "Unknown FrontEndUpdate receieved.");

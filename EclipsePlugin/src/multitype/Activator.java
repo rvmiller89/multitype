@@ -3,6 +3,7 @@ package multitype;
 import java.util.HashMap;
 import java.util.Map;
 
+import multitype.FrontEndUpdate.NotificationType;
 import multitype.views.ChatView;
 import multitype.views.Dialog;
 import multitype.views.FileList;
@@ -62,7 +63,12 @@ public class Activator extends AbstractUIPlugin {
 		
 		// Disconnect from server if connected
 		if (isConnected)
-			Activator.getDefault().userList.disconnect();
+		{
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
+					Activator.getDefault().userInfo.getUsername());
+			FEUSender.send(feu);
+		}
 
 		plugin = null;
 		super.stop(context);
