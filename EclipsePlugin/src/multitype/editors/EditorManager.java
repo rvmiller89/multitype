@@ -66,7 +66,7 @@ public class EditorManager
 
 		@Override
 		public void partClosed(IWorkbenchPart part) {
-			if (!isClosing)
+			/*if (!isClosing)
 			{
 				if (part instanceof IEditorPart)
 				{
@@ -109,11 +109,6 @@ public class EditorManager
 										Activator.getDefault().userInfo.getUserid(),
 										null);
 								FEUSender.send(feu);
-								
-								/*Activator.getDefault().showDialogAsync("Debug", "Sending Close_Client_File with fileid: " + 
-										id + " and filename: " + Activator.getDefault().sharedFiles.get(id) + " from user: "
-										+ Activator.getDefault().userInfo.getUserid() + ": " 
-										+ Activator.getDefault().userInfo.getUsername());*/
 	
 								
 								// Tell editor manager to close tab with file with fileid (item.getFileid())
@@ -133,7 +128,7 @@ public class EditorManager
 						} // if objects are equal
 					} // while
 				} // if part is instanceof IEditorPart
-			}
+			}*/
 			
 		}
 
