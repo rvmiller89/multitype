@@ -263,6 +263,11 @@ public class FrontEndUpdate implements Serializable {
 				sb.append("UID: "+this.getUserId()+ " | ");
 				sb.append("UNAME: "+this.getContent());
 				break;
+			default:
+				sb.append("UID: "+this.getUserId()+ " | ");
+				sb.append("FID: "+this.getFileId()+ " | ");
+				sb.append("CONTENT: "+this.getContent() + " | ");
+				break;
 			}
 			break;
 		}
