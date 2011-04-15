@@ -157,9 +157,7 @@ public class EditorManager
 			
 			@Override
 			public boolean preShutdown(IWorkbench workbench, boolean forced) {
-				
-				System.out.println("***** CLOSING THE WINDOW *******");
-				
+								
 				// Setting isClosing to true to indicate Eclipse is closing
 				isClosing = true;
 				return true;
@@ -170,34 +168,6 @@ public class EditorManager
 				
 			}
 		});
-	    /*Activator.getDefault().getWorkbench().addWindowListener(new IWindowListener()	{
-
-			@Override
-			public void windowActivated(IWorkbenchWindow window) {
-				
-			}
-
-			@Override
-			public void windowDeactivated(IWorkbenchWindow window) {
-				
-			}
-
-			@Override
-			public void windowClosed(IWorkbenchWindow window) {
-				// Disable the sending out of Close_Shared_File for hosts
-				// or Close_Client_file 
-				System.out.println("*** IS CLOSING IS NOW TRUE ***");
-
-				isClosing = true;
-				
-			}
-
-			@Override
-			public void windowOpened(IWorkbenchWindow window) {
-				
-			}
-	    	
-	    });*/
 	    
 	}
 	
