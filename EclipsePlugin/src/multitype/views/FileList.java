@@ -421,8 +421,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		};
 		action1.setText("Open File");
 		action1.setToolTipText("Start editing a shared file");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		action1.setImageDescriptor(Activator.getImageDescriptor("res/start.png"));
 		
 		action2 = new Action() {
 			public void run() {
@@ -489,8 +488,7 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 		};
 		action2.setText("Close File");
 		action2.setToolTipText("Stop receiving updates on a shared file");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		action2.setImageDescriptor(Activator.getImageDescriptor("res/stop.png"));
 		doubleClickAction = new Action() {
 			public void run() {
 				// Handle double-click action on a treeview item

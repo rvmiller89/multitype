@@ -77,6 +77,13 @@
             </separator>
          </menu>
          <action
+               label="Resync"
+               icon="res/resync.png"
+               class="multitype.actions.ResyncAction"
+               menubarPath="multitypeMenu/multitypeGroup"
+               id="multitype.actions.ResyncAction">
+         </action>
+         <action
                label="Disconnect"
                icon="res/exit.png"
                class="multitype.actions.DisconnectAction"
