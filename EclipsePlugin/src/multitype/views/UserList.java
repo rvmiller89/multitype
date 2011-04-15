@@ -322,6 +322,13 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	
 	public void disconnect() {
 		if (Activator.getDefault().isConnected == true) {
+			
+			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
+					Activator.getDefault().userInfo.getUsername());
+			FEUSender.send(feu);
+			Activator.getDefault().disconnect();
+
 			if (Activator.getDefault().isHost == true) {
 				hostId = -1;
 				Activator.getDefault().isHost = false;
@@ -331,17 +338,12 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 
 			}
 			Activator.getDefault().isConnected = false;
-			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-					NotificationType.User_Disconnected, -1, Activator.getDefault().userInfo.getUserid(), 
-					Activator.getDefault().userInfo.getUsername());
-			FEUSender.send(feu);
 			Activator.getDefault().showDialogAsync("Disconnected", "Your files are no longer being shared.");
 
 			Activator.getDefault().userList.setHostButton(false);
 			Activator.getDefault().userList.setDisconnectButton(false);
 			Activator.getDefault().userList.clearList();
 			Activator.getDefault().fileList.clearList();
-			Activator.getDefault().disconnect();
 		}
 		else {
 			Activator.getDefault().showDialogAsync("Error", "Not connected to a server.");
