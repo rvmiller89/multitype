@@ -179,6 +179,10 @@ public class ViewManager extends ViewPart{
 				
 				Activator.getDefault().userList.setHostButton(false);
 				Activator.getDefault().userList.setDisconnectButton(false);
+				
+				// Finish backendclient and feulistener
+				Activator.getDefault().disconnect();
+				
 				break;
 			default:
 				Activator.getDefault().showDialogAsync("FrontEndUpdate Error", "Unknown FrontEndUpdate receieved.");
