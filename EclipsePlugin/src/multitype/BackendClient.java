@@ -188,7 +188,7 @@ public class BackendClient {
 									FrontEndUpdate.NotificationType.Keep_Alive, 
 									-1, -1, "");
 						out.writeObject(feu);
-						Thread.sleep(15*1000);
+						Thread.sleep(1*1000);
 					} catch(InterruptedException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -205,7 +205,7 @@ public class BackendClient {
 				}
 			}	
 		});
-		keepAliveThread.start();
+		//keepAliveThread.start();
 	}
 	
 	/**
