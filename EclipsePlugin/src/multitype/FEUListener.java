@@ -28,6 +28,12 @@ public class FEUListener {
 	
 					FrontEndUpdate fu = bc.getUpdate();
 					
+					if (Activator.getDefault() == null)
+					{
+						done = true;
+						break;
+					}
+					
 					if (!(fu.getUserId() == Activator.getDefault().userInfo.getUserid()))
 						manager.dispatchFEU(fu);
 					else if (fu.getUpdateType() == FrontEndUpdate.UpdateType.Notification)
