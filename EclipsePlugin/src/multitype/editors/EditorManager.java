@@ -259,6 +259,18 @@ public class EditorManager
 		});		
 	}
 	
+	public void clearSharedFiles() {
+		Iterator<Integer> iter = map.keySet().iterator();
+		int id;
+		while (iter.hasNext())
+		{
+			id = iter.next();
+			map.get(id).disableListeners();
+			// call to removeDocumentDueToHost...
+		}
+		map.clear();
+	}
+	
 	/*private void saveTab(String content, String filePath)
 	{
 		PrintWriter writer = null;

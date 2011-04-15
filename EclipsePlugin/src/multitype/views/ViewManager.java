@@ -13,6 +13,7 @@ import multitype.UserInfo;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
+import java.util.Iterator;
 
 public class ViewManager extends ViewPart{
 	
@@ -162,6 +163,9 @@ public class ViewManager extends ViewPart{
 				if (Activator.getDefault().isHost)
 					Activator.getDefault().fileList.showOpenFilesList();
 				Activator.getDefault().isConnected = false;
+				
+				FEUManager.getInstance().editorManager.clearSharedFiles();
+				 
 				
 				
 				// TODO Prompt to save files?

@@ -99,9 +99,11 @@
       <menuContribution
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
          <command
-                commandId="multitype.command"
-                icon="res/file.png"
-                label="Share File">
+               commandId="multitype.command"
+               disabledIcon="res/exit_b.png"
+               icon="res/file.png"
+               label="Share File"
+               style="push">
             </command>
       </menuContribution>
    </extension>
