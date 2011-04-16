@@ -66,7 +66,7 @@ public class Server {
 				}
 			}	
 		});
-		keepAliveThread.start();
+		//keepAliveThread.start();
 		
 		//fum.addFile(0, "test.java");
 		
