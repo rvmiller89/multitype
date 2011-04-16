@@ -412,7 +412,7 @@ public class BackendClient {
 			feu.setRevision(revisionHistoryMap.get(feu.getFileId()));
 			break;
 		case User_Connected:
-			keepAliveThread.start();
+			//keepAliveThread.start();
 			break;
 		}
 	}
