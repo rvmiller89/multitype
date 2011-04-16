@@ -39,7 +39,15 @@ public class Server {
 										FrontEndUpdate.NotificationType.Keep_Alive, 
 										-1, -1, "");
 							fum.sendFEUToClient(fum.getHost(), feu);
-							Thread.sleep(1*1000);
+							fum.clearHostAlive();
+							Thread.sleep(15*1000);
+							if(!fum.getHostAlive()) {
+								FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+										FrontEndUpdate.NotificationType.Host_Disconnect, 
+										-1, -1, "HOST_DEAD");
+									//fromServerQueue.add(f)
+									fum.sendFEUToAll(f);
+							}
 						} catch(InterruptedException e) {
 							e.printStackTrace();
 						} catch (Exception e) {
@@ -58,7 +66,7 @@ public class Server {
 				}
 			}	
 		});
-		//keepAliveThread.start();
+		keepAliveThread.start();
 		
 		//fum.addFile(0, "test.java");
 		

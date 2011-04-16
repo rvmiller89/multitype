@@ -20,8 +20,9 @@ public class FileUserManager {
 	Map< Integer, Vector<Integer> > fileusermap; 
 	
 	int nextUID;
-	
 	int hostid;
+	
+	boolean hostAlive;
 	
 	public FileUserManager() {
 		outprocs = new HashMap<Integer, OutputProcessor>();
@@ -224,6 +225,8 @@ public class FileUserManager {
 		//remove user from map
 		usermap.remove(uid);
 		
+		closeUserFiles(uid);
+		
 		Server.dprint("Dropped client " + uid);
 	}
 	
@@ -237,6 +240,9 @@ public class FileUserManager {
 		}
 	}
 	
+	/**
+	 * Removes the host - closes files and clears hostid
+	 */
 	public void removeHost() {
 		if(this.hostid != -1) {
 			//remove host status
@@ -251,6 +257,27 @@ public class FileUserManager {
 			fileusermap.clear();
 			filemap.clear();
 		}
+	}
+	
+	/**
+	 * Sets the hostAlive flag
+	 */
+	public void setHostAlive() {
+		this.hostAlive = true;
+	}
+
+	/**
+	 * Clears the hostAlive flag
+	 */
+	public void clearHostAlive() {
+		this.hostAlive = false;
+	}
+
+	/**
+	 * Returns the value of the hostAlive flag
+	 */
+	public boolean getHostAlive() {
+		return this.hostAlive;
 	}
 	
 	/**
