@@ -215,7 +215,6 @@ public class BackendClient {
 				}
 			}	
 		});
-		keepAliveThread.start();
 	}
 	
 	/**
@@ -410,6 +409,9 @@ public class BackendClient {
 		case Send_File: 
 			// Host is sending new file to someone, attach rev #
 			feu.setRevision(revisionHistoryMap.get(feu.getFileId()));
+			break;
+		case User_Connected:
+			keepAliveThread.start();
 			break;
 		}
 	}
