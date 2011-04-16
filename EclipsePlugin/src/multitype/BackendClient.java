@@ -93,6 +93,7 @@ public class BackendClient {
 							&& feu.getNotificationType() ==
 								FrontEndUpdate.NotificationType.Keep_Alive) {
 							serverAlive = true;
+							sendUpdate(feu);
 							continue;
 						}
 						feu = updateIncomingFEUWithScreenHistory(feu);
