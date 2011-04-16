@@ -107,8 +107,8 @@ public class MarkupProcessor implements Runnable{
 	}
 	
 	private synchronized void addToMarkupHistory(FrontEndUpdate feu) {
-		if(feu.getMarkupType() == MarkupType.Cursor)
-			return;
+		/*if(feu.getMarkupType() == MarkupType.Cursor)
+			return;*/
 		if(markupHistory.size() == 100) {
 			markupHistory.remove();
 			markupHistory.add(feu);
