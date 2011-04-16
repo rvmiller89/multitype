@@ -107,8 +107,8 @@ public class MarkupProcessor implements Runnable{
 	}
 	
 	private synchronized void addToMarkupHistory(FrontEndUpdate feu) {
-		/*if(feu.getMarkupType() == MarkupType.Cursor)
-			return;*/
+		if(feu.getMarkupType() == MarkupType.Cursor)
+			return;
 		if(markupHistory.size() == 100) {
 			markupHistory.remove();
 			markupHistory.add(feu);
@@ -146,14 +146,14 @@ public class MarkupProcessor implements Runnable{
 			int sizeOfInsert = given.getInsertString().length();
 			
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-				if(toUpdate.getStartLocation() > insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							+sizeOfInsert);
 				}
 			}
 			else if (toUpdate.getMarkupType() == 
 				FrontEndUpdate.MarkupType.Delete){
-				if(toUpdate.getStartLocation() > insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							+sizeOfInsert);
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
@@ -161,7 +161,7 @@ public class MarkupProcessor implements Runnable{
 				}				
 			}
 			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
-				if(toUpdate.getStartLocation() > insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							+sizeOfInsert);
 				}
@@ -219,14 +219,14 @@ public class MarkupProcessor implements Runnable{
 //				 * 
 //				 */
 //				
-				if(toUpdate.getStartLocation() > insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
 				}
 			}
 			else if (toUpdate.getMarkupType() == 
 				FrontEndUpdate.MarkupType.Delete){
-				if(toUpdate.getStartLocation() > insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
@@ -234,7 +234,7 @@ public class MarkupProcessor implements Runnable{
 				}				
 			}
 			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
-				if(toUpdate.getStartLocation() > insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
 				}
