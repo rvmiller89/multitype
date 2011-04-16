@@ -347,7 +347,7 @@ public class BackendClient {
 	 */
 	private synchronized void updateFromServerQueueWithSent(FrontEndUpdate feu) {
 		for(FrontEndUpdate fromServerFEU : fromServerQueue) {
-			updateFEUgivenFEU(fromServerFEU, feu, false);
+			updateFEUgivenFEUWithEqual(fromServerFEU, feu, false);
 		}
 	}
 	
