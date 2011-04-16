@@ -460,6 +460,12 @@ public class BackendClient {
 							+sizeOfInsert);
 				}				
 			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
+			}
 		}
 		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
 			int insertAt = given.getStartLocation();
@@ -478,6 +484,12 @@ public class BackendClient {
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
 							-sizeOfInsert);
 				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
 			}
 		}
 		else { 
