@@ -371,7 +371,7 @@ public class BackendClient {
 	 */
 	private void updateScreenHistoryWithProcessed(FrontEndUpdate feu) {
 		for(FrontEndUpdate screenHistoryFEU : screenHistory) {
-			updateFEUgivenFEU(screenHistoryFEU, feu, false);
+			updateFEUgivenFEUWithEqual(screenHistoryFEU, feu, false);
 		}		
 	}
 	
@@ -487,6 +487,81 @@ public class BackendClient {
 			}
 			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
 				if(toUpdate.getStartLocation() > insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
+			}
+		}
+		else { 
+			// The markup doesn't affect other markups (cursor pos 
+			// or highlight)
+			return;
+		}
+		
+	}
+	
+	/**
+	 * Updates an FEU given an FEU
+	 * @param toUpdate
+	 * @param given
+	 */
+	private void updateFEUgivenFEUWithEqual (FrontEndUpdate toUpdate, 
+			FrontEndUpdate given, boolean updateRevision) {
+		if(toUpdate == given) //don't update itself
+			return;
+		if(updateRevision)
+			toUpdate.setRevision(given.getRevision());
+		if(toUpdate.getFileId() != given.getFileId())
+			return;
+		// don't update if the user is the same
+		if(toUpdate.getUserId() == given.getUserId()) 
+			return;
+		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+			int insertAt = given.getStartLocation();
+			int sizeOfInsert = given.getInsertString().length();
+			
+			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
+			}
+			else if (toUpdate.getMarkupType() == 
+				FrontEndUpdate.MarkupType.Delete){
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+					toUpdate.setEndLocation(toUpdate.getEndLocation()
+							+sizeOfInsert);
+				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
+			}
+		}
+		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
+			int insertAt = given.getStartLocation();
+			int sizeOfInsert = given.getEndLocation() - insertAt;
+			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
+			}
+			else if (toUpdate.getMarkupType() == 
+				FrontEndUpdate.MarkupType.Delete){
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+					toUpdate.setEndLocation(toUpdate.getEndLocation()
+							-sizeOfInsert);
+				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
 				}
