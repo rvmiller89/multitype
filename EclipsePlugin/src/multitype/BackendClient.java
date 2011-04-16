@@ -30,6 +30,7 @@ public class BackendClient {
 	private BlockingQueue<FrontEndUpdate> toServerQueue;
 	private ConcurrentLinkedQueue<FrontEndUpdate> screenHistory;
 	private boolean done = false;
+	private boolean serverAlive;
 	//private int revisionNumber = 0;
 	private String url;
 	private int port;
@@ -91,6 +92,7 @@ public class BackendClient {
 							FrontEndUpdate.UpdateType.Notification
 							&& feu.getNotificationType() ==
 								FrontEndUpdate.NotificationType.Keep_Alive) {
+							serverAlive = true;
 							continue;
 						}
 						feu = updateIncomingFEUWithScreenHistory(feu);
@@ -188,7 +190,15 @@ public class BackendClient {
 									FrontEndUpdate.NotificationType.Keep_Alive, 
 									-1, -1, "");
 						out.writeObject(feu);
-						Thread.sleep(1*1000);
+						serverAlive = false;
+						Thread.sleep(15*1000);
+						if(serverAlive == false) {
+							done = true;
+							FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+									FrontEndUpdate.NotificationType.Server_Disconnect, 
+									-1, -1, "SERVER_DEAD");
+								fromServerNotificationQueue.add(f);
+						}
 					} catch(InterruptedException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
