@@ -446,14 +446,14 @@ public class BackendClient {
 			int sizeOfInsert = given.getInsertString().length();
 			
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-				if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() > insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							+sizeOfInsert);
 				}
 			}
 			else if (toUpdate.getMarkupType() == 
 				FrontEndUpdate.MarkupType.Delete){
-				if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() > insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							+sizeOfInsert);
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
@@ -461,7 +461,7 @@ public class BackendClient {
 				}				
 			}
 			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
-				if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() > insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							+sizeOfInsert);
 				}
@@ -471,14 +471,14 @@ public class BackendClient {
 			int insertAt = given.getStartLocation();
 			int sizeOfInsert = given.getEndLocation() - insertAt;
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-				if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() > insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
 				}
 			}
 			else if (toUpdate.getMarkupType() == 
 				FrontEndUpdate.MarkupType.Delete){
-				if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() > insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
@@ -486,7 +486,7 @@ public class BackendClient {
 				}				
 			}
 			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
-				if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() > insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfInsert);
 				}
