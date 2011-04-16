@@ -324,7 +324,7 @@ public class BackendClient {
 		
 		for(FrontEndUpdate screenFEU : screenHistory) {
 			assert(screenFEU.getRevision() < feu.getRevision());
-			updateFEUgivenFEUWithEqual(newFEU, screenFEU, false);
+			updateFEUgivenFEU(newFEU, screenFEU, false);
 		}
 		
 		
@@ -347,7 +347,7 @@ public class BackendClient {
 	 */
 	private synchronized void updateFromServerQueueWithSent(FrontEndUpdate feu) {
 		for(FrontEndUpdate fromServerFEU : fromServerQueue) {
-			updateFEUgivenFEUWithEqual(fromServerFEU, feu, false);
+			updateFEUgivenFEU(fromServerFEU, feu, false);
 		}
 	}
 	
@@ -371,7 +371,7 @@ public class BackendClient {
 	 */
 	private void updateScreenHistoryWithProcessed(FrontEndUpdate feu) {
 		for(FrontEndUpdate screenHistoryFEU : screenHistory) {
-			updateFEUgivenFEU(screenHistoryFEU, feu, false);
+			updateFEUgivenFEUWithEqual(screenHistoryFEU, feu, false);
 		}		
 	}
 	
