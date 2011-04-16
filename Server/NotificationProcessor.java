@@ -134,6 +134,8 @@ public class NotificationProcessor implements Runnable {
 			fileUserManager.sendFEUToAll(feu);
 			break;
 		case Keep_Alive:
+			//return the message to the client
+			//set the host alive flag if from the host
 			break;
 		}
 	}

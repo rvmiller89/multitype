@@ -214,7 +214,8 @@ public class FileUserManager {
 	 */
 	public void removeClient(int uid) {
 		//remove the OutputProcessor
-		outprocs.remove(uid);
+		
+		outprocs.remove(uid).setDone();
 		
 		//wait until server has processed all this client's updates
 		//TODO
@@ -224,6 +225,16 @@ public class FileUserManager {
 		usermap.remove(uid);
 		
 		Server.dprint("Dropped client " + uid);
+	}
+	
+	/**
+	 * Removes this user from the fileusermap
+	 * @param uid
+	 */
+	public void closeUserFiles(int uid) {
+		for(Vector<Integer> users : fileusermap.values()) {
+			users.removeElement((Integer) uid);
+		}
 	}
 	
 	public void removeHost() {
