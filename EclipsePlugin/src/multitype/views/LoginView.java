@@ -98,7 +98,7 @@ public class LoginView extends TitleAreaDialog {
 		Label label = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
 		label.setBounds(159, 68, 383, 3);
 		
-		listWidget = new List(container, SWT.BORDER);
+		listWidget = new List(container, SWT.BORDER | SWT.V_SCROLL);
 		
 		//MessageDialog.openInformation(null, "Profile Count", "Profile count: " + prefManager.count);
 		profileList = prefManager.getProfileList();
