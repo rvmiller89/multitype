@@ -179,10 +179,12 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 			// TODO this is where you add things to the view
 			TreeObject test1 = new TreeObject("0_add file 'Test.txt' w/ fileid = 1 to Shared Files");
 			TreeObject test2 = new TreeObject("1_display SaveFile dialog");
+			TreeObject test3 = new TreeObject("2_Call testNewDocument() in EditorManager");
 			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(test1);
 			invisibleRoot.addChild(test2);
+			invisibleRoot.addChild(test3);
 
 		}
 	}
@@ -319,6 +321,10 @@ public class ViewDriver extends ViewPart implements IWorkbenchWindowActionDelega
 						SaveDialog dialog = new SaveDialog(shell, "TestTitle", "TestMessage", "Test.txt");
 						if (dialog.getFilepath() != null)
 							Activator.getDefault().showDialogAsync("Filepath", dialog.getFilepath());
+						break;
+						
+					case '2':
+						FEUManager.getInstance().editorManager.testNewDocument();
 						break;
 					default:
 						showMessage("Not implemented...");

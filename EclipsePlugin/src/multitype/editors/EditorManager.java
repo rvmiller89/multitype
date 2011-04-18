@@ -2,40 +2,27 @@ package multitype.editors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 import multitype.FrontEndUpdate.NotificationType;
 import multitype.views.Dialog;
-import multitype.views.SaveDialog;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.IPropertyListener;
-import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -58,7 +45,7 @@ public class EditorManager
 
 		@Override
 		public void partActivated(IWorkbenchPart part) {
-			
+
 		}
 
 		@Override
@@ -68,6 +55,7 @@ public class EditorManager
 
 		@Override
 		public void partClosed(IWorkbenchPart part) {
+
 			if (!isClosing)
 			{
 				if (part instanceof IEditorPart)
@@ -111,7 +99,10 @@ public class EditorManager
 										Activator.getDefault().userInfo.getUserid(),
 										null);
 								FEUSender.send(feu);
-	
+								
+								// TODO Disable the default prompt to Save: No/Cancel/Yes
+								//Prompt to Save file to Workspace
+								closingEditor.doSaveAs();
 								
 								// Tell editor manager to close tab with file with fileid (item.getFileid())
 								removeDocumentDueToUserInput(id, true);
@@ -130,8 +121,9 @@ public class EditorManager
 						} // if objects are equal
 					} // while
 				} // if part is instanceof IEditorPart
-			}
-			
+				
+			} // if !isClosing
+
 		}
 
 		@Override
@@ -222,6 +214,82 @@ public class EditorManager
 		map.get(fileID).setText(content);
 	}
 	
+	
+	
+	/**
+	 * Debug Method
+	 * 
+	 * ViewDriver calls this method
+	 */
+	public void testNewDocument()
+	{
+		
+		IEditorPart editor = null;
+
+		try {
+			editor = Activator
+					.getDefault()
+					.getWorkbench()
+					.getActiveWorkbenchWindow()
+					.getActivePage()
+					.openEditor(
+							new StringEditorInput("Hello world", 0),
+							"org.eclipse.jdt.ui.CompilationUnitEditor");
+		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		/*
+		IWorkspace ws = ResourcesPlugin.getWorkspace();
+		IProject project = ws.getRoot().getProject("MultiType");
+		if (!project.exists())
+			try {
+				project.create(null);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		if (!project.isOpen())
+			try {
+				project.open(null);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			IFile file = project.getFile("Test3.txt");
+			
+			try {
+				if (!file.exists())
+					file.create(null, false, null);
+					
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			try {
+				file.createLink(file.getRawLocation(), IResource.NONE, null);
+			} catch (CoreException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			
+			
+			IEditorInput editorInput = new FileEditorInput(file);
+			IWorkbenchWindow window = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow();
+			IWorkbenchPage page = window.getActivePage();
+			try {
+				page.openEditor(editorInput, "org.eclipse.jdt.ui.CompilationUnitEditor");
+			} catch (PartInitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+
+	}
+
 	public void newDocument(final int fileID, final String content)
 	{
 		Display.getDefault().asyncExec(new Runnable() {
