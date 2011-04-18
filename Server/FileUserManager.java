@@ -155,9 +155,17 @@ public class FileUserManager {
 	 * Sends a FEU to a specific client 
 	 * @param clientID userid of target client
 	 * @param feu FEU to send
+	 * @return True if the FEU was sent to the OP successfully
 	 */
-	public void sendFEUToClient(int clientID, FrontEndUpdate feu) {
-		outprocs.get(clientID).addFEU(feu);
+	public boolean sendFEUToClient(int clientID, FrontEndUpdate feu) {
+		OutputProcessor clientOP = outprocs.get(clientID);
+		if(clientOP != null) {
+			clientOP.addFEU(feu);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	/**

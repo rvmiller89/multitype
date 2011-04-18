@@ -96,6 +96,10 @@ public class InputProcessor implements Runnable {
 			}
 			fum.removeClient(uid);
 		}
+		catch (OptionalDataException ode) {
+			System.err.println("BuildFEU: " + ode.toString() + "\n" + ode.getStackTrace());
+			throw new RuntimeException("OptionalData Exception. Read stream corrupted.");
+		}
 		catch (IOException ioe) {
 			System.err.println("builfFEU(): " + ioe.toString());
 		}

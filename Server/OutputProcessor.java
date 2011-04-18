@@ -7,6 +7,7 @@
 import java.util.concurrent.*;
 import java.io.*;
 import java.net.*;
+import java.nio.channels.ClosedByInterruptException;
 
 import multitype.FrontEndUpdate;
 
@@ -94,7 +95,12 @@ public class OutputProcessor implements Runnable {
 			
 		}
 		catch (InterruptedException ie) {
-			System.err.println("OutputProcessor(): " + ie.toString());
+			System.err.println("OutputProcessor: Interrupted... exiting." + ie.toString());
+			return;
+		}
+		catch (ClosedByInterruptException cbie) {
+			System.err.println("OutputProcessor: ClosedByInterrupt... exiting.");
+			return;
 		}
 		catch (IOException ioe) {
 			System.err.println("OutputProcessor(): " + ioe.toString());
@@ -118,11 +124,8 @@ public class OutputProcessor implements Runnable {
 	 */
 	public void setDone() {
 		done = true;
-		try {
-			outQueue.put(null);  //to unblock the queue
-		} catch (InterruptedException e) {
-			System.err.println("setDone(): " + e.toString());
-		}
+		Thread.currentThread().interrupt();
+
 	}
 
 }
