@@ -199,6 +199,7 @@ public class BackendClient {
 							FrontEndUpdate.createNotificationFEU(
 									FrontEndUpdate.NotificationType.Keep_Alive, 
 									-1, userId, "");
+						Thread.sleep(2*1000);
 						out.writeObject(feu);
 						serverAlive = false;
 						Thread.sleep(15*1000);
