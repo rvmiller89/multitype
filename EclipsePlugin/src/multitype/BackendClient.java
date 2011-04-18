@@ -1,4 +1,5 @@
 package multitype;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -99,6 +100,14 @@ public class BackendClient {
 						feu = updateIncomingFEUWithScreenHistory(feu);
 						addFEUToBegOfFromServerQueue(feu);
 						parseForFileListUpdateOnReceive(feu);
+					} catch (EOFException eofe) {
+						System.err.println("Received EOF, closing.");
+						try {
+							serverSocket.close();
+						} catch(IOException ioe) {
+							System.err.println("Failed to close socket after EOF");
+						}
+						done = true;
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
@@ -189,7 +198,7 @@ public class BackendClient {
 						FrontEndUpdate feu = 
 							FrontEndUpdate.createNotificationFEU(
 									FrontEndUpdate.NotificationType.Keep_Alive, 
-									-1, -1, "");
+									-1, userId, "");
 						out.writeObject(feu);
 						serverAlive = false;
 						Thread.sleep(15*1000);
@@ -412,7 +421,7 @@ public class BackendClient {
 			feu.setRevision(revisionHistoryMap.get(feu.getFileId()));
 			break;
 		case User_Connected:
-			//keepAliveThread.start();
+			keepAliveThread.start();
 			break;
 		}
 	}
