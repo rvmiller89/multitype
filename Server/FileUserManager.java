@@ -220,11 +220,11 @@ public class FileUserManager {
 	/**
 	 * Called when a client has disconnected or been dropped.
 	 * @param uid
+	 * @return True if OutputProcessor exists to be removed
 	 */
-	public void removeClient(int uid) {
+	public boolean removeClient(int uid) {
 		//remove the OutputProcessor
-		
-		outprocs.remove(uid).setDone();
+		OutputProcessor clientOP = outprocs.remove(uid);
 		
 		//wait until server has processed all this client's updates
 		//TODO
@@ -234,8 +234,17 @@ public class FileUserManager {
 		usermap.remove(uid);
 		
 		closeUserFiles(uid);
-		
+
 		Server.dprint("Dropped client " + uid);
+		
+		if(clientOP != null) {
+			clientOP.setDone();
+			return true;
+		}
+		else {
+			return false;
+		}
+		
 	}
 	
 	/**

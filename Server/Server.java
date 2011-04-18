@@ -28,6 +28,18 @@ public class Server {
 		
 		new Thread(np).start();
 		
+
+		//keepAliveThread.start();
+		
+		//fum.addFile(0, "test.java");
+		
+		try {
+			ssocket = new ServerSocket(port);
+		}
+		catch (IOException ioe) {
+			System.err.println("Server(): " + ioe.toString());
+		}
+		
 		keepAliveThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -66,16 +78,6 @@ public class Server {
 				}
 			}	
 		});
-		//keepAliveThread.start();
-		
-		//fum.addFile(0, "test.java");
-		
-		try {
-			ssocket = new ServerSocket(port);
-		}
-		catch (IOException ioe) {
-			System.err.println("Server(): " + ioe.toString());
-		}
 		
 		fum.add_debug(this); //DEBUG
 		
