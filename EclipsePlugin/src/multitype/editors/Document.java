@@ -87,12 +87,18 @@ public class Document
 		return editor;
 	}
 	
-	public Document(final ITextEditor editor, int fileID)
+	public Document(final ITextEditor editor, int fileID, String content)
 	{
 		this.fileID = fileID;
 		this.editor = editor;
 
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+		
+		if (content != null)
+		{
+			doc.set(content);
+		}
+		
 		doc.addDocumentListener(DOCUMENT_LISTENER);
 		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
 		
@@ -123,13 +129,6 @@ public class Document
 	public String getTitle()
 	{
 		return editor.getTitle();
-	}
-	
-	public void setText(String text)
-	{
-		doc.removeDocumentListener(DOCUMENT_LISTENER);
-		doc.set(text);
-		doc.addDocumentListener(DOCUMENT_LISTENER);
 	}
 	
 	public String getText()

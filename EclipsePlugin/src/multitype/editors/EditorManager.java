@@ -171,7 +171,7 @@ public class EditorManager
 			if (editors[i].getEditorInput().getAdapter(IResource.class) != null &&
 				filePath.endsWith(((IResource)editors[i].getEditorInput().getAdapter(IResource.class)).getFullPath().toOSString()))
 			{
-				map.put(fileID, new Document((ITextEditor)editors[i], fileID));
+				map.put(fileID, new Document((ITextEditor)editors[i], fileID, null));
 				
 				return;
 			}
@@ -195,6 +195,7 @@ public class EditorManager
 		{
 			content += scanner.nextLine() + '\n';
 		}
+		content = content.substring(0, content.length() - 1);
 		
 		scanner.close();
 		
@@ -209,9 +210,7 @@ public class EditorManager
 			return;
 		}
 		
-		map.put(fileID, new Document((ITextEditor)editor, fileID));
-		
-		map.get(fileID).setText(content);
+		map.put(fileID, new Document((ITextEditor)editor, fileID, content));
 	}
 	
 	
@@ -322,8 +321,7 @@ public class EditorManager
 										"org.eclipse.ui.DefaultTextEditor");
 					}
 					
-					map.put(fileID, new Document((ITextEditor)editor, fileID));
-					map.get(fileID).setText(content);
+					map.put(fileID, new Document((ITextEditor)editor, fileID, content));
 				} catch (PartInitException e) {
 					System.err
 							.println("*********************************PART INIT EXCEPTION: "
