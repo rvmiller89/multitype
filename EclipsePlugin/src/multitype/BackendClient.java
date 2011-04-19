@@ -306,7 +306,7 @@ public class BackendClient {
 	
 	/**
 	 * Checks if the feu that was received belongs to us, and if so, we delete 
-	 * it from the screenHistory queue
+	 * it from the screenHistory queue, but we need to update revision #
 	 * @param feu FEU to be checked
 	 * @return true if feu belongs to us and was deleted, false if the feu
 	 * did not belong to us
@@ -317,6 +317,7 @@ public class BackendClient {
 			for(FrontEndUpdate screenHistoryFEU : screenHistory) {
 				if(screenHistoryFEU.getFEUid() == feu.getFEUid()) {
 					screenHistory.remove(screenHistoryFEU);
+					revisionHistoryMap.put(feu.getFileId(), feu.getRevision());
 					return true;
 				}					
 			}
