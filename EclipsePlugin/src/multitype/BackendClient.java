@@ -104,6 +104,10 @@ public class BackendClient {
 						System.err.println("Received EOF, closing.");
 						try {
 							serverSocket.close();
+							FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+									FrontEndUpdate.NotificationType.Server_Disconnect, 
+									-1, -1, "EOFException");
+							fromServerNotificationQueue.add(f);
 						} catch(IOException ioe) {
 							System.err.println("Failed to close socket after EOF");
 						}
