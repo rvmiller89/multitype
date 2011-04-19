@@ -195,7 +195,8 @@ public class EditorManager
 		{
 			content += scanner.nextLine() + '\n';
 		}
-		content = content.substring(0, content.length() - 1);
+		
+		content = content.length() == 0 ? content : content.substring(0, content.length() - 1);
 		
 		scanner.close();
 		
