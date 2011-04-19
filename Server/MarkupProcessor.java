@@ -21,7 +21,7 @@ public class MarkupProcessor implements Runnable{
 	private boolean done = false;
 	private FileUserManager fileUserManager;
 	private boolean processing = false;
-	private FrontEndUpdate currentTop = null;
+	//private FrontEndUpdate currentTop = null;
 	
 	public Server debug_server;
 	
@@ -63,7 +63,7 @@ public class MarkupProcessor implements Runnable{
 	 * Adds an FEU to the end of the queue vector
 	 * @param f The FrontEndUpdate to be added
 	 */
-	public void addFEU(FrontEndUpdate feu) {
+	public synchronized void addFEU(FrontEndUpdate feu) {
 		processing = true;
 		if(feu.getRevision() != currentRevision)
 			updateReceivedFEU(feu);
@@ -76,7 +76,7 @@ public class MarkupProcessor implements Runnable{
 	 * we need to update it until it does
 	 * @param f
 	 */
-	private synchronized void updateReceivedFEU(FrontEndUpdate f) {
+	private void updateReceivedFEU(FrontEndUpdate f) {
 		//System.err.println("updateReceivedFEU History:");
 		for(FrontEndUpdate old : markupHistory) {
 			/*TODO This will need to account for 
@@ -89,8 +89,8 @@ public class MarkupProcessor implements Runnable{
 				updateFEUgivenFEU(f, old);
 			}
 		}
-		if(currentTop != null)
-			updateFEUgivenFEU(f, currentTop);
+		//if(currentTop != null)
+		//	updateFEUgivenFEU(f, currentTop);
 		System.out.println("received now: "+f.toLine());
 	}
 
@@ -105,25 +105,27 @@ public class MarkupProcessor implements Runnable{
 					Thread.sleep(10);
 				}
 				debug_server.dump();
-			}			
+			}
 			feu = markupQueue.take();
-			currentTop = feu;
+			synchronized(this) {
+				//currentTop = feu;
+				currentRevision++;
+				feu.setRevision(currentRevision);
+				System.out.println("Taking feu: "+feu.toLine());
+				updateMarkupQueue(feu);	
+				for(FrontEndUpdate f : markupQueue)
+					System.out.println("MQ: "+f.toLine());
+				addToMarkupHistory(feu);
+				//currentTop = null;
+				return feu;
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		currentRevision++;
-		feu.setRevision(currentRevision);
-		System.out.println("Taking feu: "+feu.toLine());
-		updateMarkupQueue(feu);	
-		for(FrontEndUpdate f : markupQueue)
-			System.out.println("MQ: "+f.toLine());
-		addToMarkupHistory(feu);
-		currentTop = null;
-		return feu;
+		return feu;		
 	}
 	
-	private synchronized void addToMarkupHistory(FrontEndUpdate feu) {
+	private void addToMarkupHistory(FrontEndUpdate feu) {
 		if(feu.getMarkupType() == MarkupType.Cursor)
 			return;
 		if(markupHistory.size() == 100) {
@@ -268,7 +270,7 @@ public class MarkupProcessor implements Runnable{
 	 * Prints information about the queues and their FEUs
 	 * @return a string with the desired information
 	 */
-	public synchronized String dump() {
+	public String dump() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Markup Queue:\n");
 		FrontEndUpdate[] mqa = markupQueue.toArray(new FrontEndUpdate[0]);
