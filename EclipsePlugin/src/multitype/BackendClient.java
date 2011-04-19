@@ -40,6 +40,7 @@ public class BackendClient {
 	//private int curFEUid = 0;
 	private Map<Integer, Integer> revisionHistoryMap; // File id -> revision #
 	private Map<Integer, Integer> FEUidMap; // Fild id -> FEU id
+	private boolean readyToSendNext = true;
 	
 	/**
 	 * Constructor for BackendClient
@@ -89,6 +90,7 @@ public class BackendClient {
 							(FrontEndUpdate)in.readObject();
 						System.err.println("Received: " + feu.toLine());
 						if(deleteFromScreenHistoryIfOwn(feu)) {
+							readyToSendNext  = true;
 							continue;
 						}
 						if(feu.getUpdateType() == 
@@ -141,6 +143,8 @@ public class BackendClient {
 
 								if(feu.getUpdateType() == 
 									FrontEndUpdate.UpdateType.Markup) {
+									while(!readyToSendNext)
+										Thread.sleep(1);
 									//old feu.setRevision(revisionNumber);	
 									feu.setRevision(
 											revisionHistoryMap.get(
@@ -153,6 +157,7 @@ public class BackendClient {
 										(FEUidMap.get(
 											feu.getFileId()).intValue()+1)
 												%Integer.MAX_VALUE);
+									readyToSendNext = false;
 								}
 								System.err.println("Sent: " + feu.toLine());
 								out.writeObject(feu);
@@ -164,6 +169,8 @@ public class BackendClient {
 							
 							if(feu.getUpdateType() == 
 								FrontEndUpdate.UpdateType.Markup) {
+								while(!readyToSendNext)
+									Thread.sleep(1);
 								//old feu.setRevision(revisionNumber);	
 								feu.setRevision(
 										revisionHistoryMap.get(
@@ -176,6 +183,7 @@ public class BackendClient {
 									(FEUidMap.get(
 										feu.getFileId()).intValue()+1)
 											%Integer.MAX_VALUE);
+								readyToSendNext = false;
 							}
 							System.err.println("Sent: " + feu.toLine());
 							out.writeObject(feu);
