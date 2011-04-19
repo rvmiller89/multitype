@@ -20,7 +20,8 @@ public class MarkupProcessor implements Runnable{
 	private int currentRevision = 0;
 	private boolean done = false;
 	private FileUserManager fileUserManager;
-	
+	private boolean processing = false;
+	private FrontEndUpdate currentTop = null;
 	
 	public Server debug_server;
 	
@@ -39,7 +40,13 @@ public class MarkupProcessor implements Runnable{
 	 */
 	@Override
 	public void run() {
-		while(!done) { // TODO special feu if we want to notify markuprocessor to die but not send. 
+		while(!done) { // TODO special feu if we want to notify markuprocessor to die but not send.
+			try {
+				while(processing)
+					Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			FrontEndUpdate feu = getTopItem();
 			fileUserManager.sendFEU(this, feu);
 		}		
@@ -57,9 +64,11 @@ public class MarkupProcessor implements Runnable{
 	 * @param f The FrontEndUpdate to be added
 	 */
 	public void addFEU(FrontEndUpdate feu) {
+		processing = true;
 		if(feu.getRevision() != currentRevision)
 			updateReceivedFEU(feu);
 		markupQueue.add(feu);
+		processing = false;
 	}
 	
 	/**
@@ -68,25 +77,27 @@ public class MarkupProcessor implements Runnable{
 	 * @param f
 	 */
 	private synchronized void updateReceivedFEU(FrontEndUpdate f) {
-		System.err.println("updateReceivedFEU History:");
+		//System.err.println("updateReceivedFEU History:");
 		for(FrontEndUpdate old : markupHistory) {
 			/*TODO This will need to account for 
 				revision number wrapping for build 2 */
 			
-			System.err.println("Old: " + old.toLine());
+			System.out.println("MH: " + old.toLine());
 			
 			if(f.getRevision() < old.getRevision() && 
 					f.getUserId() != old.getUserId()) {
 				updateFEUgivenFEU(f, old);
 			}
-		}		
+		}
+		if(currentTop != null)
+			updateFEUgivenFEU(f, currentTop);
+		System.out.println("received now: "+f.toLine());
 	}
 
 	/**
 	 * Gets the next item in the markupQueue
 	 */
 	private FrontEndUpdate getTopItem() {
-		
 		FrontEndUpdate feu = null;
 		try {
 			if(debug_server != null) {
@@ -96,16 +107,19 @@ public class MarkupProcessor implements Runnable{
 				debug_server.dump();
 			}			
 			feu = markupQueue.take();
+			currentTop = feu;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
-
 		
 		currentRevision++;
 		feu.setRevision(currentRevision);
+		System.out.println("Taking feu: "+feu.toLine());
 		updateMarkupQueue(feu);	
+		for(FrontEndUpdate f : markupQueue)
+			System.out.println("MQ: "+f.toLine());
 		addToMarkupHistory(feu);
+		currentTop = null;
 		return feu;
 	}
 	
