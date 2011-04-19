@@ -83,6 +83,8 @@ public class BackendClient {
 			public void run() {
 				while(!done) {
 					try {
+						while(fromServerQueue.size() == 1)
+							Thread.sleep(10);
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
 						System.err.println("Received: " + feu.toLine());
