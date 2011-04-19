@@ -45,15 +45,6 @@ public class FEUListener {
 							manager.dispatchFEU(fu);
 						}
 					}
-					else if (fu.getUpdateType() == FrontEndUpdate.UpdateType.Markup)
-					{
-						if (fu.getMarkupType() == FrontEndUpdate.MarkupType.Insert
-								|| fu.getMarkupType() == FrontEndUpdate.MarkupType.Delete)
-						{
-							// Special cases, send FEU even though userid is your own
-							manager.dispatchFEU(fu);
-						}
-					}
 					
 				}
 			}			

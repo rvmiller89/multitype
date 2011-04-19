@@ -1,4 +1,5 @@
 package multitype;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,6 +31,7 @@ public class BackendClient {
 	private BlockingQueue<FrontEndUpdate> toServerQueue;
 	private ConcurrentLinkedQueue<FrontEndUpdate> screenHistory;
 	private boolean done = false;
+	private boolean serverAlive;
 	//private int revisionNumber = 0;
 	private String url;
 	private int port;
@@ -84,18 +86,28 @@ public class BackendClient {
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
 						System.err.println("Received: " + feu.toLine());
-						/*if(deleteFromScreenHistoryIfOwn(feu)) {
+						if(deleteFromScreenHistoryIfOwn(feu)) {
 							continue;
 						}
 						if(feu.getUpdateType() == 
 							FrontEndUpdate.UpdateType.Notification
 							&& feu.getNotificationType() ==
 								FrontEndUpdate.NotificationType.Keep_Alive) {
+							serverAlive = true;
+							sendUpdate(feu);
 							continue;
 						}
-						feu = updateIncomingFEUWithScreenHistory(feu);*/
+						feu = updateIncomingFEUWithScreenHistory(feu);
 						addFEUToBegOfFromServerQueue(feu);
 						parseForFileListUpdateOnReceive(feu);
+					} catch (EOFException eofe) {
+						System.err.println("Received EOF, closing.");
+						try {
+							serverSocket.close();
+						} catch(IOException ioe) {
+							System.err.println("Failed to close socket after EOF");
+						}
+						done = true;
 					} catch (Exception e) {
 						e.printStackTrace();
 						done = true;
@@ -127,14 +139,14 @@ public class BackendClient {
 									feu.setRevision(
 											revisionHistoryMap.get(
 													feu.getFileId()));
-									/*//old feu.setFEUid(curFEUid);
+									//old feu.setFEUid(curFEUid);
 									feu.setFEUid(
 											FEUidMap.get(feu.getFileId()));
 									//old curFEUid++;
 									FEUidMap.put(feu.getFileId(), 
 										(FEUidMap.get(
 											feu.getFileId()).intValue()+1)
-												%Integer.MAX_VALUE);*/
+												%Integer.MAX_VALUE);
 								}
 								System.err.println("Sent: " + feu.toLine());
 								out.writeObject(feu);
@@ -150,14 +162,14 @@ public class BackendClient {
 								feu.setRevision(
 										revisionHistoryMap.get(
 												feu.getFileId()));
-								/*//old feu.setFEUid(curFEUid);
+								//old feu.setFEUid(curFEUid);
 								feu.setFEUid(
 										FEUidMap.get(feu.getFileId()));
 								//old curFEUid++;
 								FEUidMap.put(feu.getFileId(), 
 									(FEUidMap.get(
 										feu.getFileId()).intValue()+1)
-											%Integer.MAX_VALUE);*/
+											%Integer.MAX_VALUE);
 							}
 							System.err.println("Sent: " + feu.toLine());
 							out.writeObject(feu);
@@ -186,9 +198,18 @@ public class BackendClient {
 						FrontEndUpdate feu = 
 							FrontEndUpdate.createNotificationFEU(
 									FrontEndUpdate.NotificationType.Keep_Alive, 
-									-1, -1, "");
+									-1, userId, "");
+						Thread.sleep(7*1000);
 						out.writeObject(feu);
-						Thread.sleep(15*1000);
+						serverAlive = false;
+						Thread.sleep(20*1000);
+						if(serverAlive == false) {
+							done = true;
+							FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
+									FrontEndUpdate.NotificationType.Server_Disconnect, 
+									-1, -1, "SERVER_DEAD");
+								fromServerNotificationQueue.add(f);
+						}
 					} catch(InterruptedException e) {
 						e.printStackTrace();
 					} catch (Exception e) {
@@ -205,7 +226,6 @@ public class BackendClient {
 				}
 			}	
 		});
-		//keepAliveThread.start();
 	}
 	
 	/**
@@ -222,9 +242,9 @@ public class BackendClient {
 	 */
 	public void sendUpdate(FrontEndUpdate feu) {
 		parseForFileListUpdateOnSend(feu);
-		//updateFromServerQueueWithSent(feu);
-		//if(feu.getUpdateType() == FrontEndUpdate.UpdateType.Markup)
-		//	screenHistory.add(feu); // Concurrent-safe
+		updateFromServerQueueWithSent(feu);
+		if(feu.getUpdateType() == FrontEndUpdate.UpdateType.Markup)
+			screenHistory.add(feu); // Concurrent-safe
 		toServerQueue.add(feu); // Concurrent-safe
 	}
 
@@ -234,33 +254,27 @@ public class BackendClient {
 	 */
 	public FrontEndUpdate getUpdate() {
 		try {
-//			while(fromServerNotificationQueue.size() == 0 
-//					&& nextSentToFrontEndIndex == -1) {
-//				Thread.sleep(1);
-//			}
-//			if(fromServerNotificationQueue.size() > 0) {
-//				FrontEndUpdate update = fromServerNotificationQueue.remove(0);
-//				System.err.print("GetUpdate: " + update.toLine());
-//				return update;
-//			}
-//			if (nextSentToFrontEndIndex > -1){
-//				assert(this.nextSentToFrontEndIndex > -1);
-//				/*while(this.nextSentToFrontEndIndex == -1) {
-//					Thread.sleep(1);				
-//				}*/
-//				FrontEndUpdate update = this.fromServerQueue.get(
-//						this.nextSentToFrontEndIndex);
-//				System.err.print("GetUpdate: " + update.toLine());
-//				this.nextSentToFrontEndIndex--; // getting added from the left
-//				return update;
-//			}
-			while(fromServerQueue.size() == 0)
+			while(fromServerNotificationQueue.size() == 0 
+					&& nextSentToFrontEndIndex == -1) {
 				Thread.sleep(1);
-			FrontEndUpdate update = this.fromServerQueue.lastElement();
-			fromServerQueue.remove(update);
-			revisionHistoryMap.put(update.getFileId(), update.getRevision());
-			System.err.print("GetUpdate: " + update.toLine());
-			return update;
+			}
+			if(fromServerNotificationQueue.size() > 0) {
+				FrontEndUpdate update = fromServerNotificationQueue.firstElement();
+				fromServerNotificationQueue.remove(update);
+				System.err.print("GetUpdate: " + update.toLine());
+				return update;
+			}
+			if (nextSentToFrontEndIndex > -1){
+				assert(this.nextSentToFrontEndIndex > -1);
+				/*while(this.nextSentToFrontEndIndex == -1) {
+					Thread.sleep(1);				
+				}*/
+				FrontEndUpdate update = this.fromServerQueue.get(
+						this.nextSentToFrontEndIndex);
+				System.err.print("GetUpdate: " + update.toLine());
+				this.nextSentToFrontEndIndex--; // getting added from the left
+				return update;
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return null;
@@ -268,6 +282,7 @@ public class BackendClient {
 			e.printStackTrace();
 			return null;
 		}
+		return null;
 	}
 	
 	/**
@@ -279,7 +294,7 @@ public class BackendClient {
 		this.fromServerQueue.remove(feu);
 		updateScreenHistoryWithProcessed(feu);
 		//old this.revisionNumber = feu.getRevision();
-		//revisionHistoryMap.put(feu.getFileId(), feu.getRevision());
+		revisionHistoryMap.put(feu.getFileId(), feu.getRevision());
 		System.out.print("Processed "+feu.toLine());
 	}
 	
@@ -361,13 +376,12 @@ public class BackendClient {
 	 * @param feu FEU to be added
 	 */
 	private synchronized void addFEUToBegOfFromServerQueue(FrontEndUpdate feu) {
-		/*if(feu.getUpdateType() == UpdateType.Markup) {
+		if(feu.getUpdateType() == UpdateType.Markup) {
 			fromServerQueue.add(0, feu); // adding at the left
 			nextSentToFrontEndIndex++;
 		}
 		else
-			fromServerNotificationQueue.add(0, feu);*/
-		fromServerQueue.add(0, feu);
+			fromServerNotificationQueue.add(feu);
 	}
 	
 	/**
@@ -377,7 +391,7 @@ public class BackendClient {
 	 */
 	private void updateScreenHistoryWithProcessed(FrontEndUpdate feu) {
 		for(FrontEndUpdate screenHistoryFEU : screenHistory) {
-			updateFEUgivenFEU(screenHistoryFEU, feu, false);
+			updateFEUgivenFEUWithEqual(screenHistoryFEU, feu, false);
 		}		
 	}
 	
@@ -406,6 +420,9 @@ public class BackendClient {
 		case Send_File: 
 			// Host is sending new file to someone, attach rev #
 			feu.setRevision(revisionHistoryMap.get(feu.getFileId()));
+			break;
+		case User_Connected:
+			//keepAliveThread.start();
 			break;
 		}
 	}
@@ -452,6 +469,81 @@ public class BackendClient {
 			int sizeOfInsert = given.getInsertString().length();
 			
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+				if(toUpdate.getStartLocation() > insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
+			}
+			else if (toUpdate.getMarkupType() == 
+				FrontEndUpdate.MarkupType.Delete){
+				if(toUpdate.getStartLocation() > insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+					toUpdate.setEndLocation(toUpdate.getEndLocation()
+							+sizeOfInsert);
+				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() > insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
+			}
+		}
+		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
+			int insertAt = given.getStartLocation();
+			int sizeOfInsert = given.getEndLocation() - insertAt;
+			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+				if(toUpdate.getStartLocation() > insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
+			}
+			else if (toUpdate.getMarkupType() == 
+				FrontEndUpdate.MarkupType.Delete){
+				if(toUpdate.getStartLocation() > insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+					toUpdate.setEndLocation(toUpdate.getEndLocation()
+							-sizeOfInsert);
+				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() > insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
+			}
+		}
+		else { 
+			// The markup doesn't affect other markups (cursor pos 
+			// or highlight)
+			return;
+		}
+		
+	}
+	
+	/**
+	 * Updates an FEU given an FEU
+	 * @param toUpdate
+	 * @param given
+	 */
+	private void updateFEUgivenFEUWithEqual (FrontEndUpdate toUpdate, 
+			FrontEndUpdate given, boolean updateRevision) {
+		if(toUpdate == given) //don't update itself
+			return;
+		if(updateRevision)
+			toUpdate.setRevision(given.getRevision());
+		if(toUpdate.getFileId() != given.getFileId())
+			return;
+		// don't update if the user is the same
+		if(toUpdate.getUserId() == given.getUserId()) 
+			return;
+		if(given.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
+			int insertAt = given.getStartLocation();
+			int sizeOfInsert = given.getInsertString().length();
+			
+			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
 				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							+sizeOfInsert);
@@ -465,6 +557,12 @@ public class BackendClient {
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
 							+sizeOfInsert);
 				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							+sizeOfInsert);
+				}
 			}
 		}
 		else if(given.getMarkupType() == FrontEndUpdate.MarkupType.Delete) {
@@ -484,6 +582,12 @@ public class BackendClient {
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
 							-sizeOfInsert);
 				}				
+			}
+			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
+				if(toUpdate.getStartLocation() >= insertAt) {
+					toUpdate.setStartLocation(toUpdate.getStartLocation()
+							-sizeOfInsert);
+				}
 			}
 		}
 		else { 

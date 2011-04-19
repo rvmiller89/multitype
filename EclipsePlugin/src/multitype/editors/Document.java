@@ -32,7 +32,7 @@ public class Document
 	private final int fileID;
 	private ITextEditor editor;
 	private IDocument doc;
-	private String content;
+	private String fileName; //TODO
 	
 	// Cusor marker mapping
 	HashMap<String, Integer> cursorMap = new HashMap<String, Integer>();
@@ -43,10 +43,6 @@ public class Document
 		
 		public void documentChanged(DocumentEvent event) 
 		{
-			doc.removeDocumentListener(DOCUMENT_LISTENER);
-			
-			doc.set(content);
-			
 			if (event.getLength() > 0)
 			{
 				FEUSender.send(
@@ -66,22 +62,20 @@ public class Document
 								event.getOffset(), 
 								event.getText()));
 			}
-			
-			doc.addDocumentListener(DOCUMENT_LISTENER);
 		}
 	};
 	
-//	private final ISelectionChangedListener SELECTION_LISTENER = new ISelectionChangedListener() {
-//		public void selectionChanged(SelectionChangedEvent event) 
-//		{
+	private final ISelectionChangedListener SELECTION_LISTENER = new ISelectionChangedListener() {
+		public void selectionChanged(SelectionChangedEvent event) 
+		{
 //			FEUSender.send(
 //					FrontEndUpdate.createHighlightFEU(
 //							getFileID(), 
 //							Activator.getDefault().userInfo.getUserid(),
 //							((ITextSelection)event.getSelection()).getOffset(),
 //							((ITextSelection)event.getSelection()).getLength()));
-//		}
-//	};
+		}
+	};
 	
 	public int getFileID()
 	{
@@ -93,19 +87,14 @@ public class Document
 		return editor;
 	}
 	
-	public Document(final ITextEditor editor, int fileID, String content)
+	public Document(final ITextEditor editor, int fileID)
 	{
 		this.fileID = fileID;
 		this.editor = editor;
-		this.content = content;
-		
+
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
-		
-		if (content != null)
-			doc.set(content);
-		
 		doc.addDocumentListener(DOCUMENT_LISTENER);
-//		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);		
+		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
 		
 		// TODO This seems to be breaking things after closing a document...
 		
@@ -127,13 +116,20 @@ public class Document
 	public void disableListeners()
 	{
 		doc.removeDocumentListener(DOCUMENT_LISTENER);
-//		editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
+		editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
 		
 	}
 	
 	public String getTitle()
 	{
 		return editor.getTitle();
+	}
+	
+	public void setText(String text)
+	{
+		doc.removeDocumentListener(DOCUMENT_LISTENER);
+		doc.set(text);
+		doc.addDocumentListener(DOCUMENT_LISTENER);
 	}
 	
 	public String getText()
@@ -149,8 +145,7 @@ public class Document
 		    	try {
 		    		doc.removeDocumentListener(DOCUMENT_LISTENER);
 		    		doc.replace(feu.getStartLocation(), feu.getEndLocation() - feu.getStartLocation(), "");
-//		    		Activator.getDefault().client.FEUProcessed(feu);
-		    		content = doc.get();
+		    		Activator.getDefault().client.FEUProcessed(feu);
 					doc.addDocumentListener(DOCUMENT_LISTENER); 
 					System.out.println("Editor Deletion-- fromPos: " + feu.getStartLocation());
 				} catch (BadLocationException e) {
@@ -169,8 +164,7 @@ public class Document
 		    	try {
 		    		doc.removeDocumentListener(DOCUMENT_LISTENER);
 					doc.replace(feu.getStartLocation(), 0, feu.getInsertString());
-//					Activator.getDefault().client.FEUProcessed(feu);
-		    		content = doc.get();
+					Activator.getDefault().client.FEUProcessed(feu);
 					doc.addDocumentListener(DOCUMENT_LISTENER);
 					System.out.println("Editor Insertion-- fromPos: " + feu.getStartLocation() + " string: " + feu.getInsertString());
 				} catch (BadLocationException e) {
@@ -180,18 +174,18 @@ public class Document
 		  });
 	}
 	
-//	public void highlight(final FrontEndUpdate feu)
-//	{
-//		Display.getDefault().asyncExec(new Runnable() {
-//			public void run()
-//			{
-//				editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
-//				editor.getSelectionProvider().setSelection(new TextSelection(doc, feu.getStartLocation(), feu.getEndLocation()));
-//				editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
-//			}
-//		});
-//
-//	}
+	public void highlight(final FrontEndUpdate feu)
+	{
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run()
+			{
+				editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
+				editor.getSelectionProvider().setSelection(new TextSelection(doc, feu.getStartLocation(), feu.getEndLocation()));
+				editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
+			}
+		});
+
+	}
 	
 	public void cursorPos(final FrontEndUpdate feu)
 	{

@@ -14,8 +14,6 @@ import multitype.views.Dialog;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
@@ -161,7 +159,8 @@ public class EditorManager
 			public void postShutdown(IWorkbench workbench) {
 				
 			}
-		});	    
+		});
+	    
 	}
 	
 	public void openDocument(int fileID, String filePath)
@@ -172,7 +171,7 @@ public class EditorManager
 			if (editors[i].getEditorInput().getAdapter(IResource.class) != null &&
 				filePath.endsWith(((IResource)editors[i].getEditorInput().getAdapter(IResource.class)).getFullPath().toOSString()))
 			{
-				map.put(fileID, new Document((ITextEditor)editors[i], fileID, null));
+				map.put(fileID, new Document((ITextEditor)editors[i], fileID));
 				
 				return;
 			}
@@ -210,7 +209,9 @@ public class EditorManager
 			return;
 		}
 		
-		map.put(fileID, new Document((ITextEditor)editor, fileID, content));		
+		map.put(fileID, new Document((ITextEditor)editor, fileID));
+		
+		map.get(fileID).setText(content);
 	}
 	
 	
@@ -249,8 +250,7 @@ public class EditorManager
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		if (!project.isOpen())().client.FEUProcessed(feu);
-		    		content = doc.get();
+		if (!project.isOpen())
 			try {
 				project.open(null);
 			} catch (CoreException e) {
@@ -322,7 +322,8 @@ public class EditorManager
 										"org.eclipse.ui.DefaultTextEditor");
 					}
 					
-					map.put(fileID, new Document((ITextEditor)editor, fileID, content));
+					map.put(fileID, new Document((ITextEditor)editor, fileID));
+					map.get(fileID).setText(content);
 				} catch (PartInitException e) {
 					System.err
 							.println("*********************************PART INIT EXCEPTION: "

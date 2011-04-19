@@ -22,7 +22,6 @@ public class StringEditorInput implements IStorageEditorInput {
 		this.inputString = inputString;
 		this.fileID = fileID;
 	}
-
 	
 	public int getFileID()
 	{
