@@ -71,7 +71,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "multitype.views.FileList";
+	public static final String ID = "multitype.views.UserList";
 
 	public TreeParent invisibleRoot;
 	private TreeViewer viewer;
@@ -466,7 +466,7 @@ public class UserList extends ViewPart implements IWorkbenchWindowActionDelegate
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"File List",
+			"User List",
 			message);
 	}
 

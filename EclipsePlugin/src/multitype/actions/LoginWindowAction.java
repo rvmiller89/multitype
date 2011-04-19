@@ -50,6 +50,14 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 					Activator.getDefault().userInfo.getHost() + ":" + Activator.getDefault().userInfo.getPort());
 			
 		}
+		else if (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(Activator.getDefault().userList) 
+				|| !Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(Activator.getDefault().fileList)) 
+		{
+			//Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().setPartState(Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(Activator.getDefault().userList.ID), IStackPresentationSite.STATE_RESTORED);
+			//Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().setPartState(Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(Activator.getDefault().fileList.ID), IStackPresentationSite.STATE_RESTORED);
+		
+			Activator.getDefault().showDialogAsync("Prerequisites before Connection", "Please Open both User List and File List.\n(in Window->Show View->Other...->MultiType)");
+		}
 		else
 		{
 			Display display = Display.getCurrent();
