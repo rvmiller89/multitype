@@ -7,13 +7,9 @@ package multitype.actions;
 import multitype.Activator;
 import multitype.views.LoginView;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -50,7 +46,8 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 					Activator.getDefault().userInfo.getHost() + ":" + Activator.getDefault().userInfo.getPort());
 			
 		}
-		else if (Activator.getDefault().userList == null || Activator.getDefault().fileList == null) 
+		else if (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(Activator.getDefault().userList) 
+				|| !Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(Activator.getDefault().fileList)) 
 		{
 			Activator.getDefault().showDialogAsync("Prerequisites before Connection", "Please Open both User List and File List.\n(in Window->Show View->Other...->MultiType)");
 		}
@@ -69,6 +66,7 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 				// Instantiate a FEUListener, which will also set up a BackendConnection
 				Activator.getDefault().connect();
 			}
+			
 		}
 	}
 
