@@ -124,7 +124,7 @@ public class OutputProcessor implements Runnable {
 	 */
 	public void setDone() {
 		done = true;
-		Thread.currentThread().interrupt();
+		//Thread.interrupt();
 
 	}
 
