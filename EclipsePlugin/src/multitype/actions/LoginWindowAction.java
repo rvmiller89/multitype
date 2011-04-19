@@ -50,6 +50,10 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 					Activator.getDefault().userInfo.getHost() + ":" + Activator.getDefault().userInfo.getPort());
 			
 		}
+		else if (Activator.getDefault().userList == null || Activator.getDefault().fileList == null) 
+		{
+			Activator.getDefault().showDialogAsync("Prerequisites before Connection", "Please Open both User List and File List.\n(in Window->Show View->Other...->MultiType)");
+		}
 		else
 		{
 			Display display = Display.getCurrent();
