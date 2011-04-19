@@ -28,6 +28,9 @@ public class OutputProcessor implements Runnable {
 	//ID needed for above
 	int uid;
 	
+	//Thread that we run in
+	Thread thisthread;
+	
 	/**
 	 * Constructor for OutputProcessor
 	 * @param client A socket connection to the client who will receive
@@ -39,6 +42,7 @@ public class OutputProcessor implements Runnable {
 		done = false;
 		fum = f;
 		uid = i;
+		thisthread = null;
 	}
 	
 	/**
@@ -107,6 +111,16 @@ public class OutputProcessor implements Runnable {
 		}
 	}
 	
+	/**
+	 * Sets a thread parameter for interrupt purposes
+	 * @param t Thread that this OP runs in
+	 * @return true upon success
+	 */
+	public boolean setThread(Thread t) {
+		thisthread = t;
+		return true;
+	}
+	
 	public String dump() {
 		StringBuilder sb = new StringBuilder();
 		
@@ -124,7 +138,9 @@ public class OutputProcessor implements Runnable {
 	 */
 	public void setDone() {
 		done = true;
-		//Thread.interrupt();
+		if(thisthread != null) {
+			thisthread.interrupt();
+		}
 
 	}
 

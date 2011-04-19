@@ -189,7 +189,9 @@ public class FileUserManager {
 		//spawn an OutputProcessor and associate it with userid
 	 	OutputProcessor thisOutputProc = new OutputProcessor(s, this, nextUID);
 		outprocs.put(nextUID, thisOutputProc);
-		new Thread(thisOutputProc).start();
+		Thread op = new Thread(thisOutputProc);
+		thisOutputProc.setThread(op);
+		op.start();
 		
 		//create a ConnnectionSucceeded Notification FEU
 		//send it back to client immediately
