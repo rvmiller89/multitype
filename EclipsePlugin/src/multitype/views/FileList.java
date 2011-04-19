@@ -1,6 +1,7 @@
 package multitype.views;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import multitype.Activator;
 import multitype.FEUManager;
@@ -396,27 +397,31 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				// Grab item
 				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				TreeObject item = (TreeObject)obj;
+				Iterator iter = ((IStructuredSelection)selection).iterator();
 				
-				if (item != null)
-				{
-					boolean isHost = Activator.getDefault().isHost;
-					// if parent.getName() is "Shared Files" and _non-host_, signal EditorManager 
-					// to Get_Shared_file and add file to "Open Files" (create if needed)
-					if (item.parent.getName().equals("Shared Files"))
+				while (iter.hasNext())
+				{	
+					Object obj = iter.next();
+					TreeObject item = (TreeObject)obj;
+					if (item != null)
 					{
-						if (!isHost)	// only non-hosts can add to Open Files
+						boolean isHost = Activator.getDefault().isHost;
+						// if parent.getName() is "Shared Files" and _non-host_, signal EditorManager 
+						// to Get_Shared_file and add file to "Open Files" (create if needed)
+						if (item.parent.getName().equals("Shared Files"))
 						{
-							// Send Get_Shared_File
-							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Get_Shared_File,
-									item.getFileID(),
-									Activator.getDefault().userInfo.getUserid(),
-									null);
-							FEUSender.send(feu);
+							if (!isHost)	// only non-hosts can add to Open Files
+							{
+								// Send Get_Shared_File
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Get_Shared_File,
+										item.getFileID(),
+										Activator.getDefault().userInfo.getUserid(),
+										null);
+								FEUSender.send(feu);
+							}
 						}
 					}
-				}
+				} // while
 			}
 		};
 		action1.setText("Open File");
@@ -430,59 +435,67 @@ public class FileList extends ViewPart implements IWorkbenchWindowActionDelegate
 				
 				// Grab item
 				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				TreeObject item = (TreeObject)obj;
+				Iterator iter = ((IStructuredSelection)selection).iterator();
 				
-				if (item != null)
-				{
+				while (iter.hasNext())
+				{	
+					Object obj = iter.next();
+					TreeObject item = (TreeObject)obj;
 					
-					boolean isHost = Activator.getDefault().isHost;
-
-					if (item.parent.getName().equals("Open Files"))
+					if (item != null)
 					{
-						if (!isHost)	// if non_host and selection parent is "Open Files",
-						{
-							// send out Close_Client_File feu to server to stop receiving updates
-							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-									NotificationType.Close_Client_File, 
-									item.getFileID(),
-									Activator.getDefault().userInfo.getUserid(),
-									item.getName());
-							FEUSender.send(feu);
-							
-							// Tell editor manager to close tab with file with fileid (item.getFileid())
-							FEUManager.getInstance().editorManager.removeDocumentDueToUserInput(item.getFileID(), false);
+						
+						boolean isHost = Activator.getDefault().isHost;
 	
-							// add to Shared Files list
-							Activator.getDefault().fileList.addSharedFile(item.getFileID(),
-									Activator.getDefault().sharedFiles.get(item.getFileID()));
-							
-							// remove from Open files list
-							Activator.getDefault().fileList.removeOpenFile(item.getFileID());
-						}
-					}
-					else if (item.parent.getName().equals("Shared Files"))
-					{
-						if (isHost) // if host and selection parent is "Shared Files"
+						if (item.parent.getName().equals("Open Files"))
 						{
-							// send out Close_Shared_File feu to server to stop sending updates
-							FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
-									NotificationType.Close_Shared_File, 
-									item.getFileID(),
-									Activator.getDefault().userInfo.getUserid(),
-									item.getName());
-							FEUSender.send(feu);
-							
-							// Tell editor manager to close file
-							FEUManager.getInstance().editorManager.removeDocumentDueToUserInput(item.getFileID(), false);
-							
-							// Remove from shared file list
-							Activator.getDefault().fileList.removeSharedFile(item.getFileID());
-							
-							
+							if (!isHost)	// if non_host and selection parent is "Open Files",
+							{
+								// send out Close_Client_File feu to server to stop receiving updates
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+										NotificationType.Close_Client_File, 
+										item.getFileID(),
+										Activator.getDefault().userInfo.getUserid(),
+										item.getName());
+								FEUSender.send(feu);
+								
+								// Tell editor manager to close tab with file with fileid (item.getFileid())
+								FEUManager.getInstance().editorManager.removeDocumentDueToUserInput(item.getFileID(), false);
+		
+								// add to Shared Files list
+								Activator.getDefault().fileList.addSharedFile(item.getFileID(),
+										Activator.getDefault().sharedFiles.get(item.getFileID()));
+								
+								// remove from Open files list
+								Activator.getDefault().fileList.removeOpenFile(item.getFileID());
+							}
+						}
+						else if (item.parent.getName().equals("Shared Files"))
+						{
+							if (isHost) // if host and selection parent is "Shared Files"
+							{
+								// Debug
+								System.out.println("*** Closing shared file: " + item.getFileID() + " - " + item.getName());
+								
+								// send out Close_Shared_File feu to server to stop sending updates
+								FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(
+										NotificationType.Close_Shared_File, 
+										item.getFileID(),
+										Activator.getDefault().userInfo.getUserid(),
+										item.getName());
+								FEUSender.send(feu);
+								
+								// Tell editor manager to close file
+								FEUManager.getInstance().editorManager.removeDocumentDueToUserInput(item.getFileID(), false);
+								
+								// Remove from shared file list
+								Activator.getDefault().fileList.removeSharedFile(item.getFileID());
+								
+								
+							}
 						}
 					}
-				}
+				} // while
 				
 			}
 		};
