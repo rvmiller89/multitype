@@ -199,10 +199,10 @@ public class BackendClient {
 							FrontEndUpdate.createNotificationFEU(
 									FrontEndUpdate.NotificationType.Keep_Alive, 
 									-1, userId, "");
-						Thread.sleep(2*1000);
+						Thread.sleep(7*1000);
 						out.writeObject(feu);
 						serverAlive = false;
-						Thread.sleep(15*1000);
+						Thread.sleep(20*1000);
 						if(serverAlive == false) {
 							done = true;
 							FrontEndUpdate f = FrontEndUpdate.createNotificationFEU(
@@ -422,7 +422,7 @@ public class BackendClient {
 			feu.setRevision(revisionHistoryMap.get(feu.getFileId()));
 			break;
 		case User_Connected:
-			keepAliveThread.start();
+			//keepAliveThread.start();
 			break;
 		}
 	}
