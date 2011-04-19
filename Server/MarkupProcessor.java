@@ -68,9 +68,12 @@ public class MarkupProcessor implements Runnable{
 	 * @param f
 	 */
 	private synchronized void updateReceivedFEU(FrontEndUpdate f) {
+		System.err.println("updateReceivedFEU History:");
 		for(FrontEndUpdate old : markupHistory) {
 			/*TODO This will need to account for 
 				revision number wrapping for build 2 */
+			
+			System.err.println("Old: " + old.toLine());
 			
 			if(f.getRevision() < old.getRevision() && 
 					f.getUserId() != old.getUserId()) {
