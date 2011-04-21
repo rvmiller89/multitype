@@ -24,15 +24,21 @@ public class ShareFile extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 	    
-		if (Activator.getDefault().isHost)
+		if (!Activator.getDefault().isConnected)
+		{
+			Activator.getDefault().showDialogAsync("Error", "You must be connected to a MultiType server to use this feature.");
+		}
+		else if (!Activator.getDefault().isHost)
+		{
+			Activator.getDefault().showDialogAsync("Error", "You must be host to use this feature.");
+		}
+		else
 		{
 			IStructuredSelection selection = (IStructuredSelection) HandlerUtil
 			.getActiveMenuSelection(event);
 			
 			filesToOpen(selection);
 		}
-		else
-			Activator.getDefault().showDialogAsync("Error", "You must be host to use this feature.");
 
 		return null;
 	}
