@@ -17,10 +17,4 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.ui.texteditor
-Export-Package: multitype,
- multitype.actions,
- multitype.command,
- multitype.editors,
- multitype.views,
- org.eclipse.wb.swt
 
