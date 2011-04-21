@@ -88,6 +88,8 @@ public class BackendClient {
 							Thread.sleep(10);
 						FrontEndUpdate feu = 
 							(FrontEndUpdate)in.readObject();
+						if(done)
+							continue;
 						System.err.println("Received: " + feu.toLine());
 						if(deleteFromScreenHistoryIfOwn(feu)) {
 							readyToSendNext  = true;
