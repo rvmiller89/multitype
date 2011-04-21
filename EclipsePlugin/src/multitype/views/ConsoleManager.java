@@ -94,15 +94,19 @@ public class ConsoleManager implements IConsoleLineTracker{
 	@Override
 	public void lineAppended(IRegion region) {
 		try {
-			// Grab line of output
-			String line = listenConsole.getDocument().get(region.getOffset(), region.getLength());
 			
-			// Send line to other clients
-			FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Console_Message,
-					0,
-					Activator.getDefault().userInfo.getUserid(),
-					line);
-			FEUSender.send(feu);
+			if (Activator.getDefault().isConnected)
+			{
+				// Grab line of output
+				String line = listenConsole.getDocument().get(region.getOffset(), region.getLength());
+				
+				// Send line to other clients
+				FrontEndUpdate feu = FrontEndUpdate.createNotificationFEU(NotificationType.Console_Message,
+						0,
+						Activator.getDefault().userInfo.getUserid(),
+						line);
+				FEUSender.send(feu);
+			}
 			
 			
 		} catch (BadLocationException e) {

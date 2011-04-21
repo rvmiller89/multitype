@@ -40,12 +40,57 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
+            targetID="MultiType.perspective">
          <view
-               ratio="0.5"
-               relative="org.eclipse.ui.views.TaskList"
+               closeable="false"
+               id="multitype.views.FileList"
+               minimized="false"
+               moveable="false"
+               ratio="0.83"
                relationship="right"
-               id="multitype.views.FileList">
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="multitype.views.UserList"
+               minimized="false"
+               moveable="false"
+               ratio="0.5"
+               relationship="bottom"
+               relative="multitype.views.FileList"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               id="org.eclipse.ui.navigator.ProjectExplorer"
+               minimized="false"
+               ratio="0.23"
+               relationship="left"
+               relative="org.eclipse.ui.editorss">
+         </view>
+         <view
+               closeable="true"
+               id="multitype.views.ChatView"
+               minimized="false"
+               moveable="true"
+               ratio="0.6"
+               relationship="bottom"
+               relative="org.eclipse.ui.navigator.ProjectExplorer"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.eclipse.ui.console.ConsoleView"
+               minimized="false"
+               moveable="true"
+               ratio="0.8"
+               relationship="bottom"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
          </view>
       </perspectiveExtension>
    </extension>
@@ -130,6 +175,15 @@
         <super type="org.eclipse.core.resources.textmarker"/>
         <persistent value="true"/>
 	</extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="multitype.MultiTypePerspectiveFactory"
+            icon="res/icon.png"
+            id="MultiType.perspective"
+            name="MultiType">
+      </perspective>
+   </extension>
 	
 
 </plugin>
