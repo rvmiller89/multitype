@@ -5,32 +5,32 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="MultiType"
+            name="%category.name"
             id="MultiType">
       </category>
       <view
-            name="File List"
+            name="%view.name"
             icon="res/file.png"
             category="MultiType"
             class="multitype.views.FileList"
             id="multitype.views.FileList">
       </view>
       <view
-            name="User List"
+            name="%view.name.0"
             icon="res/users.png"
             category="MultiType"
             class="multitype.views.UserList"
             id="multitype.views.UserList">
       </view>
       <view
-            name="MultiType Chat"
+            name="%view.name.1"
             icon="res/balloon.png"
             category="MultiType"
             class="multitype.views.ChatView"
             id="multitype.views.ChatView">
       </view>
       <view
-            name="View Driver (debug)"
+            name="%view.name.2"
             icon="icons/sample.gif"
             category="MultiType"
             class="multitype.views.ViewDriver"
@@ -66,35 +66,35 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="MultiType Action Set"
+            label="%actionSet.label"
             visible="true"
             id="MultiType.actionSet">
          <menu
-               label="MultiType"
+               label="%menu.label"
                id="multitypeMenu">
             <separator
                   name="multitypeGroup">
             </separator>
          </menu>
          <action
-               label="Resync"
+               label="%action.label"
                icon="res/resync.png"
                class="multitype.actions.ResyncAction"
                menubarPath="multitypeMenu/multitypeGroup"
                id="multitype.actions.ResyncAction">
          </action>
          <action
-               label="Disconnect"
+               label="%action.label.0"
                icon="res/exit.png"
                class="multitype.actions.DisconnectAction"
                menubarPath="multitypeMenu/multitypeGroup"
                id="multitype.actions.DisconnectAction">
          </action>
          <action
-               label="Login"
+               label="%action.label.1"
                icon="res/icon_b.png"
                class="multitype.actions.LoginWindowAction"
-               tooltip="MultiType Login"
+               tooltip="%action.tooltip"
                menubarPath="multitypeMenu/multitypeGroup"
                toolbarPath="multitypeGroup"
                id="multitype.actions.LoginWindowAction">
@@ -109,7 +109,7 @@
                commandId="multitype.command"
                disabledIcon="res/exit_b.png"
                icon="res/file.png"
-               label="Share File"
+               label="%command.label"
                style="push">
             </command>
       </menuContribution>
@@ -119,12 +119,12 @@
       <command
             defaultHandler="multitype.command.ShareFile"
             id="multitype.command"
-            name="Share">
+            name="%command.name">
       </command>
    </extension>
    <extension id="cursorMarker"
     	point="org.eclipse.core.resources.markers"
-    	name="Cursor Marker">
+    	name="%extension.name">
         
         <super type="org.eclipse.core.resources.problemmarker"/>
         <super type="org.eclipse.core.resources.textmarker"/>

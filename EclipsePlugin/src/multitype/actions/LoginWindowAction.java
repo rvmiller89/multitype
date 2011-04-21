@@ -31,6 +31,7 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 
 	/**
 	 * The constructor.
+	 * @wbp.parser.entryPoint
 	 */
 	public LoginWindowAction() {
 	}
@@ -40,6 +41,7 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 	 * method represents the 'real' action sitting
 	 * in the workbench UI.
 	 * @see IWorkbenchWindowActionDelegate#run
+	 * @wbp.parser.entryPoint
 	 */
 	public void run(IAction action) {
 
@@ -82,6 +84,7 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 	 * if we want, but this can only happen after 
 	 * the delegate has been created.
 	 * @see IWorkbenchWindowActionDelegate#selectionChanged
+	 * @wbp.parser.entryPoint
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
@@ -98,6 +101,7 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 	 * We will cache window object in order to
 	 * be able to provide parent shell for the message dialog.
 	 * @see IWorkbenchWindowActionDelegate#init
+	 * @wbp.parser.entryPoint
 	 */
 	public void init(IWorkbenchWindow window) {
 		this.window = window;

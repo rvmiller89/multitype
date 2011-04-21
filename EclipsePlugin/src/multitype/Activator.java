@@ -61,7 +61,6 @@ public class Activator extends AbstractUIPlugin {
 		isHost = false;
 		connectedUsers = new HashMap<Integer, String>();
 		sharedFiles = new HashMap<Integer, String>();
-		fileIDMapping = 0;
 	}
 
 	public void stop(BundleContext context) throws Exception {
@@ -96,6 +95,9 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void connect()
 	{
+		// Get fileid ready for potential host
+		fileIDMapping = 0;
+		
 		// Construct a BackendClient
 		client = new BackendClient(userInfo.getHost(), userInfo.getPort());
 		
@@ -111,6 +113,7 @@ public class Activator extends AbstractUIPlugin {
 	public void disconnect() {
 		client.finish();
 		feuListener.finish();
+		
 	}
 	
 	public void showDialogAsync(final String title, final String message)
