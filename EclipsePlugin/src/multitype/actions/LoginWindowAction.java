@@ -7,13 +7,9 @@ package multitype.actions;
 import multitype.Activator;
 import multitype.views.LoginView;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -55,10 +51,8 @@ public class LoginWindowAction implements IWorkbenchWindowActionDelegate {
 		else if (!Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(Activator.getDefault().userList) 
 				|| !Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().isPartVisible(Activator.getDefault().fileList)) 
 		{
-			//Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().setPartState(Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(Activator.getDefault().userList.ID), IStackPresentationSite.STATE_RESTORED);
-			//Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().setPartState(Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(Activator.getDefault().fileList.ID), IStackPresentationSite.STATE_RESTORED);
-		
-			Activator.getDefault().showDialogAsync("Prerequisites before Connection", "Please Open both User List and File List.\n(in Window->Show View->Other...->MultiType)");
+
+			Activator.getDefault().showDialogAsync("Pre-requisites before Connection", "Please open both User List and File List views.\n(Located in Window -> Show View -> Other... -> MultiType)");
 		}
 		else
 		{

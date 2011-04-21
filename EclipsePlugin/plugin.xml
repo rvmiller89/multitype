@@ -29,13 +29,6 @@
             class="multitype.views.ChatView"
             id="multitype.views.ChatView">
       </view>
-      <view
-            name="%view.name.2"
-            icon="icons/sample.gif"
-            category="MultiType"
-            class="multitype.views.ViewDriver"
-            id="multitype.views.ViewDriver">
-      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
