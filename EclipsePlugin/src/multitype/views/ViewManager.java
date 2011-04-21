@@ -157,7 +157,7 @@ public class ViewManager extends ViewPart{
 				
 				break;
 			case Server_Disconnect:
-				Activator.getDefault().showDialogAsync("Server Disconnected", "Your files are no longer being shared.");
+				Activator.getDefault().showDialogAsync("Server Disconnected", feu.getContent());
 				Activator.getDefault().userList.clearList();
 				Activator.getDefault().fileList.clearList();
 				if (Activator.getDefault().isHost)
