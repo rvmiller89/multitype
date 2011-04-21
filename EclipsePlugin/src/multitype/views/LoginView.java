@@ -14,9 +14,11 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.swt.widgets.Label;
@@ -301,5 +303,19 @@ public class LoginView extends TitleAreaDialog {
 	@Override
 	protected Point getInitialSize() {
 		return new Point(552, 333);
+	}
+	
+	/**
+	 * Center the dialog box on screen
+	 */
+	@Override
+	protected Point getInitialLocation(Point initialSize)
+	{
+		Shell shell = this.getShell();
+        Monitor primary = shell.getMonitor();
+        Rectangle bounds = primary.getBounds ();
+        int x = bounds.x + (bounds.width - initialSize.x) / 2;
+        int y = bounds.y + (bounds.height - initialSize.y) / 2;
+		return new Point(x, y);
 	}
 }
