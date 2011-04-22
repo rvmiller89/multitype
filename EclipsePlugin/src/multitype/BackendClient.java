@@ -512,37 +512,37 @@ public class BackendClient {
 			int insertAt = given.getStartLocation();
 			int sizeOfDelete = given.getEndLocation() - insertAt;
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-				if(given.getEndLocation() < toUpdate.getStartLocation()) {
+				/*if(given.getEndLocation() < toUpdate.getStartLocation()) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *      |----|
 					 * or
 					 * |----|
 					 *       |----|
-					 */
+					 
 				}
 				else if (given.getEndLocation()>toUpdate.getStartLocation()
 							&& given.getStartLocation()<toUpdate.getStartLocation()){
 					toUpdate.setStartLocation(given.getStartLocation());
 					
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *    |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()<toUpdate.getStartLocation() &&
 						given.getEndLocation()>toUpdate.getEndLocation()) {
 					toUpdate.setStartLocation(given.getStartLocation());
-					/*
+					
 					 * Does this:
 					 * |--------|
 					 *   |----|
-					 */
-				}
+					 
+				}*/
 				//The following do not change the Insert:
 				/*
 				 * |----| both start and ends are the same
@@ -558,26 +558,26 @@ public class BackendClient {
 				 * |----|
 				 * 
 				 */
-				/*if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
-				}*/
+				}
 			}
 			else if (toUpdate.getMarkupType() == 
 				FrontEndUpdate.MarkupType.Delete){
-				if(given.getEndLocation() < toUpdate.getStartLocation()) {
+				/*if(given.getEndLocation() < toUpdate.getStartLocation()) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
 					toUpdate.setEndLocation(toUpdate.getEndLocation() 
 							- sizeOfDelete);
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *      |----|
 					 * or
 					 * |----|
 					 *       |----|
-					 */
+					 
 				}
 				else if (given.getEndLocation()>toUpdate.getStartLocation() 
 							&& given.getEndLocation()<toUpdate.getEndLocation()					
@@ -587,48 +587,48 @@ public class BackendClient {
 					toUpdate.setStartLocation(given.getStartLocation());
 					toUpdate.setEndLocation(toUpdate.getStartLocation()+diff);
 					
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *    |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()<toUpdate.getStartLocation() &&
 						given.getEndLocation()>toUpdate.getEndLocation()) {
 					toUpdate.setStartLocation(0);
 					toUpdate.setEndLocation(0);
-					/*
+					
 					 * Does this:
 					 * |--------|
 					 *   |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()==toUpdate.getStartLocation()
 						&& given.getEndLocation()==toUpdate.getEndLocation()) {
 					toUpdate.setStartLocation(0);
 					toUpdate.setEndLocation(0);
-					/*
+					
 					 * |----| both start and ends are the same
 					 * |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()>toUpdate.getStartLocation()
 						&& given.getEndLocation()<toUpdate.getEndLocation()) {
 					toUpdate.setEndLocation(toUpdate.getEndLocation()-sizeOfDelete);
 					// Do we have to create two feus for this?
-					/*
+					
 					 *   |-|  deletion is inside insert
 					 * |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()<toUpdate.getEndLocation()&&
 						given.getEndLocation()>toUpdate.getEndLocation()) {
 					toUpdate.setEndLocation(given.getStartLocation());
-					/*
+					
 					 *    |---| deletion start is inside insert end
 					 * |----|
-					 */
-				}
+					 
+				}*/
 				//The following do not change the Delete:
 				/*
 				
@@ -637,12 +637,12 @@ public class BackendClient {
 				 * |----|
 				 * 
 				 */
-				/*if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
 							-sizeOfDelete);
-				}	*/			
+				}		
 			}
 			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
 				if(toUpdate.getEndLocation() > insertAt) {
@@ -705,40 +705,40 @@ public class BackendClient {
 			int insertAt = given.getStartLocation();
 			int sizeOfDelete = given.getEndLocation() - insertAt;
 			if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Insert) {
-				if(given.getEndLocation() <= toUpdate.getStartLocation()) {
+				/*if(given.getEndLocation() <= toUpdate.getStartLocation()) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *      |----|
 					 * or
 					 * |----|
 					 *       |----|
-					 */
+					 
 				}
 				else if (given.getEndLocation()>toUpdate.getStartLocation()
 							&& given.getEndLocation()<toUpdate.getEndLocation()	
 							&& given.getStartLocation()<toUpdate.getStartLocation()){
 					toUpdate.setStartLocation(given.getStartLocation());
 					
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *    |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()<toUpdate.getStartLocation() &&
 						given.getEndLocation()>toUpdate.getEndLocation()) {
 					toUpdate.setStartLocation(given.getStartLocation());
-					/*
+					
 					 * Does this:
 					 * |--------|
 					 *   |----|
-					 */
+					 
 				}
 				//The following do not change the Insert:
-				/*
+				
 				 * |----| both start and ends are the same
 				 * |----|
 				 * 
@@ -752,26 +752,26 @@ public class BackendClient {
 				 * |----|
 				 * 
 				 */
-				/*if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
-				}*/
+				}
 			}
 			else if (toUpdate.getMarkupType() == 
 				FrontEndUpdate.MarkupType.Delete){
-				if(given.getEndLocation() <= toUpdate.getStartLocation()) {
+				/*if(given.getEndLocation() <= toUpdate.getStartLocation()) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
 					toUpdate.setEndLocation(toUpdate.getEndLocation() 
 							- sizeOfDelete);
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *      |----|
 					 * or
 					 * |----|
 					 *       |----|
-					 */
+					 
 				}
 				else if (given.getEndLocation()>toUpdate.getStartLocation()
 							&& given.getEndLocation()<toUpdate.getEndLocation()
@@ -780,62 +780,62 @@ public class BackendClient {
 					int diff = toUpdate.getEndLocation()-given.getEndLocation();
 					toUpdate.setStartLocation(given.getStartLocation());
 					toUpdate.setEndLocation(toUpdate.getStartLocation()+diff);
-					/*
+					
 					 * Does this:
 					 * |----|
 					 *    |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()<toUpdate.getStartLocation() &&
 						given.getEndLocation()>toUpdate.getEndLocation()) {
 					toUpdate.setStartLocation(0);
 					toUpdate.setEndLocation(0);
-					/*
+					
 					 * Does this:
 					 * |--------|
 					 *   |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()==toUpdate.getStartLocation()
 						&& given.getEndLocation()==toUpdate.getEndLocation()) {
 					toUpdate.setStartLocation(0);
 					toUpdate.setEndLocation(0);
-					/*
+					
 					 * |----| both start and ends are the same
 					 * |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()>toUpdate.getStartLocation()
 						&& given.getEndLocation()<toUpdate.getEndLocation()) {
 					toUpdate.setEndLocation(toUpdate.getEndLocation()-sizeOfDelete);
 					// Do we have to create two feus for this?
-					/*
+					
 					 *   |-|  deletion is inside insert
 					 * |----|
-					 */
+					 
 				}
 				else if (given.getStartLocation()<toUpdate.getEndLocation()&&
 						given.getEndLocation()>toUpdate.getEndLocation()) {
 					toUpdate.setEndLocation(given.getStartLocation());
-					/*
+					
 					 *    |---| deletion start is inside insert end
 					 * |----|
-					 */
+					 
 				}
 				//The following do not change the Delete:
-				/*
+				
 				
 				 * 
 				 *      |---|  deletion start = insert end
 				 * |----|
 				 * 
 				 */
-				/*if(toUpdate.getStartLocation() >= insertAt) {
+				if(toUpdate.getStartLocation() >= insertAt) {
 					toUpdate.setStartLocation(toUpdate.getStartLocation()
 							-sizeOfDelete);
 					toUpdate.setEndLocation(toUpdate.getEndLocation()
 							-sizeOfDelete);
-				}	*/			
+				}			
 			}
 			else if(toUpdate.getMarkupType() == FrontEndUpdate.MarkupType.Cursor) {
 				if(toUpdate.getEndLocation() >= insertAt) {
