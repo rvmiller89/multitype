@@ -13,7 +13,9 @@ import multitype.FrontEndUpdate.NotificationType;
 import multitype.views.Dialog;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
@@ -206,12 +208,14 @@ public class EditorManager
 		IEditorPart editor = null;
 		try {
 			editor = IDE.openEditorOnFileStore(page, fs);
+
 		} catch (PartInitException e) {
 			System.err.println("*********************************PART INIT EXCEPTION: " + e.getMessage());
 			return;
 		}
 		
 		map.put(fileID, new Document((ITextEditor)editor, fileID, content));
+
 	}
 	
 	
@@ -439,6 +443,14 @@ public class EditorManager
 
                 }
                 //getPage().closeEditor( map.get(fileID).getEditor(), false);
+                
+                // Clear all markers
+                IResource resource = map.get(fileID).resource;
+                try {
+					resource.deleteMarkers("multitype.cursorMarker", true, IResource.DEPTH_INFINITE);
+				} catch (CoreException e) {
+					e.printStackTrace();
+				}
 
 				map.remove(fileID);
 				

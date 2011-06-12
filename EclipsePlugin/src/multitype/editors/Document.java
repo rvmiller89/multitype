@@ -1,11 +1,12 @@
 package multitype.editors;
 
-import java.util.HashMap;
-
 import multitype.Activator;
 import multitype.FEUSender;
 import multitype.FrontEndUpdate;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -17,14 +18,13 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * 
- * @author Azfar Khandoker
+ * @author Azfar Khandoker & Ryan Miller
  *
  */
 public class Document 
@@ -33,10 +33,8 @@ public class Document
 	private ITextEditor editor;
 	private IDocument doc;
 	private String fileName; //TODO
-	
-	// Cusor marker mapping
-	HashMap<String, Integer> cursorMap = new HashMap<String, Integer>();
-	
+	public final IResource resource;
+
 	private final IDocumentListener DOCUMENT_LISTENER = new IDocumentListener() {
 		
 		public void documentAboutToBeChanged(DocumentEvent event) {}
@@ -65,15 +63,48 @@ public class Document
 		}
 	};
 	
+	private final ISelectionListener CURSOR_LISTENER = new ISelectionListener() {
+
+		@Override
+		public void selectionChanged(IWorkbenchPart part, ISelection selection) 
+		{
+			/* Cursor Positions
+			 * TODO Breaks in BackendClient after closing a file...
+			 */
+			if (part.getSite().getId().equals(editor.getSite().getId()))
+			{
+				/* LOCAL DEBUG only
+				FrontEndUpdate feu = FrontEndUpdate.createCursorPosFEU(getFileID(), 
+						Activator.getDefault().userInfo.getUserid(), 
+						((ITextSelection)selection).getOffset());
+				cursorPos(feu);
+				*/
+				
+				/* Disabled until we have a fix for BackendClient */
+				FEUSender.send(
+						FrontEndUpdate.createCursorPosFEU(
+								getFileID(), 
+								Activator.getDefault().userInfo.getUserid(), 
+								((ITextSelection)selection).getOffset()));
+			}
+			
+		}
+		
+	};
+	
 	private final ISelectionChangedListener SELECTION_LISTENER = new ISelectionChangedListener() {
 		public void selectionChanged(SelectionChangedEvent event) 
 		{
-//			FEUSender.send(
-//					FrontEndUpdate.createHighlightFEU(
-//							getFileID(), 
-//							Activator.getDefault().userInfo.getUserid(),
-//							((ITextSelection)event.getSelection()).getOffset(),
-//							((ITextSelection)event.getSelection()).getLength()));
+			/*
+			 * Future implementation: Highlighting mode
+		
+				FEUSender.send(
+					FrontEndUpdate.createHighlightFEU(
+							getFileID(), 
+							Activator.getDefault().userInfo.getUserid(),
+							((ITextSelection)event.getSelection()).getOffset(),
+							((ITextSelection)event.getSelection()).getLength()));			
+			*/
 		}
 	};
 	
@@ -91,6 +122,7 @@ public class Document
 	{
 		this.fileID = fileID;
 		this.editor = editor;
+		this.resource = (IResource)editor.getEditorInput().getAdapter(IResource.class);
 
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		
@@ -99,31 +131,19 @@ public class Document
 			doc.set(content);
 		}
 		
+		// Register listeners
 		doc.addDocumentListener(DOCUMENT_LISTENER);
 		editor.getSelectionProvider().addSelectionChangedListener(SELECTION_LISTENER);
-		
-		// TODO This seems to be breaking things after closing a document...
-		
-		/*Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().addPostSelectionListener(new ISelectionListener() {
-			public void selectionChanged(IWorkbenchPart part, ISelection selection)
-			{
-				if (part.getSite().getId().equals(editor.getSite().getId()))
-				{
-					FEUSender.send(
-							FrontEndUpdate.createCursorPosFEU(
-									getFileID(), 
-									Activator.getDefault().userInfo.getUserid(), 
-									((ITextSelection)selection).getOffset()));
-				}
-			}
-		});*/
+		Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().
+			getActivePage().addPostSelectionListener(CURSOR_LISTENER);
 	}
 	
 	public void disableListeners()
 	{
 		doc.removeDocumentListener(DOCUMENT_LISTENER);
 		editor.getSelectionProvider().removeSelectionChangedListener(SELECTION_LISTENER);
-		
+		Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().
+			getActivePage().removePostSelectionListener(CURSOR_LISTENER);		
 	}
 	
 	public String getTitle()
@@ -189,27 +209,68 @@ public class Document
 	public void cursorPos(final FrontEndUpdate feu)
 	{
 		System.out.println("received cursor at: " + feu.getStartLocation());
-		
+
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run()
 			{
-				/*int offset = feu.getStartLocation();
+				// Find any previous cursor marker from this user by their userid
+				String type = "multitype.cursorMarker";
 				
-				// TODO get line number from offset
-				int lineNumber = 0;
-
-				System.out.println("**** INSERTING CURSOR ON LINE " + lineNumber);
+				IMarker[] markers = null;
 				
-				MarkerUtilities.setLineNumber(cursorMap, lineNumber+1); //1-based line numbering
-				MarkerUtilities.setMessage(cursorMap, "This is some sample warning.");
-				cursorMap.put(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 				try {
-					IResource resource = (IResource)editor.getEditorInput().getAdapter(IResource.class);
-				    MarkerUtilities.createMarker(resource, cursorMap, "myproblem");//.createMarker(f, map, "myproblem");
+					markers = resource.findMarkers(type, true, IResource.DEPTH_INFINITE);
 				} catch (CoreException e) {
-				    //something went terribly wrong
 					e.printStackTrace();
-				}*/
+				}
+				
+				// Delete these markers
+				for (IMarker m : markers)
+				{
+					try {
+						if ((Integer)m.getAttribute("uid") == feu.getUserId())
+						{
+							// Match found
+							m.delete();
+							break;
+						}
+					} catch (NumberFormatException e) {
+						e.printStackTrace();
+					} catch (CoreException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				// Add a new marker
+				
+				int offset = feu.getStartLocation();
+				
+				int lineNumber = 0;
+				try {
+					lineNumber = doc.getLineOfOffset(offset);
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+				
+				System.out.println("which is line: " + lineNumber);
+				
+				lineNumber +=1;	// Cursor markers use line numbers starting at 1 for some reason
+				
+				IMarker marker;
+				try {
+					marker = resource.createMarker("multitype.cursorMarker");
+					String user = "Bob";
+						//Activator.getDefault().connectedUsers.get(feu.getUserId());
+					marker.setAttribute(IMarker.MESSAGE, user);
+					marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+					marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_NORMAL);
+					marker.setAttribute("user", user);
+					marker.setAttribute("uid", feu.getUserId());
+					marker.setAttribute("cursorPos", feu.getStartLocation());
+				} catch (CoreException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 		});		
 		

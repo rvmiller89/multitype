@@ -160,14 +160,57 @@
             name="%command.name">
       </command>
    </extension>
-   <extension id="cursorMarker"
+   
+   <!-- Cursor Markers -->
+   <extension id="multitype.cursorMarker"
     	point="org.eclipse.core.resources.markers"
-    	name="%extension.name">
-        
-        <super type="org.eclipse.core.resources.problemmarker"/>
+    	name="Cursor Marker">
         <super type="org.eclipse.core.resources.textmarker"/>
-        <persistent value="true"/>
+        <attribute name="user"/>
+        <attribute name="uid"/>
+        <attribute name="cursorPos"/>
+        <persistent value="false"/>
 	</extension>
+
+	<!-- Changes the marker image in the editor marker bar -->
+	<extension point="org.eclipse.ui.editors.annotationTypes">
+		<type markerType="multitype.cursorMarker"
+		name="multitype.cursorMarkerAnnotation">
+		</type>
+	</extension>
+
+	<!-- Sets Cursor Marker properties -->
+	<extension
+		point="org.eclipse.ui.editors.markerAnnotationSpecification">
+		<specification
+			annotationType="multitype.cursorMarkerAnnotation"
+			icon="res/marker.png"
+			
+			textPreferenceKey="myAppIndication"
+			textPreferenceValue="true"
+			overviewRulerPreferenceKey="myAppIndicationInOverviewRuler"
+			overviewRulerPreferenceValue="true"
+			verticalRulerPreferenceKey="myAppIndicationInVerticalRuler"
+			verticalRulerPreferenceValue="true"
+			highlightPreferenceKey="myAppHighlighting"
+			highlightPreferenceValue="false"
+			colorPreferenceKey="myAppIndicationColor"
+			colorPreferenceValue="216,159,43"
+			presentationLayer="3"
+			showInNextPrevDropdownToolbarAction="false"
+			includeOnPreferencePage="true"
+			
+			isGoToPreviousNavigationTargetKey="ismyAppGoToPreviousNavigationTarget"
+			label="myApp Issue Marker"
+			
+			showInNextPrevDropdownToolbarActionKey="showmyAppInNextPrevDropdownToolbarAction"
+			
+			isGoToNextNavigationTargetKey="ismyAppRecordGoToNextNavigationTarget"
+		>
+		</specification>
+	</extension>
+   
+   <!-- MultiType Perspective -->
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
