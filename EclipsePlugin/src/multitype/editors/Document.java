@@ -80,12 +80,12 @@ public class Document
 				cursorPos(feu);
 				*/
 				
-				/* Disabled until we have a fix for BackendClient */
-				FEUSender.send(
+				/* Disabled until we have a fix for BackendClient and a new resource model */
+				/*FEUSender.send(
 						FrontEndUpdate.createCursorPosFEU(
 								getFileID(), 
 								Activator.getDefault().userInfo.getUserid(), 
-								((ITextSelection)selection).getOffset()));
+								((ITextSelection)selection).getOffset()));*/
 			}
 			
 		}
@@ -122,6 +122,9 @@ public class Document
 	{
 		this.fileID = fileID;
 		this.editor = editor;
+		
+		// TODO client editors (currently using StringEditorInput) have no associated resource
+		// and this will lead to NullPointerException's
 		this.resource = (IResource)editor.getEditorInput().getAdapter(IResource.class);
 
 		doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
