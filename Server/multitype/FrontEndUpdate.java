@@ -1,3 +1,14 @@
+/*
+ * PRE-CONDITION
+ * 
+ * Changes made to this file must be made to its duplicate file in the MultiType project space.
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
 package multitype;
 /**
  * This is used as a representation of different events that each user
